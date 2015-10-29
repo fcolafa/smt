@@ -41,6 +41,7 @@
 </head>
 
 <body>
+   
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container-fluid">
@@ -49,7 +50,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-				<a class="brand" href="#"><?php echo Yii::app()->name ?></a>
+                            <a class="brand" href="#"><img class="logo" border=”0″ src="<?php echo Yii::app()->theme->baseUrl?>/img/smt.png"></a>
 				<div class="nav-collapse">
 					<?php $this->widget('zii.widgets.CMenu',array(
 						'htmlOptions' => array( 'class' => 'nav' ),
@@ -57,11 +58,22 @@
 						'items'=>array(
 							array('label'=>Yii::t('database','Home'), 'url'=>array('/site/index')),
 							array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-							array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+							array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
+							//array('label'=>count(Ticket::model()->findAll('ticket_status="No leido"')),'url'=>'#','itemOptions'=>array('class' =>'ticket')),
 						),
 					)); ?>
-					
+                                    
 				</div><!--/.nav-collapse -->
+                                <?php if(Yii::app()->user->checkAccess('Administrador')){ ?>
+                                <div class="ticket">
+                                    <?php $count= count(Ticket::model()->findAll('ticket_status="No leido"'));
+                                    ?>
+                                    <div>
+                                        <a href="<?php echo Yii::app()->createUrl('/ticket') ?>"><?php echo $count ?></a>
+                                    </div>
+                                 
+                                    </div>
+                                <?php } ?>
 			</div>
 		</div>
 	</div>
@@ -147,7 +159,7 @@
 				</ul>
 				</div>  /span3 
 			</div>  /row -->
-                           <div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+                          
 		</div> <!-- /container -->
 	</div>
 	

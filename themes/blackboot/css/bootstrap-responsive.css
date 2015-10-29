@@ -84,6 +84,8 @@ div.view {
   .hidden-tablet {
     display: none !important;
   }
+
+  
 }
 
 @media (max-width: 767px) {
@@ -99,12 +101,18 @@ div.view {
   .hidden-phone {
     display: none !important;
   }
+ 
+  
 }
 
 @media (min-width: 1200px) {
   .row {
     margin-left: -30px;
     *zoom: 1;
+  }
+ 
+  .triangle-isosceles.left {
+      width: 90%;
   }
   .row:before,
   .row:after {

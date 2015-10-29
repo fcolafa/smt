@@ -21,10 +21,16 @@ class Controller extends CController
 	 */
 	public $breadcrumbs=array();
         public function init()
-        {
+        {   
+            Yii::$classMap = array_merge( Yii::$classMap, array(
+           'CaptchaExtendedAction' => Yii::getPathOfAlias('ext.captchaExtended').DIRECTORY_SEPARATOR.'CaptchaExtendedAction.php',
+           'CaptchaExtendedValidator' => Yii::getPathOfAlias('ext.captchaExtended').DIRECTORY_SEPARATOR.'CaptchaExtendedValidator.php'
+            ));
             Yii::import('ext.LangPick.ELangPick'); 
             ELangPick::setLanguage();
             parent::init();
             
+            
+
         }
 }

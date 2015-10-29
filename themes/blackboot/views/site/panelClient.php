@@ -1,12 +1,12 @@
 <?php
 
-$this->pageTitle=Yii::app()->name . ' -'.Yii::t('database','Panel Administración');
+$this->pageTitle=Yii::app()->name . ' -'.Yii::t('database','Servicios');
 $this->breadcrumbs=array(
-	'Panel Aministración',
+	'Servicios',
 );
 ?>
 
-<h1><?php echo  Yii::t('database','Panel de administración')?></h1>
+<h1><?php echo  Yii::t('database','Servicios')?></h1>
 
 <div class="dashboardIcons span-16">
 
@@ -25,8 +25,8 @@ $this->breadcrumbs=array(
     </div>
     
     <div class="dashIcon">
-        <a href="<?php echo Yii::app()->baseurl?>/manifest/index?idu=<?php echo Yii::app()->user->id;?>"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-write.png" alt="Customers" /></a>
-        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/manifest/index?idu=<?php echo Yii::app()->user->id;?>"><?php echo Yii::t ('database','Manifest') ?></a></div>
+        <a href="<?php echo Yii::app()->baseurl?>/ticket/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-write.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/ticket/index"><?php echo Yii::t ('database','Tickets') ?></a></div>
     </div>
     
         

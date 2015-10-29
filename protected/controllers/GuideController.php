@@ -164,7 +164,7 @@ class GuideController extends Controller
             $idu=$guide->id_user;
             try {
                 if($guide->delete())
-                {
+                { if(!empty($guide->pdf_guide))
                     unlink (Yii::app()->basePath.'/../images/guides/'.$guide->pdf_guide);
                 }
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser

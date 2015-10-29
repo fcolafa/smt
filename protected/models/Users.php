@@ -47,16 +47,16 @@ class Users extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('user_name, password,_oldpassword,, password_repeat,email', 'required'),
-                        //array('_oldpassword, password, password_repeat','required' ,'on'=>'update'),
                         array('user_name,email, user_rut','unique'),
 			array('user_name, password, session, role, email,user_names, user_lastnames, user_rut', 'length', 'max'=>45),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id_user,user_name, password, session, role, date_create, email, user_names, user_lastnames, user_rut', 'safe', 'on'=>'search'),
                         array('email','email'),
-                        array('id_company', 'numerical', 'integerOnly'=>true),
+                        array('id_company,user_phone, first_time', 'numerical', 'integerOnly'=>true),
                         array('user_rut','validateRut','allowEmpty'=>'false'),
                         array('role','atleastone','on'=>'update'),
+                        array('id_user','requiredNames','on'=>'update'),
                         array('password', 'compare'),
                         array('password_repeat, password,_oldpassword', 'safe'),
                         array('_oldpassword','updatePassword','on'=>'update'),
@@ -99,6 +99,8 @@ class Users extends CActiveRecord
                         '_oldpassword'=>  Yii::t('database','Old Password'),
                         'id_company' => Yii::t('database','Id Company'),
                         '_complete_name'=>Yii::t('database','Complete Name'),
+                        'user_phone'=>Yii::t('database','User Phone'),
+                        'first_time'=>Yii::t('database','First Time'),
                         
 		);
 	}
@@ -129,6 +131,7 @@ class Users extends CActiveRecord
 		$criteria->compare('user_lastnames',$this->user_lastnames,true);
 		$criteria->compare('user_rut',$this->user_rut,true);
                 $criteria->compare('id_company',$this->id_company);
+                $criteria->compare('user_phone',$this->user_phone);
                 $criteria->compare('idCompany.company_name',$this->_company_name, true);
 
 		return new CActiveDataProvider($this, array(
@@ -152,6 +155,7 @@ class Users extends CActiveRecord
 		$criteria->compare('user_lastnames',$this->user_lastnames,true);
 		$criteria->compare('user_rut',$this->user_rut,true);
                 $criteria->compare('id_company',$this->id_company);
+                $criteria->compare('user_phone',$this->user_phone);
                 $criteria->compare('idCompany.company_name',$this->_company_name, true);
 
 		return new CActiveDataProvider($this, array(
@@ -204,11 +208,25 @@ class Users extends CActiveRecord
             if ($verifyCode != $result ||!is_numeric($dataout))
                 $this->addError('client_rut', Yii::t('validation','Invalid Rut'));
         }
+        /**
+         * validate that cant modifi the only one user with 'Administrator' permissions
+          * @param type $attribute
+         * @param type $params
+         */
          public function atleastone($attribute, $params) {
              $users=  Users::model()->findAll('role="Administrador"' );
              $u=  Users::findByPk($this->id_user);
              if(count($users)<2&&$u->role=="Administrador" && $u->role!=$this->role)
                 $this->addError ($attribute , 'No puede modificar el tipo de usuario, ya que es el unico usuario con permisos de Administrador');
+         }
+         public function requiredNames($attribute, $params){
+             
+             if(!Yii::app()->user->checkAccess('Administrador')){
+                if(empty($this->user_names))
+                $this->addError ('user_names' ,  Yii::t('yii','{attribute} cannot be blank.',array('{attribute}'=>$this->getAttributeLabel('user_names'))));
+                if(empty($this->user_lastnames))
+                     $this->addError ('user_lastnames' ,  Yii::t('yii','{attribute} cannot be blank.',array('{attribute}'=>$this->getAttributeLabel('user_lastnames'))));
+            }
          }
 
 }

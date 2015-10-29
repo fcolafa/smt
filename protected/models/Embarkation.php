@@ -25,7 +25,7 @@ class Embarkation extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_embarkation, embarkation_name', 'required'),
+			array(' embarkation_name', 'required'),
 			array('id_embarkation, embarkation_name', 'length', 'max'=>45),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.

@@ -81,6 +81,7 @@ class UsersController extends Controller
                         $model->date_create=  date("y/m/d H:i:s");
                         $model->user_names=  ucwords(strtolower($model->user_names));
                         $model->user_lastnames=  ucwords(strtolower($model->user_lastnames));
+                        $model->first_time=0;
 			if($model->save()){
                             $this->sendMail($model,$pass);
                             Yii::app()->authManager->assign($model->role,$model->id_user);
@@ -168,6 +169,7 @@ class UsersController extends Controller
                         }
                            $model->user_names=  ucwords(strtolower($model->user_names));
                            $model->user_lastnames=  ucwords(strtolower($model->user_lastnames));
+                           $model->first_time=1;
 			if($model->save()){
                             $this->redirect(array('viewClient','id'=>$model->id_user));
                          }

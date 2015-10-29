@@ -9,11 +9,7 @@ class SiteController extends Controller
 	public function actions()
 	{
 		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
+			
 			// page action renders "static" pages stored under 'protected/views/site/pages'
 			// They can be accessed via: index.php?r=site/page&view=FileName
 			'page'=>array(
@@ -40,6 +36,11 @@ class SiteController extends Controller
                     $this->redirect(Yii::app()->baseUrl.'/site/login');
                 else{
                 if(Yii::app()->user->checkAccess('Cliente')){
+                    
+                    $user=  Users::model()->findByPk(Yii::app()->user->id);
+                    if($user->first_time==0)
+                        $this->redirect (array('Users/updateClient','id'=>Yii::app()->user->id));
+                    else
                     $this->render('panelClient');
                 }
                     //$this->redirect(Yii::app()->baseUrl.'/guide/index/'.$idu);

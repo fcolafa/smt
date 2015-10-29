@@ -16,6 +16,6 @@ $this->menu=array(
 );
 ?>
 
-<h1> <?php echo Yii::t('actions','Update')?> <?php echo Yii::t('database','User')?> :<?php echo $model->user_name; ?></h1>
+<h1> <?php echo Yii::t('actions','Update')?> <?php echo Yii::t('database','User')?> : <?php echo $model->user_name; ?></h1>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

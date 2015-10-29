@@ -10,13 +10,16 @@ return array(
   'Send Guide'=>'Enviar Guia',
     'Id User Receptor'=>'Id Cliente Receptor',
    'Date Send'=>'Fecha Envio',
-    
+//classification
+'Classfication'=>'Categoria',    
+'Id Classification'=>'Id Categoria',
+ 'Classification Name'=>'Nombre Categoria',
  //ContactForm
  'Name'=>'Nombre',
  'Email'=>'Email', 
  'Subject'=>'Asunto',
  'Body'=>'Cuerpo',
- 'Verification Code'=>'Codigo de Verificación',
+ 'Verification Code'=>'Resultado Operación',
  'Contact Providers'=>'Contactar Proveedores',
  'Embarkation'=>'Nave',
  'Embarkations'=>'Naves',
@@ -39,21 +42,36 @@ return array(
  'Pdf Guide'=>'Guia Pdf',
  'Xml Guide'=>'Guia Xml',
  'Date Guide Create'=>'Fecha Creacion',
-  //user
-'Id User'=>'Id Usuario',
-'User'=>'Usuario',
-'Users'=>'Usuarios',
-'User Name'=>'Nombre Usuario',
+    
+ //ticket
+ 'Id Ticket'=>'Id Solicitud',
+ 'Ticket'=>'Solicitud de no Confomidad ',
+ 'Tickets'=>'Solicitudes de no Conformidad ',
+ 'Ticket Description'=>'Descripción ',
+ 'Ticket Statuc'=>' Estado Solicitud ',
+ 'Ticket Date'=>'Fecha Emisión de Solicitud ',
+ 'Ticket Status'=>'Estado de la solicitud ',
+ 'Ticket File'=>'Archivo adjunto ',
+ 'Ticket Date Incident'=>'Fecha y hora incidente ',
+ 
+//user
+'Id User'=>'Id Usuario ',
+'User'=>'Usuario ',
+'Users'=>'Usuarios ',
+'User Name'=>'Nombre Usuario ',
 'Password'=>'Contraseña',
-'Date Create'=>'Fecha de Modificación',
-'Date Lastsession'=>'Ultima conexión',
+'Date Create'=>'Fecha de Modificación ',
+'Date Lastsession'=>'Ultima conexión ',
 'Repeat Password'=>'Repetir Contraseña',
 'Old Password'=>'Contraseña Actual',
 'Role'=>'Tipo de Usuario',   
-'User Names'=>'Nombres',   
-'User Lastnames'=>'Apellidos',
+'User Names'=>'Nombres ',   
+'User Lastnames'=>'Apellidos ',
 'User Rut'=>'Rut',
-'New Password'=>'Nueva Contraseña',
+'New Password'=>'Nueva Contraseña ',
+ 'User Phone'=>' Teléfono ',
+    
+    
 //weight
 'Id Weight'=>'Id Carga',
 'Weight Name'=>'Nombre Carga',

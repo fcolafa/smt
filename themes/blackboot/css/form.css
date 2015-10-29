@@ -197,9 +197,8 @@ div.wide.form .buttons, div.wide.form .hint, div.wide.form .errorMessage
 ul.yiiPager a:link,
 ul.yiiPager a:visited
 {
-	border:solid 1px #CCCCCC;
+	border:solid 1px grey;
 	font-weight:bold;
-	color:#73A50E;
 	padding:1px 6px;
 	text-decoration:none;
 }
@@ -211,18 +210,17 @@ ul.yiiPager .page a
 
 ul.yiiPager a:hover
 {
-	border:solid 1px #73A50E;
+        border:solid 1px #999999;
+        background-color: #CCCCCC;
 }
+
 
 ul.yiiPager .selected a
 {
-	background:#8ECF11;
-	color:#FFFFFF;
 	font-weight:bold;
 }
 
 ul.yiiPager .hidden a
 {
-	border:solid 1px #DEDEDE;
-	color:#888888;
+	
 }

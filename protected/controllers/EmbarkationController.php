@@ -62,6 +62,7 @@ class EmbarkationController extends Controller
 		if(isset($_POST['Embarkation']))
 		{
 			$model->attributes=$_POST['Embarkation'];
+                        $model->embarkation_name=  ucwords(strtolower($model->embarkation_name));
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id_embarkation));
 		}
@@ -86,6 +87,7 @@ class EmbarkationController extends Controller
 		if(isset($_POST['Embarkation']))
 		{
 			$model->attributes=$_POST['Embarkation'];
+                        $model->embarkation_name=  ucwords(strtolower($model->embarkation_name));
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id_embarkation));
 		}

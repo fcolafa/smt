@@ -36,5 +36,6 @@ $this->menu=array(
                 'user_rut',
                 'idCompany.company_name',
                 'role',
+                'user_phone',
 	),
 )); ?>

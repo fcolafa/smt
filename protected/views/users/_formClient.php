@@ -25,7 +25,10 @@ $('#Users_user_rut').Rut({
 )); ?>
 
 	<p class="note"> <?php echo Yii::t('validation','Fields with')?> <span class="required">*</span> <?php echo Yii::t('validation','are required')?> </p>
-
+        <?php
+             if($model->first_time==0){ ?>
+        <p class="note">Antes de poder realizar cualquier accion debe actualizar sus datos </p>
+        <?php }?>
 	<?php echo $form->errorSummary($model); ?>
        
 	<div class="row">
@@ -68,6 +71,11 @@ $('#Users_user_rut').Rut({
 		<?php echo $form->labelEx($model,'user_rut'); ?>
 		<?php echo $form->textField($model,'user_rut',array('size'=>45,'maxlength'=>45)); ?>
 		<?php echo $form->error($model,'user_rut'); ?>
+	</div>
+        <div class="row">
+		<?php echo $form->labelEx($model,'user_phone'); ?>
+		<?php echo $form->textField($model,'user_phone',array('size'=>45,'maxlength'=>45)); ?>
+		<?php echo $form->error($model,'user_phone'); ?>
 	</div>
        
    

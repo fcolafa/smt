@@ -23,7 +23,7 @@ $this->menu=array(
 }
 ?>
 
-<h1><?php echo Yii::t('actions','View')?> <?php echo $model->user_name; ?></h1>
+<h1><?php echo Yii::t('database','Profile')?> <?php echo $model->user_name; ?></h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
@@ -38,9 +38,11 @@ $this->menu=array(
 		'user_names',
 		'user_lastnames',
 		'user_rut',
+                'user_phone',
                 array(
                 'name'=>'idCompany.company_name',
                 'visible'=>Yii::app()->user->checkAccess('Administrador'),
         ),
+            
 	),
 )); ?>
