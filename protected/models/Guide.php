@@ -125,7 +125,5 @@ class Guide extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        public function onFileUploaded($fullFileName,$userdata) {
-        // userdata is the same passed via widget config.
-        }
+        
 }

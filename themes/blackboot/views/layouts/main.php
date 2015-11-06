@@ -69,7 +69,7 @@
                                     <?php $count= count(Ticket::model()->findAll('ticket_status="No leido"'));
                                     ?>
                                     <div>
-                                        <a href="<?php echo Yii::app()->createUrl('/ticket') ?>"><?php echo $count ?></a>
+                                        <a href="<?php echo Yii::app()->createUrl('/ticket/admin') ?>"><?php echo $count ?></a>
                                     </div>
                                  
                                     </div>

@@ -48,12 +48,16 @@ return array(
  'Ticket'=>'Solicitud de no Confomidad ',
  'Tickets'=>'Solicitudes de no Conformidad ',
  'Ticket Description'=>'Descripción ',
+ 'Ticket Subject'=>'Asunto ',
  'Ticket Statuc'=>' Estado Solicitud ',
  'Ticket Date'=>'Fecha Emisión de Solicitud ',
  'Ticket Status'=>'Estado de la solicitud ',
  'Ticket File'=>'Archivo adjunto ',
  'Ticket Date Incident'=>'Fecha y hora incidente ',
- 
+ 'Ticket Message'=>'Mensaje',
+ 'Ticket Solution'=>'Solución a no Conformidad',
+ 'Ticket Message File'=>'Archivo Adjunto',
+    
 //user
 'Id User'=>'Id Usuario ',
 'User'=>'Usuario ',

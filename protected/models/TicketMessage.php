@@ -20,6 +20,7 @@ class TicketMessage extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+        public $_verifyCode;
 	public function tableName()
 	{
 		return 'ticket_message';
@@ -34,12 +35,13 @@ class TicketMessage extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id_ticket, id_user, ticket_message', 'required'),
-			array('id_ticket, id_user, ticket_order', 'numerical', 'integerOnly'=>true),
+			array('id_ticket, id_user ', 'numerical', 'integerOnly'=>true),
 			array('ticket_message', 'length', 'max'=>45),
-			array('ticket_message_date', 'safe'),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id_ticket_message, id_ticket, ticket_message, id_user, ticket_order, ticket_message_date', 'safe', 'on'=>'search'),
+			array('ticket_message_date, ticket_message_file', 'safe'),
+//                        array('ticket_message_file', 'length', 'max'=>60),
+//                        array('ticket_message_file', 'file','types'=>'pdf,PDF,jpeg,jpg,JPEG,JPG,doc','allowEmpty'=>true),
+			array('id_ticket_message, id_ticket, ticket_message, id_user,  ticket_message_file, ticket_message_date', 'safe', 'on'=>'search'),
+                        array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
 		);
 	}
 
@@ -66,8 +68,9 @@ class TicketMessage extends CActiveRecord
 			'id_ticket' => Yii::t('database','Id Ticket'),
 			'ticket_message' => Yii::t('database','Ticket Message'),
 			'id_user' => Yii::t('database','Id User'),
-			'ticket_order' => Yii::t('database','Ticket Order'),
 			'ticket_message_date' => Yii::t('database','Ticket Message Date'),
+			'ticket_message_file' => Yii::t('database','Ticket Message File'),
+                    '_verifyCode'=>Yii::t('database','Verification Code'),
 		);
 	}
 
@@ -88,13 +91,12 @@ class TicketMessage extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-
 		$criteria->compare('id_ticket_message',$this->id_ticket_message);
 		$criteria->compare('id_ticket',$this->id_ticket);
 		$criteria->compare('ticket_message',$this->ticket_message,true);
 		$criteria->compare('id_user',$this->id_user);
-		$criteria->compare('ticket_order',$this->ticket_order);
 		$criteria->compare('ticket_message_date',$this->ticket_message_date,true);
+		$criteria->compare('ticket_message_file',$this->ticket_message_date,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

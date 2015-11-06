@@ -14,9 +14,16 @@
         <b><?php echo CHtml::encode($data->getAttributeLabel('Usuario')); ?>:</b>
 	<?php echo CHtml::encode($data->idUser->user_name); ?>
 	<br />
+        <?php if(Yii::app()->user->checkAccess('Administrador')){?>
 	<b><?php echo CHtml::encode($data->getAttributeLabel('Nombre de pila')); ?>:</b>
-	<?php echo CHtml::encode($data->idUser->user_names." ".$data->idUser->user_lastnames); ?>
+	<?php  echo CHtml::link(CHtml::encode($data->idUser->user_names." ".$data->idUser->user_lastnames),array('users/view','id'=>$data->idUser->id_user)); ?>
 	<br />
+       <?php }?>
+         <?php if(Yii::app()->user->checkAccess('Cliente')){?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('Nombre de pila')); ?>:</b>
+	<?php  echo CHtml::link(CHtml::encode($data->idUser->user_names." ".$data->idUser->user_lastnames),array('users/viewClient','id'=>$data->idUser->id_user)); ?>
+	<br />
+       <?php }?>
         <b><?php echo CHtml::encode($data->getAttributeLabel('Empresa')); ?>:</b>
 	<?php echo CHtml::encode($data->idUser->idCompany->company_name); ?>
 	<br />

@@ -22,6 +22,12 @@ class Ticket extends CActiveRecord
 	 * @return string the associated database table name
 	 */
         public $_verifyCode;
+        public $_user_name;
+        public $_embarkation_name;
+        public $_headquarter_name;
+        public $_user_names;
+        public $_user_lastnames;
+        
         public function tableName()
 	{
 		return 'ticket';
@@ -34,13 +40,14 @@ class Ticket extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_embarkation, id_user, ticket_date,ticket_date_incident ,ticket_description', 'required'),
+			array('id_embarkation, id_user, ticket_subject ,ticket_date,ticket_date_incident ,ticket_description', 'required'),
+                        array('ticket_solution','requiredSolution'),
 			array('id_embarkation, id_headquarter, id_user', 'numerical', 'integerOnly'=>true),
 			array('ticket_status', 'length', 'max'=>45),
+			array('ticket_subject', 'length', 'max'=>45),
                         array('ticket_file', 'length', 'max'=>60),
-                        array('ticket_file', 'file','types'=>'pdf,PDF,jpeg,jpg,JPEG,JPG,doc','allowEmpty'=>true),
                         array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
-                        array('id_ticket, id_embarkation, id_user,  ticket_date, ticket_description, ticket_status', 'safe', 'on'=>'search'),
+                        array('ticket_file,_user_lastnames,_user_names,_headquarter_name,_embarkation_name,_user_name, id_ticket, id_embarkation, id_user,  ticket_date, ticket_date_incident, ticket_description, ticket_solution, ticket_status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,11 +78,13 @@ class Ticket extends CActiveRecord
 			'id_headquarter' => Yii::t('database','Headquarter'),
 			'id_user' => Yii::t('database','Id User'),
 			'ticket_date' => Yii::t('database','Ticket Date'),
+			'ticket_subject' => Yii::t('database','Ticket Subject'),
 			'ticket_description' => Yii::t('database','Ticket Description'),
 			'ticket_status' => Yii::t('database','Ticket Status'),
                         '_verifyCode'=>Yii::t('database','Verification Code'),
                         'ticket_file'=>Yii::t('database','Ticket File'),
                         'ticket_date_incident'=>Yii::t('database','Ticket Date Incident'),
+                        'ticket_solution'=>Yii::t('database','Ticket Solution'),
 		);
 	}
 
@@ -96,12 +105,24 @@ class Ticket extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+                $criteria->with=array('idUser','idEmbarkation','idHeadquarter');
+                $criteria->together=true;
 		$criteria->compare('id_ticket',$this->id_ticket);
 		$criteria->compare('id_embarkation',$this->id_embarkation);
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('ticket_date',$this->ticket_date,true);
+		$criteria->compare('ticket_subject',$this->ticket_subject,true);
+		$criteria->compare('ticket_date_incident',$this->ticket_date_incident,true);
 		$criteria->compare('ticket_description',$this->ticket_description,true);
 		$criteria->compare('ticket_status',$this->ticket_status,true);
+		$criteria->compare('ticket_solution',$this->ticket_solution,true);
+		$criteria->compare('ticket_file',$this->ticket_file,true);
+		$criteria->compare('idUser.user_name',$this->_user_name,true);
+		$criteria->compare('idEmbarkation.embarkation_name', $this->_embarkation_name,true);
+		$criteria->compare('idHeadquarter.headquarter_name', $this->_headquarter_name,true);
+		$criteria->compare('idUser.user_names', $this->_user_names,true);
+		$criteria->compare('idUser.user_lastnames', $this->_user_lastnames,true); 
+                
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
@@ -116,4 +137,11 @@ class Ticket extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+          public function requiredSolution($attribute, $params){
+             
+             if(Yii::app()->user->checkAccess('Administrador')){
+                if(empty($this->ticket_solution))
+                $this->addError ('ticket_solution' ,  Yii::t('yii','{attribute} cannot be blank.',array('{attribute}'=>$this->getAttributeLabel('ticket_solution'))));
+             }
+         }
 }

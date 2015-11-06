@@ -25,25 +25,50 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
        'afterAjaxUpdate'=>"function() {
- 	jQuery('#Projects_presentationDate').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
- 	}",
+ 	jQuery('#ticket_date_incident').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
+ 	jQuery('#ticket_date').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
+ 	
+}",
 	'columns'=>array(
 		'id_ticket',
-		'id_embarkation',
-		'id_user',
+                 array(
+                    'name'=>'idEmbarkation.embarkation_name',
+                    'value'=>'$data->idEmbarkation->embarkation_name',
+                    'filter'=>  CHtml::activeTextField($model, '_embarkation_name'),
+                    ),
+                 array(
+                    'name'=>'idHeadquarter.headquarter_name',
+                    'value'=>'$data->idHeadquarter->headquarter_name',
+                    'filter'=>  CHtml::activeTextField($model, '_headquarter_name'),
+                    ),
+		  array(
+                    'name'=>'idUser.user_name',
+                    'value'=>'$data->idUser->user_name',
+                    'filter'=>  CHtml::activeTextField($model, '_user_name'),
+                    ),
+              array(
+                    'name'=>'idUser.user_names',
+                    'value'=>'$data->idUser->user_names',
+                    'filter'=>  CHtml::activeTextField($model, '_user_names'),
+                    ),
+              array(
+                    'name'=>'idUser.user_lastnames',
+                    'value'=>'$data->idUser->user_lastnames',
+                    'filter'=>  CHtml::activeTextField($model, '_user_lastnames'),
+                    ),
 		               array(
                 
-                       'name' => 'ticket_date',
-                        'value'=>'Yii::app()->dateFormatter->format("d MMMM y \n HH:mm:ss",strtotime($data->ticket_date))',
+                       'name' => 'ticket_date_incident',
+                        'value'=>'Yii::app()->dateFormatter->format("d MMMM y \n HH:mm:ss",strtotime($data->ticket_date_incident))',
                         'filter' => $this->widget('zii.widgets.jui.CJuiDatePicker', 
                                 
                                 array(
                                         'model' => $model,
-                                        'attribute' => 'ticket_date',
+                                        'attribute' => 'ticket_date_incident',
                                         'language' => 'es',
                                        
                                         'htmlOptions' => array(
-                                                'id' => 'Projects_presentationDate',
+                                                'id' => 'ticket_date_incident',
                                                 'dateFormat' => 'yy-mm-dd',
                                         ),
                                         'options' => array(  // (#3)
@@ -72,7 +97,7 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
                                         'language' => 'es',
                                        
                                         'htmlOptions' => array(
-                                                'id' => 'Projects_presentationDate',
+                                                'id' => 'ticket_date',
                                                 'dateFormat' => 'yy-mm-dd',
                                         ),
                                         'options' => array(  // (#3)

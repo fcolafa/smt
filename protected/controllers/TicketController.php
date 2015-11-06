@@ -37,11 +37,11 @@ class TicketController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('view','index', 'create','admin','captcha'),
+				'actions'=>array('view','index', 'create','admin','captcha','upload','closeTicket'),
 				'roles'=>array('Cliente'),    
 			),
                         array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('view','index','admin'),
+				'actions'=>array('view','index','admin','captcha','upload'),
 				'roles'=>array('Administrador'),
                  ),
 			array('deny',  // deny all users
@@ -57,7 +57,7 @@ class TicketController extends Controller
 	{
             $model=$this->loadModel($id);
             $ticketm=new TicketMessage;
-            
+           
              if(!Yii::app()->user->checkAccess('Administrador')&&Yii::app()->user->id!=$model->id_user){
                        throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
             }
@@ -68,21 +68,57 @@ class TicketController extends Controller
                 $ticketm->ticket_message_date=date("y-m-d H:i:s");
                 $ticketm->id_user=Yii::app()->user->id;
                 if($ticketm->save()){
-                    $this->redirect(array('view', 'id'=>$id));
-                }     
+                    $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
+                    $newFolder=Yii::getPathOfAlias('webroot').'/images/tickets_message/'; 
+                    if(!empty($ticketm->ticket_message_file)&&file_exists($tempFolder.$ticketm->ticket_message_file)){
+                            $file = $ticketm->ticket_message_file;
+                            list($name,$ext)= split('[.]', $file); 
+                            copy($tempFolder.$ticketm->ticket_message_file,$newFolder.$ticketm->id_ticket_message.".".$ext );
+                            $ticketm=  TicketMessage::model()->findByPk($ticketm->id_ticket_message);
+                            $ticketm->ticket_message_file=$ticketm->id_ticket_message.".".$ext;
+                            $ticketm->save(false);
+                           // move_uploaded_file($tempFolder.$ticketm->ticket_message_file,$newFolder.$ticketm->id_ticket_message.".".$ext );
+                           // array_map('unlink', glob($tempFolder."*"));//elimina directorio completo
+                        $this->deleteOldFile($tempFolder);
+                    }
+                     $this->redirect(array('view', 'id'=>$id));          
+                } 
             }
-             
-            if( Yii::app()->user->checkAccess('Administrador')&& $model->ticket_status!="Solicitud Finalizada"&& $model->ticket_status!="Solicitud en Curso"){
+            
+            if(isset($_POST['Ticket'])){
+                $model->attributes=$_POST['Ticket'];
+                $model->ticket_status="Resuelto";
+                if($model->save())
+                    $this->redirect(array('view','id'=>$model->id_ticket));
+            }
+            $status=$model->ticket_status;
+            if( Yii::app()->user->checkAccess('Administrador')&& $status!="Solicitud Finalizada"&& $status!="Solicitud en Curso" && $status!="Resuelto"){
                 $model->ticket_status="Solicitud en Curso";
                 $model->save(false);
             }
+      
             $this->render('view',array(
                     'model'=>$model,
                     'ticketm'=>$ticketm,
             ));
 	
         }
-	/**
+        private function deleteOldFile($tempFolder){
+           $dir = opendir($tempFolder);
+            while($f = readdir($dir))
+            {
+            if((time()-filemtime($tempFolder.$f) > 3600*24*2) and !(is_dir($tempFolder.$f)))
+            unlink($tempFolder.$f);
+            }
+            closedir($dir);
+        }
+        public function actionCloseTicket($id){
+            $ticket=$this->loadModel($id);
+            $ticket->ticket_status="Cerrado";
+            $ticket->save(false);
+            $this->redirect(array('view', 'id'=>$id));  
+        }
+        /**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
@@ -91,8 +127,7 @@ class TicketController extends Controller
 		$model=new Ticket;
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
+		 $this->performAjaxValidation($model);
 		if(isset($_POST['Ticket']))
 		{
 			$model->attributes=$_POST['Ticket'];
@@ -101,24 +136,21 @@ class TicketController extends Controller
                         $model->ticket_status='No Leido';
                         if(!empty($model->ticket_date_incident))
                             $model->ticket_date_incident=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->ticket_date_incident);
-                        if(!empty($model->ticket_file))
-                              $file= CUploadedFile::getInstance($model,'ticket_file');
-			if($model->save()){
-                            if(!empty($file))
-                                try
-                                     {
-                                         $model=$this->loadModel($model->id_ticket);
-                                         $uploadedFile=$file;
-                                         $type=$file->getExtensionName();
-                                         $filename=$model->id_ticket.'.'.$type;
-                                         $uploadedFile->saveAs(Yii::app()->basePath.'/../images/tickets/'.$filename);
-                                         $model->ticket_file = $filename;
-                                         $model->save(false);
-
-                                         }
-                                 catch(Exception $e){
-
-                                 }
+                        if($model->save()){
+                            $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
+                            $newFolder=Yii::getPathOfAlias('webroot').'/images/tickets/'; 
+                            if(!empty($model->ticket_file)&&file_exists($tempFolder.$model->ticket_file)){
+                                    $file = $model->ticket_file;
+                                    list($name,$ext)= split('[.]', $file); 
+                                    copy($tempFolder.$model->ticket_file,$newFolder.$model->id_ticket.".".$ext );
+                                    $model=  Ticket::model()->findByPk($model->id_ticket);
+                                    $model->ticket_file=$model->id_ticket.".".$ext;
+                                    $model->save(false);
+                         
+                                $this->deleteOldFile($tempFolder);
+                            }
+                                    
+                         
 				$this->redirect(array('view','id'=>$model->id_ticket));
                         }
 		}
@@ -233,4 +265,22 @@ class TicketController extends Controller
 			Yii::app()->end();
 		}
 	}
+        public function actionUpload()
+        {
+            $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/';         
+            Yii::import("ext.EFineUploader.qqFileUploader");
+            $uploader = new qqFileUploader();
+            $uploader->allowedExtensions = array('pdf','jpg','PDF','JPEG','JPG','jpeg','png','PNG');
+            $uploader->sizeLimit = 1 * 1024 * 1024;//maximum file size in bytes
+            $uploader->chunksFolder = $tempFolder;
+            $result = $uploader->handleUpload($tempFolder);
+            $result['filename'] = $uploader->getUploadName();
+            $result['folder'] = $tempFolder;
+            $uploadedFile=$tempFolder.$result['filename'];
+            header("Content-Type: text/plain");
+            $result=htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+            echo $result;
+            Yii::app()->end();
+        }
+
 }

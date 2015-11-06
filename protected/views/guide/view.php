@@ -56,7 +56,7 @@ $this->widget('ext.EFineUploader.EFineUploader',
                                         //'onError'=>"js:function(id, name, errorReason){ }",
                                          ),
                        'validation'=>array(
-                                 'allowedExtensions'=>array('pdf'),
+                                 'allowedExtensions'=>array('pdf','jpg','PDF','JPEG','JPG','jpeg','png','PNG'),
                                  'sizeLimit'=>1 * 1024 * 1024,//maximum file size in bytes
                                //  'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                           ),
@@ -86,31 +86,4 @@ $this->widget('ext.EFineUploader.EFineUploader',
 	),
 )); ?>
 
-<?php
-//    $this->widget('ext.coco.CocoWidget'
-//        ,array(
-//            'id'=>'cocowidget1',
-//            'onCompleted'=>'function(id,filename,jsoninfo){  }',
-//            'onCancelled'=>'function(id,filename){ alert("cancelled"); }',
-//            'onMessage'=>'function(m){ alert(m); }',
-//            'allowedExtensions'=>array('pdf'), // server-side mime-type validated
-//            'sizeLimit'=>2000000, // limit in server-side and in client-side
-//            'uploadDir' => 'images/guides/', // coco will @mkdir it
-//            // this arguments are used to send a notification
-//            // on a specific class when a new file is uploaded,
-//            'buttonText'=>'Adjuntar',
-//            'dropFilesText'=>'Soltar archivos Aqui!',
-//            'htmlOptions'=>array('style'=>'width: 300px;'),
-//            'defaultControllerName'=>'site',
-//            'defaultActionName'=>'coco',
-//            'receptorClassName'=>'application.models.Guide',
-//            'methodName'=>'onFileUploaded',
-//            'userdata'=>$model->primaryKey,
-//            // controls how many files must be uploaded
-//            'maxUploads'=>1, // defaults to -1 (unlimited)
-//            'maxUploadsReachMessage'=>'Solo se puede subir 1 archivo', // if empty, no message is shown
-//            // controls how many files the can select (not upload, for uploads see also: maxUploads)
-//            'multipleFileSelection'=>true, // true or false, defaults: true
-//        ));
-   ?>
 				

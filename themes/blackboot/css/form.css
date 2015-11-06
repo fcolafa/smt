@@ -224,3 +224,19 @@ ul.yiiPager .hidden a
 {
 	
 }
+.ui-widget-content a {
+    color: #fff;
+}
+.ui-widget-content a:hover {
+    color: #C00;
+}
+.ui-widget-header {
+    border: 1px solid #aaa;
+    background: #ccc url(img/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
+    color: #222;
+    font-weight: bold;
+}
+ui-datepicker-prev ui-corner-all {
+     background-color:  #ccc;
+     background-image: url(img/ui-icons_88888_256x240.png)
+}
