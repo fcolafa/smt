@@ -57,8 +57,8 @@
 						'activeCssClass'	=> 'active',
 						'items'=>array(
 							array('label'=>Yii::t('database','Home'), 'url'=>array('/site/index')),
-							array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-							array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
+							array('label'=>Yii::t('actions','Login'), 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+							array('label'=>'Cerrar Sesión ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest),
 							//array('label'=>count(Ticket::model()->findAll('ticket_status="No leido"')),'url'=>'#','itemOptions'=>array('class' =>'ticket')),
 						),
 					)); ?>
@@ -66,12 +66,14 @@
 				</div><!--/.nav-collapse -->
                                 <?php if(Yii::app()->user->checkAccess('Administrador')){ ?>
                                 <div class="ticket">
-                                    <?php $count= count(Ticket::model()->findAll('ticket_status="No leido"'));
+                                    <?php 
+                                    $count= count(Ticket::model()->findAll('ticket_status="En Curso"'));
+                                    $count2= count(Ticket::model()->findAll('ticket_status="Nuevo"'));
+                                    $count3= count(Ticket::model()->findAll('ticket_status="Cerrado"'));
                                     ?>
-                                    <div>
-                                        <a href="<?php echo Yii::app()->createUrl('/ticket/admin') ?>"><?php echo $count ?></a>
-                                    </div>
-                                 
+                                    
+                                    <a id="circle" class="tooltips"  href="<?php echo Yii::app()->createUrl('/ticket/admin', array('status'=>"En Curso")) ?>"><?php echo $count ?> <span>Solicitudes en Curso</span></a>
+                                    <a  id="circle"  class="tooltips" href="<?php echo Yii::app()->createUrl('/ticket/admin',array('status'=>"Nuevo")) ?>"><?php echo $count2 ?><span>Solicitudes Nuevas</span></a>
                                     </div>
                                 <?php } ?>
 			</div>
@@ -113,10 +115,10 @@
 	</div><!--/.fluid-container-->
          
 	</div>
-	
+<!--	
 	<div class="extra">
 	  <div class="container">
-                
+                -->
              
 <!--		<div class="row">
 			<div class="col-md-3">
@@ -160,9 +162,9 @@
 				</div>  /span3 
 			</div>  /row -->
                           
-		</div> <!-- /container -->
-	</div>
-	
+	<!--	</div> <!-- /container -->
+	<!--</div>
+	-->
 <!--	<div class="footer">
 	  <div class="container">
 		<div class="row">

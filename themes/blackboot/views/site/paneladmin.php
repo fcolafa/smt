@@ -34,8 +34,9 @@ $this->breadcrumbs=array(
         <a href="<?php echo Yii::app()->baseurl?>/weighttype/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-weight_type.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/weighttype/index"><?php echo Yii::t ('database','Weight Types') ?></a></div>
     </div>
-    
-        
-    
+    <div class="dashIcon">
+        <a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-write.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><?php echo Yii::t ('database','Tickets') ?></a></div>
+    </div>    
 </div><!-- form -->
 

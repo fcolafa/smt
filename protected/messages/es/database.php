@@ -11,9 +11,10 @@ return array(
     'Id User Receptor'=>'Id Cliente Receptor',
    'Date Send'=>'Fecha Envio',
 //classification
-'Classfication'=>'Categoria',    
+'Classification'=>'Categoria',    
 'Id Classification'=>'Id Categoria',
- 'Classification Name'=>'Nombre Categoria',
+'Classification Name'=>'Categoria',
+    
  //ContactForm
  'Name'=>'Nombre',
  'Email'=>'Email', 
@@ -29,10 +30,11 @@ return array(
  'Home'=>'Inicio',
  'Login'=>'Conexión',
     
-  'Headquarter'=>'Centro',  
-  'Headquarters'=>'Centros',
-  'Headquarter Name'=>'Nombre de Centro',
-  'Headquarter Location'=>'Ubicacion',
+  'Headquarter'=>'Lugar',  
+  'Headquarters'=>'Lugares',
+  'Headquarter Name'=>'Nombre del Lugar',
+  'Headquarter Location'=>'Cordenadas',
+    'Headquarter Type'=>'Tipo de lugar',
     
 //guide
  'Id Guide'=>'Id Guía',
@@ -45,8 +47,8 @@ return array(
     
  //ticket
  'Id Ticket'=>'Id Solicitud',
- 'Ticket'=>'Solicitud de no Confomidad ',
- 'Tickets'=>'Solicitudes de no Conformidad ',
+ 'Ticket'=>'No Confomidad ',
+ 'Tickets'=>'No Conformidades ',
  'Ticket Description'=>'Descripción ',
  'Ticket Subject'=>'Asunto ',
  'Ticket Statuc'=>' Estado Solicitud ',
@@ -57,6 +59,8 @@ return array(
  'Ticket Message'=>'Mensaje',
  'Ticket Solution'=>'Solución a no Conformidad',
  'Ticket Message File'=>'Archivo Adjunto',
+ 'Id User Asigned'=>'Asignar Usuario',
+'Ticket Solution File'=>'Archivo Adjunto a la Solucion',
     
 //user
 'Id User'=>'Id Usuario ',

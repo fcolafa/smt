@@ -28,6 +28,8 @@ class Ticket extends CActiveRecord
         public $_user_names;
         public $_user_lastnames;
         
+        
+        
         public function tableName()
 	{
 		return 'ticket';
@@ -40,14 +42,17 @@ class Ticket extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_embarkation, id_user, ticket_subject ,ticket_date,ticket_date_incident ,ticket_description', 'required'),
+			array('id_embarkation, id_user, ticket_subject,id_classification ,ticket_date,ticket_date_incident ,ticket_description', 'required'),
                         array('ticket_solution','requiredSolution'),
-			array('id_embarkation, id_headquarter, id_user', 'numerical', 'integerOnly'=>true),
+			array('id_embarkation, id_headquarter, id_user, id_classification', 'numerical', 'integerOnly'=>true),
 			array('ticket_status', 'length', 'max'=>45),
 			array('ticket_subject', 'length', 'max'=>45),
                         array('ticket_file', 'length', 'max'=>60),
+                        array('ticket_solution_file', 'length', 'max'=>60),
+                        array('ticket_date_incident','validatetime'),
+                        array('id_headquarter','validateId'),
                         array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
-                        array('ticket_file,_user_lastnames,_user_names,_headquarter_name,_embarkation_name,_user_name, id_ticket, id_embarkation, id_user,  ticket_date, ticket_date_incident, ticket_description, ticket_solution, ticket_status', 'safe', 'on'=>'search'),
+                        array('ticket_solution_file,id_classification,_days,ticket_file,_user_lastnames,_user_names,_headquarter_name,_embarkation_name,_user_name, id_ticket, id_embarkation, id_user,  ticket_date, ticket_date_incident, ticket_description, ticket_solution, ticket_status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,6 +69,7 @@ class Ticket extends CActiveRecord
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
 			'idTicketMessage' => array(self::HAS_MANY, 'TicketMessage', 'id_ticket'),
 			'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
+			'idClassification' => array(self::BELONGS_TO, 'Classification', 'id_classification'),
 		);
 	}
 
@@ -85,6 +91,8 @@ class Ticket extends CActiveRecord
                         'ticket_file'=>Yii::t('database','Ticket File'),
                         'ticket_date_incident'=>Yii::t('database','Ticket Date Incident'),
                         'ticket_solution'=>Yii::t('database','Ticket Solution'),
+                        'id_classification'=>Yii::t('database','Classification'),
+                        'ticket_solution_file'=>Yii::t('database','Ticket Solution File'),
 		);
 	}
 
@@ -122,11 +130,40 @@ class Ticket extends CActiveRecord
 		$criteria->compare('idHeadquarter.headquarter_name', $this->_headquarter_name,true);
 		$criteria->compare('idUser.user_names', $this->_user_names,true);
 		$criteria->compare('idUser.user_lastnames', $this->_user_lastnames,true); 
-                
+            
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
+	public function searchClient()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $criteria->with=array('idUser','idEmbarkation','idHeadquarter');
+                $criteria->together=true;
+                $criteria->condition = 't.id_user='.Yii::app()->user->id;
+		$criteria->compare('id_ticket',$this->id_ticket);
+		$criteria->compare('id_embarkation',$this->id_embarkation);
+		$criteria->compare('id_user',$this->id_user);
+		$criteria->compare('ticket_date',$this->ticket_date,true);
+		$criteria->compare('ticket_subject',$this->ticket_subject,true);
+		$criteria->compare('ticket_date_incident',$this->ticket_date_incident,true);
+		$criteria->compare('ticket_description',$this->ticket_description,true);
+		$criteria->compare('ticket_status',$this->ticket_status,true);
+		$criteria->compare('ticket_solution',$this->ticket_solution,true);
+		$criteria->compare('ticket_file',$this->ticket_file,true);
+		$criteria->compare('idUser.user_name',$this->_user_name,true);
+		$criteria->compare('idEmbarkation.embarkation_name', $this->_embarkation_name,true);
+		$criteria->compare('idHeadquarter.headquarter_name', $this->_headquarter_name,true);
+		$criteria->compare('idUser.user_names', $this->_user_names,true);
+		$criteria->compare('idUser.user_lastnames', $this->_user_lastnames,true); 
+            
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+    
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -144,4 +181,27 @@ class Ticket extends CActiveRecord
                 $this->addError ('ticket_solution' ,  Yii::t('yii','{attribute} cannot be blank.',array('{attribute}'=>$this->getAttributeLabel('ticket_solution'))));
              }
          }
+         public function getDaysPassed()
+            {
+                    $days= (strtotime($this->ticket_date)-strtotime(date("y-m-d H:i:s")))/86400;
+                    $days = abs($days); $days = floor($days);		
+                    return $days;
+            }
+        public function validateid($model,$attribute)
+        {
+            if($this->id_headquarter==0|| empty ($this->id_headquarter))
+                    $this->addError('id_headquarter', "Ingresar Centro Valido");
+        
+        }
+        public function validateTime($model,$attribute)
+        {
+            if(!empty($this->ticket_date_incident)){
+            $date=Yii::app()->dateFormatter->format('yy-MM-dd HH:mm',$this->ticket_date_incident);
+            $datetime1 = new DateTime($date);
+            $datetime2 = new DateTime(date("y-m-d H:i:s"));
+            if($datetime1 > $datetime2)
+                $this->addError('ticket_date_incident', "El Horario seleccionado es superior al Actual");
+            }
+        }
+         
 }

@@ -35,13 +35,12 @@ class TicketMessage extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id_ticket, id_user, ticket_message', 'required'),
-			array('id_ticket, id_user ', 'numerical', 'integerOnly'=>true),
-			array('ticket_message', 'length', 'max'=>45),
+			array('id_ticket, id_user ,id_user_asigned', 'numerical', 'integerOnly'=>true),
+			array('ticket_message', 'length', 'max'=>60),
 			array('ticket_message_date, ticket_message_file', 'safe'),
-//                        array('ticket_message_file', 'length', 'max'=>60),
-//                        array('ticket_message_file', 'file','types'=>'pdf,PDF,jpeg,jpg,JPEG,JPG,doc','allowEmpty'=>true),
-			array('id_ticket_message, id_ticket, ticket_message, id_user,  ticket_message_file, ticket_message_date', 'safe', 'on'=>'search'),
+			array('id_user_asigned, id_ticket_message, id_ticket, ticket_message, id_user,  ticket_message_file, ticket_message_date', 'safe', 'on'=>'search'),
                         array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
+                        array('id_user_asigned','validateid')
 		);
 	}
 
@@ -55,6 +54,7 @@ class TicketMessage extends CActiveRecord
 		return array(
 			'idTicket' => array(self::BELONGS_TO, 'Ticket', 'id_ticket'),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
+			'idUsera' => array(self::BELONGS_TO, 'Users', 'id_user_asigned'),
 		);
 	}
 
@@ -70,7 +70,8 @@ class TicketMessage extends CActiveRecord
 			'id_user' => Yii::t('database','Id User'),
 			'ticket_message_date' => Yii::t('database','Ticket Message Date'),
 			'ticket_message_file' => Yii::t('database','Ticket Message File'),
-                    '_verifyCode'=>Yii::t('database','Verification Code'),
+                        '_verifyCode'=>Yii::t('database','Verification Code'),
+                        'id_user_asigned'=>Yii::t('database','Id User Asigned'),
 		);
 	}
 
@@ -97,12 +98,12 @@ class TicketMessage extends CActiveRecord
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('ticket_message_date',$this->ticket_message_date,true);
 		$criteria->compare('ticket_message_file',$this->ticket_message_date,true);
+		$criteria->compare('id_user_asigned',$this->ticket_message_date,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
@@ -113,4 +114,10 @@ class TicketMessage extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+          public function validateid($model,$attribute)
+        {
+//            if(empty($this->id_user_asigned))
+//                    $this->addError('id_user_asigned', "Ingresar Usuario valido");
+        
+        }
 }

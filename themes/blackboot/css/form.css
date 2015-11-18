@@ -225,7 +225,7 @@ ul.yiiPager .hidden a
 	
 }
 .ui-widget-content a {
-    color: #fff;
+    color: #222;
 }
 .ui-widget-content a:hover {
     color: #C00;

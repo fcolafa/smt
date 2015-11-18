@@ -19,7 +19,39 @@
 	<p class="note"> <?php echo Yii::t('validation','Fields with')?> <span class="required">*</span> <?php echo Yii::t('validation','are required')?> </p>
 
 	<?php echo $form->errorSummary($ticketm); ?>
+   
 
+        
+        <div class="row"> 
+         <?php echo $form->labelEx($ticketm,'id_user_asigned'); ?>
+         <?php
+           
+             if ($ticketm->id_user_asigned&& $ticketm->id_user_asigned!=0)
+             {
+                 $value=($ticketm->idUsera->user_names." ".$ticketm->idUsera->user_lastnames."(".$ticketm->idUsera->user_name.")");
+             }
+             else {
+                 $value=null;
+             }
+             echo $form->hiddenField($ticketm, 'id_user_asigned' ,array());
+             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+             'name'=>'id_user_asigned',
+             'model'=>$ticketm,
+             'value'=>$value,
+             'sourceUrl'=>$this->createUrl('listUser'),
+             'options'=>array(
+             'minLength'=>'2',
+             'showAnim'=>'fold',
+             'select' => 'js:function(event, ui)
+             { jQuery("#TicketMessage_id_user_asigned").val(ui.item["id"]); }',
+             'search'=> 'js:function(event, ui)
+             { jQuery("#TicketMessage_id_user_asigned").val(0); }'
+             ),
+             ));
+         ?>
+            <?php echo $form->error($ticketm,'id_user_asigned'); ?>
+	</div>
+        
 	<div class="row">
 		<?php echo $form->labelEx($ticketm,'ticket_message'); ?>
 		<?php echo $form->textArea($ticketm,'ticket_message'); ?>
@@ -61,7 +93,7 @@
                                                 //'onError'=>"js:function(id, name, errorReason){ }",
                                                  ),
                                'validation'=>array(
-                                         'allowedExtensions'=>array('pdf','jpg','PDF','JPEG','JPG','jpeg','png','PNG'),
+                                        'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','docs','docxs','xls','xlsx','gif','ppt','pptx'),
                                          'sizeLimit'=>1 * 1024 * 1024,//maximum file size in bytes
                                        //  'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                                   ),

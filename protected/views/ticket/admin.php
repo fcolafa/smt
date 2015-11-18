@@ -3,12 +3,11 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	Yii::t('database',Yii::t('database','Tickets'))=>array('index'),
+	Yii::t('database',Yii::t('database','Tickets'))=>array('admin'),
 	Yii::t('actions','Manage'),
 );
 
 $this->menu=array(
-array('label'=>Yii::t('actions','List')." ". Yii::t('database','Tickets'), 'url'=>array('index')),
 array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url'=>array('create'),'visible'=>  Yii::app()->user->checkAccess('Cliente')),
 );?>
 <h1><?php echo Yii::t('actions','Manage')?> <?php echo Yii::t('database','Tickets')?></h1>
@@ -22,7 +21,7 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'ticket-grid',
-	'dataProvider'=>$model->search(),
+	'dataProvider'=>Yii::app()->user->checkAccess('Administrador')?$model->search():$model->searchClient(),
 	'filter'=>$model,
        'afterAjaxUpdate'=>"function() {
  	jQuery('#ticket_date_incident').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
@@ -31,6 +30,13 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
 }",
 	'columns'=>array(
 		'id_ticket',
+            
+               array(
+                    'name'=>'id_user',
+                    'value'=>'$data->id_user',
+                    'visible'=>false,
+                  
+                    ),
                  array(
                     'name'=>'idEmbarkation.embarkation_name',
                     'value'=>'$data->idEmbarkation->embarkation_name',
@@ -41,11 +47,7 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
                     'value'=>'$data->idHeadquarter->headquarter_name',
                     'filter'=>  CHtml::activeTextField($model, '_headquarter_name'),
                     ),
-		  array(
-                    'name'=>'idUser.user_name',
-                    'value'=>'$data->idUser->user_name',
-                    'filter'=>  CHtml::activeTextField($model, '_user_name'),
-                    ),
+		 'ticket_subject',
               array(
                     'name'=>'idUser.user_names',
                     'value'=>'$data->idUser->user_names',
@@ -114,11 +116,17 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
                 
               
             ),
-            
-		'ticket_status',
-            
-            
- 
+            array(
+                    
+                    'header'=>'Dias Transcurridos',
+                    'value'=>'($data->ticket_status=="Cerrado")?"-":"$data->daysPassed"',
+                ),
+		   array(
+                    
+                    'name'=>'ticket_status',
+                    'filter'=>array( 'Nuevo'=>'Nuevo','Cerrado'=>'Cerrado','En Curso'=>'En Curso'),
+                    'value'=>'$data->ticket_status',
+                ),
 		array(
 			'class'=>'CButtonColumn',
                       'buttons'=>array(

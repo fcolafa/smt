@@ -26,16 +26,47 @@
 		<?php echo $form->error($model,'id_embarkation'); ?>
 	</div>
         
-        <div class="row">
-		<?php echo $form->labelEx($model,'id_headquarter'); ?>
-		<?php echo $form->dropDownList($model,'id_headquarter',  CHtml::listData(Headquarter::model()->findAll(), 'id_headquarter', 'headquarter_name'),array('prompt'=>'Seleccione Centro Asociado')); ?>
-		<?php echo $form->error($model,'id_headquarter'); ?>
+      
+        
+        <div class="row"> 
+         <?php echo $form->labelEx($model,'id_headquarter'); ?>
+         <?php
+           
+             if ($model->id_headquarter&& $model->id_headquarter!=0)
+             {
+                 $value=$model->idHeadquarter->headquarter_name;
+             }
+             else {
+                 $value='';
+             }
+             echo $form->hiddenField($model, 'id_headquarter' ,array());
+             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+             'name'=>'headquarter_name',
+             'model'=>$model,
+             'value'=>$value,
+             'sourceUrl'=>$this->createUrl('listHeadquarter'),
+             'options'=>array(
+             'minLength'=>'2',
+             'showAnim'=>'fold',
+             'select' => 'js:function(event, ui)
+             { jQuery("#Ticket_id_headquarter").val(ui.item["id"]); }',
+             'search'=> 'js:function(event, ui)
+             { jQuery("#Ticket_id_headquarter").val(0); }'
+             ),
+             ));
+         ?>
+            <?php echo $form->error($model,'id_headquarter'); ?>
 	</div>
         
         <div class="row">
 		<?php echo $form->labelEx($model,'ticket_subject'); ?>
 		<?php echo $form->textField($model,'ticket_subject',array('size'=>45,'maxlength'=>45)); ?>
 		<?php echo $form->error($model,'ticket_subject'); ?>
+	</div>
+        <div class="row">
+		<?php echo $form->labelEx($model,'id_classification'); ?>
+		<?php echo $form->dropDownList($model,'id_classification',  CHtml::listData(Classification::model()->findAll(), 'id_classification', 'classification_name'),array('prompt'=>'Seleccione Categoria')); ?>
+		<?php echo $form->error($model,'id_classification'); ?>
 	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'ticket_description'); ?>
@@ -70,8 +101,8 @@
                                                 //'onError'=>"js:function(id, name, errorReason){ }",
                                                  ),
                                'validation'=>array(
-                                         'allowedExtensions'=>array('pdf','jpg','PDF','JPEG','JPG','jpeg','png','PNG'),
-                                         'sizeLimit'=>1 * 1024 * 1024,//maximum file size in bytes
+                                         'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','docs','docxs','xls','xlsx','gif','ppt','pptx'),
+                                         'sizeLimit'=>5 * 1024 * 1024,//maximum file size in bytes
                                        //  'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                                   ),
                    'callbacks'=>array(
@@ -79,7 +110,7 @@
              $('#efine_name').text(response.filename);
              $('#Ticket_ticket_file').val(response.filename);
            }",
-           //'onError'=>"js:function(id, name, errorReason){ }",
+           'onError'=>"js:function(id, name, errorReason){ }",
           'onValidateBatch' => "js:function(fileOrBlobData) {}", // because of crash
         ),
                               )

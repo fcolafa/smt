@@ -15,9 +15,9 @@ body {
 div.cont {
 	background:url(../img/tiny_grid.png) repeat 0 0;
 	height:100%;
-	min-height:500px;
+	min-height:1000px;
 	padding-top:30px;
-	padding-bottom:30px;
+	
  }
 
 .sidebar-nav {
@@ -37,7 +37,7 @@ margin-bottom: 10px ;
 box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
 -webkit-box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
 -moz-box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
-min-height:300px;
+min-height:500px;
 }
 
 

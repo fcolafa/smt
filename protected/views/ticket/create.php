@@ -3,11 +3,10 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Tickets')=>array('index'),
+	Yii::t('database','Tickets')=>array('admin'),
 	Yii::t('actions','Create'),
 );
 $this->menu=array(
-	array('label'=>Yii::t('actions','List')." ".Yii::t('database','Ticket'), 'url'=>array('index')),
 	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Ticket'), 'url'=>array('admin')),
 );
 ?>

@@ -73,7 +73,7 @@ $('#Users_user_rut').Rut({
         <?php }}?>
         <div class="row">
 		<?php echo $form->labelEx($model,'role'); ?>
-		<?php echo $form->dropDownList($model,'role',CHtml::listData( Authitem::model()->findAll('name <> "Control Total" and name <>"Supervisor"'),'name','name'));?>
+		<?php echo $form->dropDownList($model,'role',CHtml::listData(Authitem::model()->findAll('name <> "Control Total" and name <>"Supervisor"'),'name','name'));?>
 		<?php echo $form->error($model,'role'); ?>
 	</div>
         <div class="row">

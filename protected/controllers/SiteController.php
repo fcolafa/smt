@@ -27,10 +27,11 @@ class SiteController extends Controller
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex($id=null)
+	public function actionIndex($id=null,$url=null)
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
+           
            $yearg=date("Y");
                 if(Yii::app()->user->isGuest)
                     $this->redirect(Yii::app()->baseUrl.'/site/login');
@@ -43,10 +44,19 @@ class SiteController extends Controller
                     else
                     $this->render('panelClient');
                 }
-                    //$this->redirect(Yii::app()->baseUrl.'/guide/index/'.$idu);
-                if(Yii::app()->user->checkAccess('Administrador')){
-                      $this->render('paneladmin');
-                    }
+                 if(Yii::app()->user->checkAccess('Administrador')){
+                    
+                    $user=  Users::model()->findByPk(Yii::app()->user->id);
+                    if($user->first_time==0)
+                        $this->redirect (array('Users/update','id'=>Yii::app()->user->id));
+                    else
+                      
+                           if(isset ($url))
+                               $url;
+                                else
+                            $this->render('paneladmin');
+                }
+          
                 }
 	}
 	/**
@@ -176,6 +186,7 @@ class SiteController extends Controller
 	 */
 	public function actionLogin()
 	{
+          
 		$model=new LoginForm;
                 $model->username="";
                 $model->password="";
@@ -194,8 +205,8 @@ class SiteController extends Controller
 			$model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login())
-                            $this->redirect(Yii::app()->baseUrl.'/site/index');
-				//$this->redirect(Yii::app()->user->returnUrl);
+                            //$this->redirect(Yii::app()->baseUrl.'/site/index');
+				$this->redirect(Yii::app()->user->returnUrl);
                          
                       
 		}

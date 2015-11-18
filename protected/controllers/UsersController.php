@@ -96,7 +96,7 @@ class UsersController extends Controller
 	{
 	
                 $mail=Yii::app()->Smtpmail;
-                $mail->SMTPDebug = 2;
+                $mail->SMTPDebug = 1;
                 $mail->SetFrom('flagos@pcgeek.cl', 'Sistema Web SMT');
                 $mail->Subject = 'Datos de Cuenta';
                 $mail->MsgHTML(Yii::app()->controller->renderPartial('body', array('model'=>$model,'pass'=>$pass),true));
@@ -138,6 +138,7 @@ class UsersController extends Controller
                            $model->user_names=  ucwords(strtolower($model->user_names));
                            $model->user_lastnames=  ucwords(strtolower($model->user_lastnames));
                            $model->date_create=  date("y/m/d H:i:s");  
+                           $model->first_time=1;
 			if($model->save()){
                                 Yii::app ()->authManager->revoke($model->role,$model->id_user);
                                 Yii::app()->authManager->assign($model->role,$model->id_user);
@@ -301,7 +302,7 @@ class UsersController extends Controller
         private function generatePass(){
             $str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
             $pass = "";
-            for($i=0;$i<5;$i++) {
+            for($i=0;$i<8;$i++) {
             $pass .= substr($str,rand(0,62),1);
             }
             return $pass;
