@@ -6,12 +6,12 @@ $this->breadcrumbs=array(
 	$model->id_ticket,
 );
 $this->menu=array(
-	array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url'=>array('create'),'visible'=>!Yii::app()->user->checkAccess('Administrador')),
+	array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url'=>array('create'),'visible'=>Yii::app()->user->checkAccess('Cliente')),
 	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Ticket'), 'url'=>array('admin')),
 );
 $days=" ";
 if($model->ticket_status!='Cerrado'){
-    $days=" (".$model->getDaysPassed()." Día(s) transcurrido desde la emisión)";
+    $days=" (".$model->getDaysPassed()." Día(s) transcurrido desde emisión)";
 }
 ?>
 <h1> Detalle <?php echo Yii::t('database','Ticket')?> N°<?php echo $model->id_ticket." : ".$model->ticket_subject. $days  ?></h1>
@@ -62,9 +62,10 @@ if($model->ticket_status!='Cerrado'){
                 'value'=>Yii::app()->dateFormatter->format("d MMMM y | HH:mm:ss",strtotime($model->ticket_date_incident))
             ),
              array(
-            'name'=>'ticket_file',
+            'name'=>'Archivos Adjuntos',
             'type'=>'raw',
-            'value'=> CHtml::link(CHtml::encode($model->ticket_file), Yii::app()->baseUrl . '/images/tickets/' . $model->ticket_file),
+            'value'=>$model->getTicketFile(),
+           // 'value'=> //CHtml::link(CHtml::encode($model->ticket_file), Yii::app()->baseUrl . '/images/tickets/' . $model->ticket_file),
            
             ),
             'ticket_subject',
@@ -77,21 +78,30 @@ if($model->ticket_status!='Cerrado'){
                 'name'=>'ticket_solution',
                 'value'=>$model->ticket_solution,
                 'visible'=>!empty($model->ticket_solution),
-                
             ),
-             array(
-            'name'=>'ticket_solution_file',
+            
+                 array(
+            'name'=>'Archivos Adjuntos Soluci&oacute;n',
             'type'=>'raw',
-            'value'=> CHtml::link(CHtml::encode($model->ticket_solution_file), Yii::app()->baseUrl . '/images/tickets_solution/' . $model->ticket_solution_file),
+            'value'=>$model->getSolutionFile(),
+           // 'value'=> //CHtml::link(CHtml::encode($model->ticket_file), Yii::app()->baseUrl . '/images/tickets/' . $model->ticket_file),
            
             ),
+              array(
+                  
+                'name'=>'ticket_close_date',
+                //'value'=>'date("d M Y",strtotime($data["work_date"]))'
+                'value'=>Yii::app()->dateFormatter->format("d MMMM y | HH:mm:ss",strtotime($model->ticket_close_date)),
+                  'visible'=>!empty($model->ticket_close_date)
+            ),
+        
            
                 
 		
 	),
 )); ?>
 <br>
-<?php if(Yii::app()->user->checkAccess('Administrador')){
+<?php if(Yii::app()->user->checkAccess('Administrador')||Yii::app()->user->checkAccess('Mantención')){
 $criteria=new CDbCriteria();
 $criteria->condition='id_ticket='.$model->id_ticket;
 $message= TicketMessage::model()->findAll($criteria);
@@ -99,15 +109,22 @@ $message= TicketMessage::model()->findAll($criteria);
         $user=Users::model()->findByPK($m->id_user);
         $link="";
         $asigned=$user->user_names." ".$user->user_lastnames;
-        if($m->idUser->role=="Administrador"){
-        $role="(Administrador)";
+        $role="(".$m->idUser->role.")";
         $class="triangle-isosceles left";
-        }
-        if(!empty($m->ticket_message_file)){
-             $file=$m->ticket_message_file;
+        
+        $cri=new CDbCriteria();
+        $cri->condition='id_ticket_message='.$m->id_ticket_message;
+        $messagefiles= TicketMessageFile::model()->findAll($cri);
+   
             $folder=Yii::getPathOfAlias('webroot').'/images/tickets_message/'; 
-            $link=' <a href="'.$folder.'" download="'.$file.'">Archivo Adjunto</a></p></div>';
-            $link=CHtml::link(CHtml::encode("archivo adjunto"), Yii::app()->baseUrl.'/images/tickets_message/'. $m->ticket_message_file,array('target'=>'_blank'));
+        if($messagefiles){
+            foreach($messagefiles as $mf){
+         
+            $link.=CHtml::link(CHtml::encode($mf->ticket_message_file_name), Yii::app()->baseUrl.'/images/tickets_message/'. $mf->ticket_message_file_name,array('target'=>'_blank'));
+            $link.="<br>";
+            }
+        
+          
         }
         if(!empty($m->id_user_asigned)){
             $asigneduser=Users::model()->findByPK($m->id_user_asigned);
@@ -123,7 +140,7 @@ $message= TicketMessage::model()->findAll($criteria);
     } 
 }
 
-   if(Yii::app()->user->checkAccess('Administrador')&& $model->ticket_status!="Cerrado"):
+   if((Yii::app()->user->checkAccess('Administrador')||Yii::app()->user->checkAccess('Mantención'))&& $model->ticket_status!="Cerrado"):
     $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
       'id'=>'dialog-animation',
       'options'=>array(
@@ -149,11 +166,12 @@ $message= TicketMessage::model()->findAll($criteria);
  ));
 $this->endWidget('zii.widgets.jui.CJuiDialog');
 
+
  echo CHtml::button(Yii::t('actions','Responder'), array(
                        'class'=>'button grey',
                        'onclick'=>'$("#dialog-animation").dialog("open"); return false;',
                     ));
-   
+   if(empty($model->ticket_solution)){
     $this->beginWidget('zii.widgets.jui.CJuiDialog',array(
       'id'=>'dialog-solution',
       'options'=>array(
@@ -183,14 +201,14 @@ $this->endWidget('zii.widgets.jui.CJuiDialog');
                        'class'=>'button grey',
                        'onclick'=>'$("#dialog-solution").dialog("open"); return false;'
                     ));
-   
+   }
  endif;
  
  ?>
 <br>
 <?php 
 
-if(!Yii::app()->user->checkAccess('Administrador')&& $model->ticket_status!="Cerrado"){
+if(Yii::app()->user->checkAccess('Cliente')&& $model->ticket_status!="Cerrado"){
   echo CHtml::link('<div align="center" style="width:20%;">
 	    	<img src='.'"'. Yii::app()->theme->baseUrl.'/img/big_icons/icon-closeticket.png" alt="Cerrar Solicitud de no conformidad"  width="15%" />
 	    	<div class="dashIconText"><h4>Cerrar Ticket</h4></div>

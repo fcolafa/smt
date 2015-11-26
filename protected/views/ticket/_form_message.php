@@ -35,7 +35,7 @@
              }
              echo $form->hiddenField($ticketm, 'id_user_asigned' ,array());
              $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-             'name'=>'id_user_asigned',
+             'name'=>'user_asigned',
              'model'=>$ticketm,
              'value'=>$value,
              'sourceUrl'=>$this->createUrl('listUser'),
@@ -54,25 +54,16 @@
         
 	<div class="row">
 		<?php echo $form->labelEx($ticketm,'ticket_message'); ?>
-		<?php echo $form->textArea($ticketm,'ticket_message'); ?>
+		<?php echo $form->textArea($ticketm,'ticket_message',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($ticketm,'ticket_message'); ?>
 	</div>
-        <div class="row" style="display:none;">
-		<?php echo $form->labelEx($ticketm,'ticket_message_file'); ?>
-		<?php echo $form->textField($ticketm,'ticket_message_file'); ?>
-		<?php echo $form->error($ticketm,'ticket_message_file'); ?>
+       <div class="row" >
+		<?php echo $form->labelEx($ticketm,'_message_files'); ?>
+		<?php echo $form->dropDownList($ticketm,'_message_files',$ticketm->_message_files ,array('multiple' => 'multiple')); ?>
+		<?php echo $form->error($ticketm,'_message_files'); ?>
 	</div>
         
-        <div class="row">
-            <label></label>
-            
-            <?php $this->widget('CCaptcha'); ?>
-        </div>
-         <div class="row">
-                <?php echo $form->labelEx($ticketm,'_verifyCode'); ?>
-               <?php echo $form->textField($ticketm,'_verifyCode'); ?>
-               <?php echo $form->error($ticketm,'_verifyCode'); ?>
-        </div>
+      
         <div class="row">
             <label></label>
         <?php 
@@ -93,14 +84,13 @@
                                                 //'onError'=>"js:function(id, name, errorReason){ }",
                                                  ),
                                'validation'=>array(
-                                        'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','docs','docxs','xls','xlsx','gif','ppt','pptx'),
+                                        'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','rtf','doc','docx','xls','xlsx','gif','ppt','pptx'),
                                          'sizeLimit'=>1 * 1024 * 1024,//maximum file size in bytes
                                        //  'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                                   ),
                    'callbacks'=>array(
           'onComplete'=>"js:function(id, name, response){
-             $('#efine_name').text(response.filename);
-             $('#TicketMessage_ticket_message_file').val(response.filename);
+             $('#TicketMessage__message_files').append(new Option(response.filename, response.filename, true, true));
            }",
            //'onError'=>"js:function(id, name, errorReason){ }",
           'onValidateBatch' => "js:function(fileOrBlobData) {}", // because of crash
@@ -109,6 +99,16 @@
               ));
 
         ?>
+        </div>
+          <div class="row">
+            <label></label>
+            
+            <?php $this->widget('CCaptcha'); ?>
+        </div>
+         <div class="row">
+                <?php echo $form->labelEx($ticketm,'_verifyCode'); ?>
+               <?php echo $form->textField($ticketm,'_verifyCode'); ?>
+               <?php echo $form->error($ticketm,'_verifyCode'); ?>
         </div>
        
 	<div class="row buttons">

@@ -1,0 +1,21 @@
+guia de despacho cliente para el cliente
+la recepcionion de las guias de despacho las debe marcar como recibida en el centro
+capitan debe marcar que la guia se encuentra en el barco
+carga llego al puerto.
+mostrar flujo de la guia
+funcionario del puerto
+que de alta la carga
+bodega <-> puerto <-> nave <-> Centro
+
+bodega
+fecha
+encargado
+ver que informacion se puede sacar del tecsat y como se hace para sacarlo
+crossdocking -> descanso especie de bodega donde se reordena la carga antes de continuar al puerto
+incluyendo usuario que de el visto bueno de la carga
+
+indicadores, tiempos
+
+
+
+

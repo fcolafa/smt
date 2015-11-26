@@ -1,0 +1,12 @@
+clientes
+registro cambio de aceite
+kilometraje
+nuevo cambio
+fecha de cambio
+nombre cliente
+rut cliente
+marca vehiculo
+modelo año
+servicio (cambio de aceite , cambio de ampolleta,)
+tipo de  aciete
+patente vehiculo

@@ -55,12 +55,15 @@ return array(
  'Ticket Date'=>'Fecha Emisión de Solicitud ',
  'Ticket Status'=>'Estado de la solicitud ',
  'Ticket File'=>'Archivo adjunto ',
+ 'Ticket Files'=>'Archivos adjuntos ',
  'Ticket Date Incident'=>'Fecha y hora incidente ',
  'Ticket Message'=>'Mensaje',
  'Ticket Solution'=>'Solución a no Conformidad',
  'Ticket Message File'=>'Archivo Adjunto',
  'Id User Asigned'=>'Asignar Usuario',
-'Ticket Solution File'=>'Archivo Adjunto a la Solucion',
+ 'Ticket Solution File'=>'Archivo Adjunto a la Solucion',
+ 'Message Files'=>'Archivos adjuntos ',
+ 'Ticket Close Date'=>'Fecha Cierre No Conformidad',
     
 //user
 'Id User'=>'Id Usuario ',

@@ -26,6 +26,28 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
+    
+          <script type="text/javascript">    
+        var guest="<?php echo Yii::app()->user->isGuest?'false':'true'?>";
+        var stime=parseInt("15");
+        $(document).ready(function () {
+		var idleState = false;
+		var idleTimer = null;
+        $('*').bind('mousemove click mouseup mousedown keydown keypress keyup submit change mouseenter scroll resize dblclick', function () {
+            clearTimeout(idleTimer);
+            if (idleState == true && guest=='true') { 
+                 alert("Sesión expirada por Inactividad ") ; 
+                 window.location.replace("<?php echo Yii::app()->createAbsoluteUrl("Site/logout"); ?>");
+                 idleState=false;
+            }
+            idleState = false;
+            idleTimer = setTimeout(function () {idleState = true; }, stime*60000);
+        });
+    }
+    );     
+         
+     </script>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 <meta name="language" content="es" />

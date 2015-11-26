@@ -8,7 +8,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>Yii::t('actions','List')." ". Yii::t('database','Users'), 'url'=>array('index')),
+	array('label'=>Yii::t('actions','List')." ". Yii::t('database','Users'), 'url'=>array('index'),'visible'=>  Yii::app()->user->checkAccess('Administrador')),
 	array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Users'), 'url'=>array('create')),
 	array('label'=>Yii::t('actions','Update')." ". Yii::t('database','Users'), 'url'=>array('update', 'id'=>$model->id_user)),
 	array('label'=>Yii::t('actions','Delete')." ". Yii::t('database','Users'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id_user),'confirm'=>Yii::t('validation','Are you sure you want to delete this item?'))),

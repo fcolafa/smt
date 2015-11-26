@@ -1,9 +1,9 @@
 ﻿
 
 
-<h1> <?php echo "No Conformidad Emitida, " ;?>Numero de Solicitud: <?php echo $model->id->ticket?></h1>
+<h1> <?php echo "No Conformidad Emitida, " ;?>Numero de Solicitud: <?php echo $model->id_ticket?></h1>
 <p>
-    Se le ha asignado una notificacionn en la siguiente No Conformidad.  <?php echo CHtml::link("Haga clic  Aqui ",$_SERVER["SERVER_NAME"]."/ticket/view?id=".$model->id_ticket);  ?> para revisar
+    Se le ha asignado una notificación en la siguiente No Conformidad.  <?php echo CHtml::link("Haga clic aqui ",$_SERVER["SERVER_NAME"]."/ticket/view?id=".$model->id_ticket);  ?> para revisar.
 </p>
         
 

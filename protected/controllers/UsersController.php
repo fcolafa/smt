@@ -36,7 +36,7 @@ class UsersController extends Controller
                     
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('viewClient','updateClient'),
-				'roles'=>array('Cliente'),
+				'roles'=>array('Cliente','Mantención'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -97,7 +97,8 @@ class UsersController extends Controller
 	
                 $mail=Yii::app()->Smtpmail;
                 $mail->SMTPDebug = 1;
-                $mail->SetFrom('flagos@pcgeek.cl', 'Sistema Web SMT');
+                $mail->CharSet = 'UTF-8';
+                $mail->SetFrom('comercialsmt@smtsa.cl', 'Sistema Web SMT');
                 $mail->Subject = 'Datos de Cuenta';
                 $mail->MsgHTML(Yii::app()->controller->renderPartial('body', array('model'=>$model,'pass'=>$pass),true));
                 $mail->AddAddress($model->email, 'Test');
@@ -105,8 +106,7 @@ class UsersController extends Controller
                     Yii::app()->user->setFlash('error',Yii::t('validation','Error al enviar correo Electronico'));
                 }else {
                     Yii::app()->user->setFlash('success',Yii::t('validation','Datos de usuario enviados por correo Electronico'));
-                }
-           
+                } 
 	}
 
 	/**

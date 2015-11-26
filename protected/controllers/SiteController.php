@@ -36,7 +36,7 @@ class SiteController extends Controller
                 if(Yii::app()->user->isGuest)
                     $this->redirect(Yii::app()->baseUrl.'/site/login');
                 else{
-                if(Yii::app()->user->checkAccess('Cliente')){
+                if(!Yii::app()->user->checkAccess('Administrador')){
                     
                     $user=  Users::model()->findByPk(Yii::app()->user->id);
                     if($user->first_time==0)
@@ -56,7 +56,6 @@ class SiteController extends Controller
                                 else
                             $this->render('paneladmin');
                 }
-          
                 }
 	}
 	/**

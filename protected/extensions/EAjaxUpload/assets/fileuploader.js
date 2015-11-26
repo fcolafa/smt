@@ -629,7 +629,7 @@ qq.extend(qq.FileUploader.prototype, {
         qq.setText(fileElement, this._formatFileName(fileName));
         this._find(item, 'size').style.display = 'none';
 
-        this._listElement.appendChild(item);
+        this._listElement.appendChild(item);    
     },
     _getItemByFileId: function(id){
         var item = this._listElement.firstChild;

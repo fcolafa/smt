@@ -21,6 +21,8 @@ class TicketMessage extends CActiveRecord
 	 * @return string the associated database table name
 	 */
         public $_verifyCode;
+        public $_message_files=array();
+        
 	public function tableName()
 	{
 		return 'ticket_message';
@@ -36,9 +38,9 @@ class TicketMessage extends CActiveRecord
 		return array(
 			array('id_ticket, id_user, ticket_message', 'required'),
 			array('id_ticket, id_user ,id_user_asigned', 'numerical', 'integerOnly'=>true),
-			array('ticket_message', 'length', 'max'=>60),
-			array('ticket_message_date, ticket_message_file', 'safe'),
-			array('id_user_asigned, id_ticket_message, id_ticket, ticket_message, id_user,  ticket_message_file, ticket_message_date', 'safe', 'on'=>'search'),
+			array('ticket_message_date ', 'safe'),
+                        array('_message_files','validMessageFile'),
+			array('_message_files,id_user_asigned, id_ticket_message, id_ticket, ticket_message, id_user,  ticket_message_file, ticket_message_date', 'safe', 'on'=>'search'),
                         array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
                         array('id_user_asigned','validateid')
 		);
@@ -54,7 +56,8 @@ class TicketMessage extends CActiveRecord
 		return array(
 			'idTicket' => array(self::BELONGS_TO, 'Ticket', 'id_ticket'),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
-			'idUsera' => array(self::BELONGS_TO, 'Users', 'id_user_asigned'),
+			'idUsera' => array(self::BELONGS_TO, 'Users', array('id_user_asigned'=>'id_user')),
+                        'ticketMessageFiles' => array(self::HAS_MANY, 'TicketMessageFile', 'id_ticket_message'),
 		);
 	}
 
@@ -69,9 +72,9 @@ class TicketMessage extends CActiveRecord
 			'ticket_message' => Yii::t('database','Ticket Message'),
 			'id_user' => Yii::t('database','Id User'),
 			'ticket_message_date' => Yii::t('database','Ticket Message Date'),
-			'ticket_message_file' => Yii::t('database','Ticket Message File'),
-                        '_verifyCode'=>Yii::t('database','Verification Code'),
+			'_verifyCode'=>Yii::t('database','Verification Code'),
                         'id_user_asigned'=>Yii::t('database','Id User Asigned'),
+                        '_message_files'=>Yii::t('database','Message Files'),
 		);
 	}
 
@@ -97,7 +100,6 @@ class TicketMessage extends CActiveRecord
 		$criteria->compare('ticket_message',$this->ticket_message,true);
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('ticket_message_date',$this->ticket_message_date,true);
-		$criteria->compare('ticket_message_file',$this->ticket_message_date,true);
 		$criteria->compare('id_user_asigned',$this->ticket_message_date,true);
 
 		return new CActiveDataProvider($this, array(
@@ -119,5 +121,15 @@ class TicketMessage extends CActiveRecord
 //            if(empty($this->id_user_asigned))
 //                    $this->addError('id_user_asigned', "Ingresar Usuario valido");
         
+        }
+          public function validMessageFile($model,$attribute)
+        {
+            $newfile=array();
+        if(!empty($this->_message_files)){
+                foreach($this->_message_files as $key => $value){
+                    $newfile[$value]=$value;
+                }
+            $this->_message_files=$newfile;
+             }
         }
 }

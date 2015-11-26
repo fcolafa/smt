@@ -22,7 +22,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'id_embarkation'); ?>
-		<?php echo $form->dropDownList($model,'id_embarkation',  CHtml::listData(Embarkation::model()->findAll(), 'id_embarkation', 'embarkation_name'),array('prompt'=>'Seleccione Nave Asociada')); ?>
+		<?php echo $form->dropDownList($model,'id_embarkation',  CHtml::listData(Embarkation::model()->findAll(), 'id_embarkation', 'embarkation_name'),array('prompt'=>'Seleccione nave asociada','prompt'=>'Ninguna nave asociada')); ?>
 		<?php echo $form->error($model,'id_embarkation'); ?>
 	</div>
         
@@ -73,14 +73,14 @@
 		<?php echo $form->textArea($model,'ticket_description',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'ticket_description'); ?>
 	</div>
-        <div class="row" style="display:none;">
-		<?php echo $form->labelEx($model,'ticket_file'); ?>
-		<?php echo $form->telField($model,'ticket_file'); ?>
-		<?php echo $form->error($model,'ticket_file'); ?>
+        <div class="row" >
+		<?php echo $form->labelEx($model,'_files'); ?>
+		<?php echo $form->dropDownList($model,'_files',$model->_files ,array('multiple' => 'multiple')); ?>
+		<?php echo $form->error($model,'_files'); ?>
 	</div>
         
         
-        
+      
         <div class="row">
             <label></label>
         <?php 
@@ -89,7 +89,11 @@
          array(
                'id'=>'FineUploader',
                'config'=>array(
-                               'autoUpload'=>true,
+                   'autoUpload'=>true,
+                   'multiple'=> true,
+                   
+                  
+        
                                'request'=>array(
                                   'endpoint'=>'upload',// OR $this->createUrl('files/upload'),
                                   'params'=>array('YII_CSRF_TOKEN'=>Yii::app()->request->csrfToken),
@@ -97,18 +101,18 @@
                                'retry'=>array('enableAuto'=>true,'preventRetryResponseProperty'=>true),
                                'chunking'=>array('enable'=>true,'partSize'=>100),//bytes
                                'callbacks'=>array(
-                                               // 'onComplete'=>"js:function(id, name, response){ alert('ñe'); }",
+                                                //'onComplete'=>"js:function(id, name, response){ $('li.qq-upload-success').remove(); }",
                                                 //'onError'=>"js:function(id, name, errorReason){ }",
                                                  ),
                                'validation'=>array(
-                                         'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','docs','docxs','xls','xlsx','gif','ppt','pptx'),
+                                         'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','rtf','doc','docx','xls','xlsx','gif','ppt','pptx'),
                                          'sizeLimit'=>5 * 1024 * 1024,//maximum file size in bytes
                                        //  'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                                   ),
                    'callbacks'=>array(
           'onComplete'=>"js:function(id, name, response){
-             $('#efine_name').text(response.filename);
-             $('#Ticket_ticket_file').val(response.filename);
+             $('#Ticket__files').append(new Option(response.filename, response.filename, true, true));
+             
            }",
            'onError'=>"js:function(id, name, errorReason){ }",
           'onValidateBatch' => "js:function(fileOrBlobData) {}", // because of crash
@@ -148,12 +152,6 @@
                <?php echo $form->error($model,'_verifyCode'); ?>
         </div>
       
-	
-    
-		
-	
-
-
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('actions','Create') : Yii::t('actions','Save'),array('class'=>Yii::app()->params['btnclass'])); ?>
 	</div>

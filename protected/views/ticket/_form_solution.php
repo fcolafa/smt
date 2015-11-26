@@ -22,21 +22,14 @@
 		<?php echo $form->error($model,'ticket_solution'); ?>
 	</div>
        
-        <div class="row">
-            <label></label>    
-            <?php $this->widget('CCaptcha'); ?>
-        </div>
+       
         
-          <div class="row" style="display:none;" >
-		<?php echo $form->labelEx($model,'ticket_solution_file'); ?>
-		<?php echo $form->textField($model,'ticket_solution_file'); ?>
-		<?php echo $form->error($model,'ticket_solution_file'); ?>
+          <div class="row" >
+		<?php echo $form->labelEx($model,'_solution_files'); ?>
+		<?php echo $form->dropDownList($model,'_solution_files',$model->_solution_files ,array('multiple' => 'multiple')); ?>
+		<?php echo $form->error($model,'_solution_files'); ?>
 	</div>
-        <div class="row">
-                <?php echo $form->labelEx($model,'_verifyCode'); ?>
-               <?php echo $form->textField($model,'_verifyCode'); ?>
-               <?php echo $form->error($model,'_verifyCode'); ?>
-        </div>
+       
         <div class="row">
             <label></label>
         <?php 
@@ -57,14 +50,13 @@
                                                 //'onError'=>"js:function(id, name, errorReason){ }",
                                                  ),
                                'validation'=>array(
-                                        'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','docs','docxs','xls','xlsx','gif','ppt','pptx'),
+                                        'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','rtf','doc','docx','xls','xlsx','gif','ppt','pptx'),
                                          'sizeLimit'=>1 * 1024 * 1024,//maximum file size in bytes
                                        //'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                                   ),
                    'callbacks'=>array(
           'onComplete'=>"js:function(id, name, response){
-             $('#efine_name').text(response.filename);
-             $('#Ticket_ticket_solution_file').val(response.filename);
+                 $('#TicketMessage__message_files').append(new Option(response.filename, response.filename, true, true));
            }",
            //'onError'=>"js:function(id, name, errorReason){ }",
           'onValidateBatch' => "js:function(fileOrBlobData) {}", // because of crash
@@ -74,7 +66,18 @@
 
         ?>
         </div>
-            
+        <br>
+        
+        
+         <div class="row">
+            <label></label>    
+            <?php $this->widget('CCaptcha'); ?>
+        </div>
+         <div class="row">
+                <?php echo $form->labelEx($model,'_verifyCode'); ?>
+               <?php echo $form->textField($model,'_verifyCode'); ?>
+               <?php echo $form->error($model,'_verifyCode'); ?>
+        </div>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('actions','Send') : Yii::t('actions','Save'),array('class'=>Yii::app()->params['btnclass'])); ?>
 	</div>

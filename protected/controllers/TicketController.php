@@ -44,6 +44,11 @@ class TicketController extends Controller
 				'actions'=>array('view','admin','captcha','upload','listUser'),
 				'roles'=>array('Administrador'),
                  ),
+                      array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('view','admin','captcha','upload','listUser'),
+				'roles'=>array('Mantención'),
+                 ),
+                    
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
@@ -57,8 +62,11 @@ class TicketController extends Controller
 	{
             $model=$this->loadModel($id);
             $ticketm=new TicketMessage;
-           
-             if(!Yii::app()->user->checkAccess('Administrador')&&Yii::app()->user->id!=$model->id_user){
+            $userasigned=new CDbCriteria();
+            $userasigned->condition='id_ticket='.$id.' and id_user_asigned='.Yii::app()->user->id;
+            $messages=  TicketMessage::model()->findAll($userasigned);
+            
+             if(!Yii::app()->user->checkAccess('Administrador')&&Yii::app()->user->id!=$model->id_user&&!$messages){
                        throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
              }
             if(isset($_POST['TicketMessage']))
@@ -72,20 +80,20 @@ class TicketController extends Controller
                 if($ticketm->save()){
                     $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
                     $newFolder=Yii::getPathOfAlias('webroot').'/images/tickets_message/'; 
-                    if(!empty($ticketm->ticket_message_file)&&file_exists($tempFolder.$ticketm->ticket_message_file)){
-                            $file = $ticketm->ticket_message_file;
-                            list($name,$ext)= split('[.]', $file); 
-                            copy($tempFolder.$ticketm->ticket_message_file,$newFolder.$ticketm->id_ticket_message.".".$ext );
-                            $ticketm=  TicketMessage::model()->findByPk($ticketm->id_ticket_message);
-                            $ticketm->ticket_message_file=$ticketm->id_ticket_message.".".$ext;
-                           
-                            
-                           
-                            $ticketm->save(false);
-                           // move_uploaded_file($tempFolder.$ticketm->ticket_message_file,$newFolder.$ticketm->id_ticket_message.".".$ext );
-                           // array_map('unlink', glob($tempFolder."*"));//elimina directorio completo
-                        $this->deleteOldFile($tempFolder);
+                    if(!empty($ticketm->_message_files)){
+                        foreach($ticketm->_message_files as $mfile){
+                            if(file_exists(($tempFolder.$mfile))){
+                                $messagefile=new TicketMessageFile;
+                                $messagefile->id_ticket_message=$ticketm->id_ticket_message;
+                                $messagefile->ticket_message_file_name=$mfile;
+                                $messagefile->save();
+                                copy($tempFolder.$messagefile->ticket_message_file_name,$newFolder.$messagefile->ticket_message_file_name);
+                            }
+                        }
                     }
+                           
+                        $this->deleteOldFile($tempFolder);
+                    
                      $this->sendMail($ticketm, 'Mensaje No Conformidad', 'body_ticket_message');
                      $this->redirect(array('view', 'id'=>$id));
                      
@@ -96,16 +104,22 @@ class TicketController extends Controller
                 $model->attributes=$_POST['Ticket'];
                 $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
                     $newFolder=Yii::getPathOfAlias('webroot').'/images/tickets_solution/';
-                  if(!empty($model->ticket_solution_file)&&file_exists($tempFolder.$model->ticket_solution_file)){
-                    
-                     $file = $model->ticket_solution_file;
-                     list($name,$ext)= split('[.]', $file); 
-                     copy($tempFolder.$model->ticket_solution_file,$newFolder.$model->id_ticket.".".$ext );
-                     $model->ticket_solution_file=$model->id_ticket.".".$ext;
-                    }
+                 
+                          if(!empty($model->_solution_files)){
+                            foreach($model->_solution_files as $file){
+                                if(file_exists($tempFolder.$file)){
+                                    $solution=new TicketSolutionFile;
+                                    $solution->id_ticket=$model->id_ticket;
+                                    $solution->ticket_solution_file_name=$file;
+                                    $solution->save();
+                                    copy($tempFolder.$solution->ticket_solution_file_name,$newFolder.$solution->ticket_solution_file_name);
+                                    } 
+                            }
+                          }
                 if($model->save()){
                   $this->deleteOldFile($tempFolder);
-                    $this->redirect(array('view','id'=>$model->id_ticket));
+                  $this->sendMail($model, 'Solución No Conformidad', 'body_solution_message');
+                  $this->redirect(array('view','id'=>$model->id_ticket));
                 }
             }
             $status=$model->ticket_status;
@@ -132,6 +146,7 @@ class TicketController extends Controller
         public function actionCloseTicket($id){
             $ticket=$this->loadModel($id);
             $ticket->ticket_status="Cerrado";
+            $ticket->ticket_close_date=date("y-m-d H:i:s");
             $ticket->save(false);
             $this->redirect(array('view', 'id'=>$id));  
         }
@@ -144,7 +159,7 @@ class TicketController extends Controller
 		$model=new Ticket;
 
 		// Uncomment the following line if AJAX validation is needed
-		 $this->performAjaxValidation($model);
+		$this->performAjaxValidation($model);
 		if(isset($_POST['Ticket']))
 		{
 			$model->attributes=$_POST['Ticket'];
@@ -153,19 +168,29 @@ class TicketController extends Controller
                         $model->ticket_status='Nuevo';
                         if(!empty($model->ticket_date_incident))
                             $model->ticket_date_incident=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->ticket_date_incident);
+                            //$model->ticketFiles=$_POST['Ticket']['_files'];
+                            
+                        if(isset($_POST['Ticket']['_files']))
+                            $model->_files=$_POST['Ticket']['_files'];
+                       
                         if($model->save()){
                             $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
                             $newFolder=Yii::getPathOfAlias('webroot').'/images/tickets/'; 
-                            if(!empty($model->ticket_file)&&file_exists($tempFolder.$model->ticket_file)){
-                                    $file = $model->ticket_file;
-                                    list($name,$ext)= split('[.]', $file); 
-                                    copy($tempFolder.$model->ticket_file,$newFolder.$model->id_ticket.".".$ext );
-                                    $model=  Ticket::model()->findByPk($model->id_ticket);
-                                    $model->ticket_file=$model->id_ticket.".".$ext;
-                                    $model->save(false);
-                                $this->deleteOldFile($tempFolder);
+                            
+
+                            if(!empty($model->_files)){
+                            foreach($model->_files as $file){
+                                if(file_exists($tempFolder.$file)){
+                                    $ticketfile=new TicketFile;
+                                    $ticketfile->id_ticket=$model->id_ticket;
+                                    $ticketfile->ticket_file_name=$file;
+                                    $ticketfile->save();
+                                    copy($tempFolder.$ticketfile->ticket_file_name,$newFolder.$ticketfile->ticket_file_name);
+                                    $this->deleteOldFile($tempFolder);
+                                } 
                             }
-                            $this->sendMail($model, 'No Concformidad Emitida', 'body_ticket');
+                            }
+                            $this->sendMail($model, 'No Conformidad Emitida', 'body_ticket');
                                     
                          
 				$this->redirect(array('view','id'=>$model->id_ticket));
@@ -180,41 +205,30 @@ class TicketController extends Controller
 	{
 	
                 $mail=Yii::app()->Smtpmail;
-                $mail->SMTPDebug = 2;
-                $mail->SetFrom('flagos@pcgeek.cl', 'Sistema Web SMT');
+                $mail->SMTPDebug = 1;
+                $mail->CharSet = 'UTF-8';
+                $mail->SetFrom('comercialsmt@smtsa.cl', 'Sistema Web SMT');
                 $mail->Subject = $subject;
                 $mail->MsgHTML(Yii::app()->controller->renderPartial($view, array('model'=>$model),true));
              
                 if($subject=='Mensaje No Conformidad'&& !empty($model->id_user_asigned))
                 {
-                     $msgFolder=Yii::getPathOfAlias('webroot').'/images/tickets_message/'; 
+                    
                      $mail->AddAddress($model->idUsera->email, $subject);
-                    if(!empty($model->ticket_message_file)){
-                        $mail->AddAttachment($msgFolder.$model->ticket_message_file, $model->ticket_message_file);
-                    }
                      if(!$mail->Send()) {
                     Yii::app()->user->setFlash('error',Yii::t('validation','Error al enviar correo Electronico'));
                 }else {
                     Yii::app()->user->setFlash('success',Yii::t('validation','Notificación enviada por Correo Electronico'));
                 }
                 }else 
-                    if($subject=='No Concformidad Emitida')
+                    if($subject=='No Conformidad Emitida')
                     {
-                        $newFolder=Yii::getPathOfAlias('webroot').'/images/tickets/'; 
                         $criteria=new CDbCriteria();
                         $criteria->condition="role='Administrador'";
                         $users=  Users::model()->findAll($criteria);
-                        $i=false;
+                        
                         foreach($users as $u){
-                            if(!$i)
                                 $mail->AddAddress($u->email, $subject);
-                            else
-                                $mail->AddCC($u->email, $subject);
-                            $i=true;
-                        }           
-                       
-                        if(!empty($model->ticket_file)){
-                            $mail->AddAttachment($newFolder.$model->ticket_file, $model->ticket_file);
                         }
                          if(!$mail->Send()) {
                     Yii::app()->user->setFlash('error',Yii::t('validation','Error al enviar correo Electronico'));
@@ -223,6 +237,14 @@ class TicketController extends Controller
                 }
                 
                 
+                }if($subject=='Solución No Conformidad'){
+                    
+                    $mail->AddAddress($model->idUser->email, $subject);
+                         if(!$mail->Send()) {
+                    Yii::app()->user->setFlash('error',Yii::t('validation','Error al enviar correo Electronico'));
+                }else {
+                    Yii::app()->user->setFlash('success',Yii::t('validation','Notificación enviada por Correo Electronico'));
+                }
                 }
                
                 
@@ -271,7 +293,16 @@ class TicketController extends Controller
 	{
             if(Yii::app()->user->checkAccess('Administrador')){
 		$dataProvider=new CActiveDataProvider('Ticket');
-            }else {
+            }else
+                if(Yii::app()->user->checkAccess('Mantención')){
+                    $dataProvider=new CActiveDataProvider('Ticket',array(
+                     'criteria'=>array(
+                      'with'=>'ticket_message',
+                      'condition'=>'id_user_asigend='.Yii::app()->user->id,
+                       ))); 
+                }
+            
+            else {
                 $dataProvider=new CActiveDataProvider('Ticket',array(
                      'criteria'=>array(
                       'condition'=>'id_user='.Yii::app()->user->id,
@@ -292,7 +323,6 @@ class TicketController extends Controller
                     $model->ticket_status=$status;
                   else
                 $model->unsetAttributes();  // clear
-              
 		if(isset($_GET['Ticket']))
 			$model->attributes=$_GET['Ticket'];
 		$this->render('admin',array(
@@ -330,7 +360,7 @@ class TicketController extends Controller
             $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/';         
             Yii::import("ext.EFineUploader.qqFileUploader");
             $uploader = new qqFileUploader();
-            $uploader->allowedExtensions = array('pdf','jpg','jpeg','png','txt','docs','docxs','xls','xlsx','gif','ppt','pptx','JPG');
+            $uploader->allowedExtensions = array('pdf','jpg','jpeg','png','txt','rtf','doc','docx','xls','xlsx','gif','ppt','pptx');
             $uploader->sizeLimit = 1 * 1024 * 1024;//maximum file size in bytes
             $uploader->chunksFolder = $tempFolder;
             $result = $uploader->handleUpload($tempFolder);
@@ -365,10 +395,11 @@ class TicketController extends Controller
            public function actionListUser($term)
         {
             $criteria = new CDbCriteria;
-            $criteria->condition = "LOWER(user_name) like LOWER(:term) OR LOWER(user_lastnames) like LOWER(:term) OR LOWER(user_names) like LOWER(:term) and role='Administrador'and id_user<>".Yii::app()->user->id;
+            $criteria->condition = "(LOWER(user_name) like LOWER(:term) OR LOWER(user_lastnames) like LOWER(:term) OR LOWER(user_names) like LOWER(:term)) and role <>'Cliente' and id_user<>".Yii::app()->user->id;
             $criteria->params = array(':term'=> '%'.$_GET['term'].'%');
             $criteria->limit = 30;
             $models = Users::model()->findAll($criteria);
+            
             $arr = array();
             foreach($models as $model)
             {

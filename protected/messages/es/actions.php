@@ -6,7 +6,7 @@ return array(
 'List'=>'Listado',
 'Delete'=>'Eliminar',
 'Advanced Search'=>'Busqueda Avanzada',
-'Update'=>'Actualizar',
+'Update'=>'Editar',
 'View'=>'Vista',
 'Advanced Search'=>'Busqueda Avanzada',
 'Save'=>'Guardar',

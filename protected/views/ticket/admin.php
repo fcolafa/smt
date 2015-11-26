@@ -19,9 +19,16 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
 </p>
 
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php 
+if(Yii::app()->user->checkAccess('Administrador'))
+    $search=$model->search();
+if(Yii::app()->user->checkAccess('Cliente'))
+    $search=$model->searchClient();
+if(Yii::app()->user->checkAccess('Mantención'))
+    $search=$model->searchMain();
+$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'ticket-grid',
-	'dataProvider'=>Yii::app()->user->checkAccess('Administrador')?$model->search():$model->searchClient(),
+	'dataProvider'=>$search,
 	'filter'=>$model,
        'afterAjaxUpdate'=>"function() {
  	jQuery('#ticket_date_incident').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
@@ -39,7 +46,7 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
                     ),
                  array(
                     'name'=>'idEmbarkation.embarkation_name',
-                    'value'=>'$data->idEmbarkation->embarkation_name',
+                    'value'=>'!empty($data->idEmbarkation->embarkation_name)?$data->idEmbarkation->embarkation_name:"No Asignado"',
                     'filter'=>  CHtml::activeTextField($model, '_embarkation_name'),
                     ),
                  array(
@@ -113,8 +120,6 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
           )
                                 ),
                                 true),
-                
-              
             ),
             array(
                     
@@ -124,7 +129,7 @@ array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Ticket'), 'url
 		   array(
                     
                     'name'=>'ticket_status',
-                    'filter'=>array( 'Nuevo'=>'Nuevo','Cerrado'=>'Cerrado','En Curso'=>'En Curso'),
+                    'filter'=>array('Nuevo'=>'Nuevo','Cerrado'=>'Cerrado','En Curso'=>'En Curso'),
                     'value'=>'$data->ticket_status',
                 ),
 		array(
