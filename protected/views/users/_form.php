@@ -2,6 +2,7 @@
 $baseUrl = Yii::app()->theme->baseUrl; 
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/jquery.Rut.js');
+$cs->registerScriptFile($baseUrl.'/js/_form_user.js');
 ?>
 
 <script type="text/javascript">
@@ -73,12 +74,12 @@ $('#Users_user_rut').Rut({
         <?php }}?>
         <div class="row">
 		<?php echo $form->labelEx($model,'role'); ?>
-		<?php echo $form->dropDownList($model,'role',CHtml::listData(AuthItem::model()->findAll('name <> "Control Total" and name <>"Supervisor"'),'name','name'));?>
+		<?php echo $form->dropDownList($model,'role', CHtml::listData(Authitem::model()->findAll('name <> "Control Total" and name <>"Supervisor"'),'name','name'),array('prompt'=>Yii::t('actions','Select')." ".Yii::t('database','Role')));?>
 		<?php echo $form->error($model,'role'); ?>
 	</div>
-        <div class="row">
+        <div class="row" id="divcompany">
 		<?php echo $form->labelEx($model,'id_company'); ?>
-		<?php echo $form->dropDownList($model,'id_company',  CHtml::listData(Company::model()->findAll(), 'id_company','company_name'),array('prompt'=>Yii::t('actions','Select')." ".Yii::t('database','Company'))); ?>
+		<?php echo $form->dropDownList($model,'id_company',  CHtml::listData(Company::model()->findAll('company_name <> "SMT"'), 'id_company','company_name'),array('prompt'=>Yii::t('actions','Select')." ".Yii::t('database','Company'))); ?>
 		<?php echo $form->error($model,'id_company'); ?>
 	</div>
 

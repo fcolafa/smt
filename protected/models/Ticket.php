@@ -119,6 +119,7 @@ class Ticket extends CActiveRecord
 		$criteria=new CDbCriteria;
                 $criteria->with=array('idUser','idEmbarkation','idHeadquarter');
                 $criteria->together=true;
+                
 		$criteria->compare('id_ticket',$this->id_ticket);
 		$criteria->compare('id_embarkation',$this->id_embarkation);
 		$criteria->compare('id_user',$this->id_user);
@@ -255,7 +256,7 @@ class Ticket extends CActiveRecord
             $ticketsfile= TicketFile::model()->findall($criteria);
             $link="";
             foreach($ticketsfile as $t){
-            $link.=CHtml::link(CHtml::encode($t->ticket_file_name), Yii::app()->baseUrl . '/images/tickets/' . $t->ticket_file_name,array('target'=>'_blank'))."<br>";
+            $link.=CHtml::link(CHtml::encode($t->ticket_file_name), Yii::app()->baseUrl . '/images/tickets/'.$t->id_ticket."/". $t->ticket_file_name,array('target'=>'_blank'))."<br>";
             }
             if($ticketsfile)
             return $link;
@@ -268,7 +269,7 @@ class Ticket extends CActiveRecord
             $ticketsfile= TicketSolutionFile::model()->findall($criteria);
             $link="";
             foreach($ticketsfile as $t){
-            $link.=CHtml::link(CHtml::encode($t->ticket_solution_file_name), Yii::app()->baseUrl . '/images/tickets_solution/' . $t->ticket_solution_file_name,array('target'=>'_blank'))."<br>";
+            $link.=CHtml::link(CHtml::encode($t->ticket_solution_file_name), Yii::app()->baseUrl . '/images/tickets_solution/'.$t->id_ticket."/" . $t->ticket_solution_file_name,array('target'=>'_blank'))."<br>";
             }
             if($ticketsfile)
             return $link;

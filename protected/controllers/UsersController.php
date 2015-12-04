@@ -36,7 +36,7 @@ class UsersController extends Controller
                     
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('viewClient','updateClient'),
-				'roles'=>array('Cliente','Mantención'),
+				'roles'=>array('Cliente','Mantención','Flota','Administración & Finanzas','Gerencia General'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -82,6 +82,8 @@ class UsersController extends Controller
                         $model->user_names=  ucwords(strtolower($model->user_names));
                         $model->user_lastnames=  ucwords(strtolower($model->user_lastnames));
                         $model->first_time=0;
+                        if($model->role!='Cliente')
+                            $model->id_company=2;
 			if($model->save()){
                             $this->sendMail($model,$pass);
                             Yii::app()->authManager->assign($model->role,$model->id_user);

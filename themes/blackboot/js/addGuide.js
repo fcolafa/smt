@@ -116,11 +116,21 @@ var size = tbl.rows.length;
 var guide = new Array();
 var weight = new Array();
 var istext = /^([a-z]|[A-Z]|[0-9]|á|é|í|ó|ú|ñ|ü|\s|\.|-)+$/;
+var validation='';
+
 guide.push($('#Guide_num_guide').val());
-if(guide[0] ==''){
-    alert('Numero de Guia no puede ser nulo');
+guide.push($('#Guide_pdf_guide').val());
+guide.push($('#Guide_id_user').val());
+if(guide[0] =='')
+    validation=validation+'-Numero de Guia no puede ser nulo \n';
+if(size<1)
+    validation=validation+'-Debe Existir al menos un tipo de carga asociado a la guia \n';
+if(guide[2]=='')
+    validation=validation+'-Usuario no puede ser nulo \n';
+if(validation!=''){
+    alert(validation);
     return false;
-}
+    }
 
 for(var i=0;i<size; i++){
     if($('#amount'+i).val()==''){
@@ -137,7 +147,7 @@ for(var i=0;i<size; i++){
                         newguide: newguide
                         },
                  success:function(data){
-                    document.location.href='http://localhost/smt/guide/view/'+data;
+                    document.location.href=window.location.origin+'/smt/guide/view/'+data;
                  },
                  error: function(data) { // if error occured
                          //alert("Error occured ".data);

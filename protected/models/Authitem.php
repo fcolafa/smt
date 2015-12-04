@@ -1,16 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "AuthItem".
+ * This is the model class for table "authitem".
  *
- * The followings are the available columns in table 'AuthItem':
+ * The followings are the available columns in table 'authitem':
  * @property string $name
  * @property integer $type
  * @property string $description
  * @property string $bizrule
  * @property string $data
+ *
+ * The followings are the available model relations:
+ * @property Authassignment[] $authassignments
+ * @property Authitemchild[] $authitemchildren
+ * @property Authitemchild[] $authitemchildren1
  */
-class AuthItem extends CActiveRecord
+class Authitem extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
@@ -19,7 +24,6 @@ class AuthItem extends CActiveRecord
 	{
 		return 'AuthItem';
 	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -46,6 +50,9 @@ class AuthItem extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'authassignments' => array(self::HAS_MANY, 'Authassignment', 'itemname'),
+			'authitemchildren' => array(self::HAS_MANY, 'Authitemchild', 'parent'),
+			'authitemchildren1' => array(self::HAS_MANY, 'Authitemchild', 'child'),
 		);
 	}
 
@@ -96,7 +103,7 @@ class AuthItem extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return AuthItem the static model class
+	 * @return Authitem the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

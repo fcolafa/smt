@@ -27,9 +27,10 @@ class GuideController extends Controller
 		return array(
 			
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index', 'view', 'create','update','admin','delete','addWeigth','upload','urlProcessing'),
-				'roles'=>array('Cliente'),
+				'actions'=>array( 'view', 'create','admin','delete','addWeigth','upload','urlProcessing','listUser'),
+				'roles'=>array('Cliente','Administrador'),
 			),
+			
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
@@ -39,20 +40,20 @@ class GuideController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id,$idu)
+	public function actionView($id)
 	{
             $user=  $this->loadModel($id);
+            $userloged=  Users::model()->findByPk(Yii::app()->user->Id);
+            $createuser= Users::model()->findByPk($user->id_user);
             $weight=new Weight('Search');
             $weight->id_guide=$id;
-            if($user->id_user!=$idu){
+            if(!Yii::app()->user->checkAccess('Administrador')&&$user->id_user!=$userloged->id_user&&$userloged->id_company!=$createuser->id_company){
                        throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
             }
             else
                     $this->render('view',array(
                             'model'=>$this->loadModel($id),
-                            'idu'=>$idu,
                             'weight'=>$weight
-
                     ));
             }
 	/**
@@ -61,47 +62,21 @@ class GuideController extends Controller
 	 */
 	public function actionCreate()
 	{
-                Yii::import('ext.multimodelform.MultiModelForm');
+                
 		$model=new Guide;
 		$weight = new Weight;
-                $validatedweight = array();
-                $idu=Yii::app()->user->id;
+               
 		if(isset($_POST['Guide']))
 		{
 			$model->attributes=$_POST['Guide'];
-                        $model->id_user=$idu;
-                        $model->date_guide_create=  date("y-m-d H:i:s");
-                        $model->sended_guide=0;
-                        $lastId=$model->id_user.$model->id_guide.$model->num_guide."";
-                        $file= CUploadedFile::getInstance($model,'pdf_guide');
-                        if(isset($model->xml_guide))
-                             $xml= CUploadedFile::getInstance($model,'xml_guide');
-                        
-                        if(!empty($file))
-                           try
-                                {
-                                    $uploadedFile=$file;
-                                    $type=$file->getExtensionName();
-                                    $filename=$lastId.'.'.$type;
-                                    $uploadedFile->saveAs(Yii::app()->basePath.'/../images/guides/'.$filename);
-                                    $model->pdf_guide = $filename;
-                                    $model->save();
-                                    }
-                            catch(Exception $e){
-
-                            }
 			if($model->save()){
-                           $masterValues = array ('id_guide'=>$model->id_guide);
-                           $weight->id_guide=$model->id_guide;
-                           if (MultiModelForm::save($weight,$validatedweight,$deleteMembers,$masterValues))
-                                $this->redirect(array('view','id'=>$model->id_guide, 'idu'=>$idu));
+                           $this->redirect(array('view','id'=>$model->id_guide));
                         }	
 		}
 		$this->render('create',array(
 			'model'=>$model,
-                        'idu'=>$idu,
                         'weight'=>$weight,
-                        'validatedweight' => $validatedweight,
+                        
 		));
 	}
 	/**
@@ -109,46 +84,28 @@ class GuideController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id, $idu)
+	public function actionUpdate($id )
 	{
-            Yii::import('ext.multimodelform.MultiModelForm');
+           
 		$model=$this->loadModel($id);
                 $weight=  Weight::model()->findAllByAttributes(array('id_guide'=>$model->id_guide));
                 
                 
-                 if(Yii::app()->user->id!=$idu)
+                 if(Yii::app()->user->id!=$model->id_user)
                             throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
-                        
-
+         
 		if(isset($_POST['Guide']))
 		{
 			$model->attributes=$_POST['Guide'];
-                        $masterValues = array ('id_guide'=>$model->id_guide);
-                        $lastId=$model->id_user.$model->id_guide.$model->num_guide."";
-                        $file= CUploadedFile::getInstance($model,'pdf_guide');
                         
-                        if(!empty($file))
-                           try{
-                                    $uploadedFile=$file;
-                                    $type=$file->getExtensionName();
-                                    $filename=$lastId.'.'.$type;
-                                    if($filename!= $model->pdf_guide)
-                                        unlink(Yii::app()->basePath.'/../images/guides/'.$guide->pdf_guide.$filename);
-                                    $uploadedFile->saveAs(Yii::app()->basePath.'/../images/guides/'.$filename);
-                                    $model->pdf_guide = $filename;
-                                    $model->save();
-                                    }
-                            catch(Exception $e){
-
-                            }
-			if(MultiModelForm::save($weight,$validatedweight,$deleteMembers,$masterValues) && $model->save()){
-                                $this->redirect(array('view','id'=>$model->id_guide, 'idu'=>$idu));
+                        if($model->save()){
+                            $this->redirect(array('view','id'=>$model->id_guide));
                         }
+                        
 		}
 
 		$this->render('update',array(
 			'model'=>$model,
-                        'idu'=>$idu,
                         'weight'=>$weight,
 		));
 	}
@@ -164,8 +121,13 @@ class GuideController extends Controller
             $idu=$guide->id_user;
             try {
                 if($guide->delete())
-                { if(!empty($guide->pdf_guide))
-                    unlink (Yii::app()->basePath.'/../images/guides/'.$guide->pdf_guide);
+                { 
+                if(!empty($guide->pdf_guide)){
+                    
+                $folder=Yii::app()->basePath.'/../images/guides/'.$guide->id_guide;
+                    unlink ($folder."/".$guide->pdf_guide);
+                    rmdir($folder);
+                    }
                 }
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -183,37 +145,29 @@ class GuideController extends Controller
 	/**
 	 * Lists all models.
 	 */
-	public function actionIndex($idu)
+	public function actionIndex()
 	{
                $dataProvider=new CActiveDataProvider('Guide',array(
                       'criteria'=>array(
-                      'condition'=>'id_user='.$idu,
+                      'condition'=>'id_user='.Yii::app()->user->id,
                        )));
 		$this->render('index',array(
-			'dataProvider'=>$dataProvider,'idu'=>$idu,
+			'dataProvider'=>$dataProvider,
 		));
 	}
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin($idu)
+	public function actionAdmin()
 	{
 		$model=new Guide('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Guide']))
 			$model->attributes=$_GET['Guide'];
-   
-        if(Yii::app()->user->id!=$idu){
-                //Yii::app()->user->setFlash('notification','Usted no esta autorizado para realizar esta acción' );
-               throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
-        }
-        else{
-                $model->id_user=$idu;
 		$this->render('admin',array(
 			'model'=>$model,
-                        'idu'=>$idu
 		));
-            }
+            
         }
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -259,11 +213,30 @@ class GuideController extends Controller
             
             $guide=$_POST['guide'];
             $model->num_guide=$guide[0];
+            if(!empty($guide[1])){
+                $model->pdf_guide=$guide[1];
+            }
+            if(Yii::app()->user->checkAccess('Administrador')&&$guide[2]!=0)
+            {
+                $model->id_user=$guide[2];
+            }else
+                $model->id_user=Yii::app()->user->id;
+            
             $model->date_guide_create=  date("y-m-d H:i:s");
             $model->sended_guide=0;
-            $model->id_user=Yii::app()->user->id;
-            if($model->save())
-            {
+            
+            if($model->save()){
+                //files
+                $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
+                $newFolder=Yii::getPathOfAlias('webroot').'/images/guides/';
+                if(!empty($model->pdf_guide)&&file_exists($tempFolder.$model->pdf_guide)){
+                    $folder=$newFolder."/".$model->id_guide;
+                    if(!file_exists($folder))
+                        mkdir($folder,0777,true); 
+                    copy($tempFolder.$model->pdf_guide,$folder."/".$model->pdf_guide); 
+                    }
+                
+            
                //componentes
                 if(isset($_POST['weight'])){
 			$weightpost = $_POST['weight'];
@@ -276,31 +249,48 @@ class GuideController extends Controller
                             $weight->id_weight_unit=$w[3];
                             $weight->save();
                         }
-			
                 }
              } 
              echo $model->id_guide.'?idu='.$model->id_user;
     }
+    public function actionUpload()
+    {
+    $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/';         
+    Yii::import("ext.EFineUploader.qqFileUploader");
+    $uploader = new qqFileUploader();
+    $uploader->allowedExtensions = array('pdf');
+    $uploader->sizeLimit = 5 * 1024 * 1024;//maximum file size in bytes
+    $uploader->chunksFolder = $tempFolder;
+    $result = $uploader->handleUpload($tempFolder);
+    $result['filename'] = $uploader->getUploadName();
+    $result['folder'] = $tempFolder;
+    $uploadedFile=$tempFolder.$result['filename'];
+    header("Content-Type: text/plain");
+    $result=htmlspecialchars(json_encode($result), ENT_NOQUOTES);
+    echo $result;
+    Yii::app()->end();
+    }
     
-    public function actionUpload($id)
+    public function actionListUser($term)
+    {
+        $criteria = new CDbCriteria;
+        $criteria->with=array('idCompany');
+        $criteria->together=true;
+        $criteria->condition = "(LOWER(user_name) like LOWER(:term) OR LOWER(user_lastnames) like LOWER(:term) OR LOWER(user_names) like LOWER(:term) OR LOWER(idCompany.company_name) like LOWER(:term)) and role ='Cliente'";
+        $criteria->params = array(':term'=> '%'.$_GET['term'].'%');
+        $criteria->limit = 30;
+        $models = Users::model()->findAll($criteria);
+
+        $arr = array();
+        foreach($models as $model)
         {
-            $guide=  $this->loadModel($id);
-            $tempFolder=Yii::getPathOfAlias('webroot').'/images/guides/';         
-            Yii::import("ext.EFineUploader.qqFileUploader");
-            $uploader = new qqFileUploader();
-            $uploader->allowedExtensions = array('pdf');
-            $uploader->sizeLimit = 1 * 1024 * 1024;//maximum file size in bytes
-            $uploader->chunksFolder = $tempFolder;
-            $guide->pdf_guide=$guide->id_user.$id.'.pdf';
-            $result = $uploader->handleUpload($tempFolder);
-            $result['filename'] = $uploader->getUploadName();
-            $result['folder'] = $tempFolder;
-            $uploadedFile=$tempFolder.$result['filename'];
-            $guide->save();
-            rename($uploadedFile, $tempFolder.$guide->pdf_guide);
-            header("Content-Type: text/plain");
-            $result=htmlspecialchars(json_encode($result), ENT_NOQUOTES);
-            echo $result;
-            Yii::app()->end();
-        }
+        $arr[] = array(
+        'label'=>($model->user_names." ".$model->user_lastnames." (".$model->idCompany->company_name.")"), // label for dropdown list
+        'value'=>($model->user_names." ".$model->user_lastnames." (".$model->idCompany->company_name.")"), // value for input field
+        'id'=>$model->id_user, // return value from autocomplete
+
+                   );
+               }
+               echo CJSON::encode($arr);
+    }
 }

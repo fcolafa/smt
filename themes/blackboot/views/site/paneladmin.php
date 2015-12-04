@@ -11,8 +11,12 @@ $this->breadcrumbs=array(
 <div class="dashboardIcons span-16">
 
     <div class="dashIcon">
-        <a href="<?php echo Yii::app()->baseurl?>/users/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-people.png" alt="Customers" /></a>
-        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/users/index"><?php echo Yii::t ('database','Users') ?></a></div>
+        <a href="<?php echo Yii::app()->baseurl?>/users/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-people.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/users/admin"><?php echo Yii::t ('database','Users') ?></a></div>
+    </div>
+    <div class="dashIcon">
+        <a href="<?php echo Yii::app()->baseurl?>/guide/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-files.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/guide/admin"><?php echo Yii::t ('database','Guides') ?></a></div>
     </div>
     <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/embarkation/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-ship.png" alt="Customers" /></a>

@@ -24,7 +24,7 @@ if(Yii::app()->user->checkAccess('Administrador'))
     $search=$model->search();
 if(Yii::app()->user->checkAccess('Cliente'))
     $search=$model->searchClient();
-if(Yii::app()->user->checkAccess('Mantención'))
+if(Yii::app()->user->checkAccess('Mantención')||Yii::app()->user->checkAccess('Gerencia General')||Yii::app()->user->checkAccess('Flota')||Yii::app()->user->checkAccess('Administración & Finanzas'))
     $search=$model->searchMain();
 $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'ticket-grid',

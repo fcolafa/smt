@@ -6,7 +6,7 @@
 <div class="view">
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('id_guide')); ?>:</b>
-	<?php echo CHtml::link(CHtml::encode($data->id_guide), array('view', 'id'=>$data->id_guide,'idu'=>Yii::app()->user->id)); ?>
+	<?php echo CHtml::link(CHtml::encode($data->id_guide), array('view', 'id'=>$data->id_guide)); ?>
 	<br />
 	<b><?php echo CHtml::encode($data->getAttributeLabel('num_guide')); ?>:</b>
 	<?php echo CHtml::encode($data->num_guide); ?>

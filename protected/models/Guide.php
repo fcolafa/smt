@@ -26,6 +26,7 @@ class Guide extends CActiveRecord
 	 */
     
         public $_send;
+        public $_company;
      
 	public function tableName()
 	{
@@ -50,7 +51,7 @@ class Guide extends CActiveRecord
                         // array('guide', 'length','max'=>1),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_send, id_guide, id_user, num_guide, pdf_guide, xml_guide, date_guide_create, sended_guide, id_user, id_manifest', 'safe', 'on'=>'search'),
+			array('_company,_send, id_guide, id_user, num_guide, pdf_guide, xml_guide, date_guide_create, sended_guide, id_user, id_manifest', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,10 +64,11 @@ class Guide extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			
-                        
-                    	'users' => array(self::HAS_MANY, 'Send', 'id_guide'),
+                        'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
                         'sends' => array(self::HAS_MANY, 'Send', 'id_guide'),
 			'weights' => array(self::HAS_MANY, 'Weight', 'id_guide'),
+                        'receptions' => array(self::HAS_MANY, 'GuideHasRecepction', 'id_guide'),
+			
 		);
 	}
 	/**
@@ -102,12 +104,37 @@ class Guide extends CActiveRecord
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 		$criteria=new CDbCriteria;
+                $criteria->with=array('idUser.idCompany');
+                $criteria->together=true;
 		$criteria->compare('id_guide',$this->id_guide);
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('num_guide',$this->num_guide,true);
 		$criteria->compare('pdf_guide',$this->pdf_guide,true);
 		$criteria->compare('xml_guide',$this->xml_guide,true);
 		$criteria->compare('date_guide_create',$this->date_guide_create,true);
+                $criteria->compare('sended_guide',$this->sended_guide);
+		$criteria->compare('id_user',$this->id_user);
+		$criteria->compare('idCompany.company_name',$this->_company,true);
+                
+		return new CActiveDataProvider($this, array(
+                    'criteria'=>$criteria,
+		));
+	}
+	public function searchClient()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+		$criteria=new CDbCriteria;
+                $criteria->with=array('idUser.idCompany');
+                $criteria->together=true;
+                $user= Users::model()->findByPk(Yii::app()->user->Id);
+                $criteria->condition ='idCompany.id_company='.$user->id_company;
+		$criteria->compare('id_guide',$this->id_guide);
+		$criteria->compare('id_user',$this->id_user);
+		$criteria->compare('num_guide',$this->num_guide,true);
+		$criteria->compare('pdf_guide',$this->pdf_guide,true);
+		$criteria->compare('xml_guide',$this->xml_guide,true);
+		$criteria->compare('date_guide_create',$this->date_guide_create,true);
+                $criteria->compare('idCompany.company_name',$this->_company,true);
                 $criteria->compare('sended_guide',$this->sended_guide);
 		$criteria->compare('id_user',$this->id_user);
                 

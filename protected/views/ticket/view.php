@@ -120,11 +120,10 @@ $message= TicketMessage::model()->findAll($criteria);
         if($messagefiles){
             foreach($messagefiles as $mf){
          
-            $link.=CHtml::link(CHtml::encode($mf->ticket_message_file_name), Yii::app()->baseUrl.'/images/tickets_message/'. $mf->ticket_message_file_name,array('target'=>'_blank'));
+            $link.=CHtml::link(CHtml::encode($mf->ticket_message_file_name), Yii::app()->baseUrl.'/images/tickets_message/'.$mf->id_ticket_message."/". $mf->ticket_message_file_name,array('target'=>'_blank'));
             $link.="<br>";
             }
-        
-          
+
         }
         if(!empty($m->id_user_asigned)){
             $asigneduser=Users::model()->findByPK($m->id_user_asigned);

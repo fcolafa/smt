@@ -34,7 +34,7 @@ return array(
   'Headquarters'=>'Lugares',
   'Headquarter Name'=>'Nombre del Lugar',
   'Headquarter Location'=>'Cordenadas',
-    'Headquarter Type'=>'Tipo de lugar',
+  'Headquarter Type'=>'Tipo de lugar',
     
 //guide
  'Id Guide'=>'Id Guía',
@@ -66,7 +66,7 @@ return array(
  'Ticket Close Date'=>'Fecha Cierre No Conformidad',
     
 //user
-'Id User'=>'Id Usuario ',
+'Id User'=>'Usuario ',
 'User'=>'Usuario ',
 'Users'=>'Usuarios ',
 'User Name'=>'Nombre Usuario ',

@@ -28,7 +28,7 @@ class CompanyController extends Controller
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('index','view','create','update','admin','delete'),
+				'actions'=>array('index','view','create','update','admin'),
 				'roles'=>array('Administrador'),
 			),
 			array('deny',  // deny all users

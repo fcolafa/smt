@@ -40,7 +40,7 @@
              'value'=>$value,
              'sourceUrl'=>$this->createUrl('listUser'),
              'options'=>array(
-             'minLength'=>'2',
+             'minLength'=>'1',
              'showAnim'=>'fold',
              'select' => 'js:function(event, ui)
              { jQuery("#TicketMessage_id_user_asigned").val(ui.item["id"]); }',
@@ -85,11 +85,12 @@
                                                  ),
                                'validation'=>array(
                                         'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','rtf','doc','docx','xls','xlsx','gif','ppt','pptx'),
-                                         'sizeLimit'=>1 * 1024 * 1024,//maximum file size in bytes
+                                         'sizeLimit'=>5 * 1024 * 1024,//maximum file size in bytes
                                        //  'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                                   ),
                    'callbacks'=>array(
           'onComplete'=>"js:function(id, name, response){
+              if(response.filename!=null)
              $('#TicketMessage__message_files').append(new Option(response.filename, response.filename, true, true));
            }",
            //'onError'=>"js:function(id, name, errorReason){ }",

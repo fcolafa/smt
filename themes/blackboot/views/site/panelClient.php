@@ -17,8 +17,8 @@ $this->breadcrumbs=array(
     </div>
     <?php if(Yii::app()->user->checkAccess('Cliente')):?>
     <div class="dashIcon">
-        <a href="<?php echo Yii::app()->baseurl?>/guide/index?idu=<?php echo Yii::app()->user->id;?>"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-files.png" alt="Customers" /></a>
-        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/guide/index?idu=<?php echo Yii::app()->user->id;?>"><?php echo Yii::t ('database','Guides') ?></a></div>
+        <a href="<?php echo Yii::app()->baseurl?>/guide/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-files.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/guide/admin"><?php echo Yii::t ('database','Guides') ?></a></div>
     </div>
     <?php endif ?>
    <!--

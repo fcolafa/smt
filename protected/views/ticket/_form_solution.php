@@ -51,12 +51,14 @@
                                                  ),
                                'validation'=>array(
                                         'allowedExtensions'=>array('pdf','jpg','jpeg','png','txt','rtf','doc','docx','xls','xlsx','gif','ppt','pptx'),
-                                         'sizeLimit'=>1 * 1024 * 1024,//maximum file size in bytes
+                                         'sizeLimit'=>5 * 1024 * 1024,//maximum file size in bytes
                                        //'minSizeLimit'=>0*1024*1024,// minimum file size in bytes
                                                   ),
                    'callbacks'=>array(
           'onComplete'=>"js:function(id, name, response){
-                 $('#TicketMessage__message_files').append(new Option(response.filename, response.filename, true, true));
+              
+            if(response.filename!=null)
+           $('#Ticket__solution_files').append(new Option(response.filename, response.filename, true, true));
            }",
            //'onError'=>"js:function(id, name, errorReason){ }",
           'onValidateBatch' => "js:function(fileOrBlobData) {}", // because of crash

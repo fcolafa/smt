@@ -3,12 +3,11 @@
 /* @var $model Guide */
 
 $this->breadcrumbs=array(
-	Yii::t('database',Yii::t('database','Guides'))=>array('index' ,'idu'=>$idu),
+	Yii::t('database',Yii::t('database','Guides'))=>array('index' ),
 	Yii::t('actions','Manage'),
 );
 
 $this->menu=array(
-array('label'=>Yii::t('actions','List')." ". Yii::t('database','Guide'), 'url'=>array('index','idu'=>$idu)),
 array('label'=>Yii::t('actions','Create')." ".Yii::t('database','Guide'), 'url'=>array('create')),
 );
 
@@ -36,9 +35,14 @@ $('.search-form form').submit(function(){
 
 
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php 
+if(Yii::app()->user->checkAccess('Cliente'))
+  $filter=  $model->searchClient();
+if(Yii::app()->user->checkAccess('Administrador'))
+   $filter= $model->search();
+$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'guide-grid',
-	'dataProvider'=>$model->search(),
+	'dataProvider'=>$filter,
 	'filter'=>$model,
         'afterAjaxUpdate'=>"function() {
  	jQuery('#Projects_presentationDate').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
@@ -46,6 +50,13 @@ $('.search-form form').submit(function(){
 	'columns'=>array(
 		'id_guide',
 		'num_guide',
+           array(
+                    'name'=>'idUser.idCompany.company_name',
+                    'value'=>'$data->idUser->idCompany->company_name',
+                    'filter'=>  CHtml::activeTextField($model, '_company'),
+                    'visible'=> Yii::app()->user->checkAccess('Administrador'),
+                    
+                    ),
             array(
 	       'name'=>'pdf_guide',
                'type'=>'raw',
@@ -84,12 +95,14 @@ $('.search-form form').submit(function(){
 
                 array(
 			'class'=>'CButtonColumn',
+                    'template'=>'{view} {delete}',
                     'buttons'=>array(
                         'view'=>array(
-                            'url'=>'Yii::app()->controller->createUrl("view",array("id"=>"$data->id_guide","idu"=>"'.$idu.'"));',
+                            'url'=>'Yii::app()->controller->createUrl("view",array("id"=>"$data->id_guide"));',
                          ),
                             'update'=>array(
-                            'url'=>'Yii::app()->controller->createUrl("update",array("id"=>"$data->id_guide","idu"=>"'.$idu.'"));',
+                            'url'=>'Yii::app()->controller->createUrl("update",array("id"=>"$data->id_guide"));',
+                          
                          ),
                             'Seleccionar'=>array(
                                 'label'=>'Seleccionar',
