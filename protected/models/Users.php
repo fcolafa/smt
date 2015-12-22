@@ -72,7 +72,7 @@ class Users extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-                    'guides' => array(self::MANY_MANY, 'Guide', 'send(id_user_emisor, id_guide)'),
+                    'guides' => array(self::HAS_MANY, 'Guide', 'id_guide'),
                     'headquarters' => array(self::HAS_MANY, 'Headquarter', 'id_user'),	
                     'labors' => array(self::HAS_MANY, 'Labor', 'id_user'),
                     'sessions' => array(self::HAS_MANY, 'Session', 'id_user'),

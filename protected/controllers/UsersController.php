@@ -36,7 +36,7 @@ class UsersController extends Controller
                     
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array('viewClient','updateClient'),
-				'roles'=>array('Cliente','Mantención','Flota','Administración & Finanzas','Gerencia General'),
+				'roles'=>array('Cliente','Mantención','Flota','Administración & Finanzas','Gerencia General','Encargado Puerto','Jefe Centro','Capitan'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -257,7 +257,6 @@ class UsersController extends Controller
 			'dataProvider'=>$dataProvider,
 		));
 	}
-        
 	/**
 	 * Manages all models.
 	 */
@@ -287,7 +286,6 @@ class UsersController extends Controller
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
 	}
-
 	/**
 	 * Performs the AJAX validation.
 	 * @param Users $model the model to be validated
@@ -300,7 +298,6 @@ class UsersController extends Controller
 			Yii::app()->end();
 		}
 	}
-        
         private function generatePass(){
             $str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
             $pass = "";

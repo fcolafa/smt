@@ -27,9 +27,14 @@ class GuideController extends Controller
 		return array(
 			
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array( 'view', 'create','admin','delete','addWeigth','upload','urlProcessing','listUser'),
+				'actions'=>array( 'view', 'create','admin','delete','addWeigth','upload','urlProcessing','listUser','getValue','deleteValue'),
 				'roles'=>array('Cliente','Administrador'),
 			),
+                        array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array( 'view'),
+				'roles'=>array('Encargado Puerto'),
+			),
+			
 			
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -47,13 +52,20 @@ class GuideController extends Controller
             $createuser= Users::model()->findByPk($user->id_user);
             $weight=new Weight('Search');
             $weight->id_guide=$id;
-            if(!Yii::app()->user->checkAccess('Administrador')&&$user->id_user!=$userloged->id_user&&$userloged->id_company!=$createuser->id_company){
+            
+            $has=new GuideHasReception('Search');
+            $has->id_guide=$id;
+            if(!Yii::app()->user->checkAccess('Encargado Puerto')&&
+               !Yii::app()->user->checkAccess('Administrador')&&
+               $user->id_user!=$userloged->id_user&&
+               $userloged->id_company!=$createuser->id_company){
                        throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
             }
             else
                     $this->render('view',array(
                             'model'=>$this->loadModel($id),
-                            'weight'=>$weight
+                            'weight'=>$weight,
+                            'has'=>$has,
                     ));
             }
 	/**
@@ -118,7 +130,7 @@ class GuideController extends Controller
 	public function actionDelete($id)
 	{
             $guide=$this->loadModel($id);
-            $idu=$guide->id_user;
+           
             try {
                 if($guide->delete())
                 { 
@@ -131,13 +143,13 @@ class GuideController extends Controller
                 }
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin','idu'=>$idu));
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
         catch(CDbException $e)
             {
                 if(!isset($_GET['ajax'])){
                     Yii::app()->user->setFlash('error',Yii::t('validation','Can not delete this item because it have elements asociated it'));
-                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin', 'idu'=>$idu));
+                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
                 }
                 
             } 
@@ -221,6 +233,7 @@ class GuideController extends Controller
                 $model->id_user=$guide[2];
             }else
                 $model->id_user=Yii::app()->user->id;
+            $model->id_user_creator=Yii::app()->user->id;
             
             $model->date_guide_create=  date("y-m-d H:i:s");
             $model->sended_guide=0;
@@ -233,7 +246,7 @@ class GuideController extends Controller
                     $folder=$newFolder."/".$model->id_guide;
                     if(!file_exists($folder))
                         mkdir($folder,0777,true); 
-                    copy($tempFolder.$model->pdf_guide,$folder."/".$model->pdf_guide); 
+                        copy($tempFolder.$model->pdf_guide,$folder."/".$model->pdf_guide); 
                     }
                 
             
@@ -243,15 +256,17 @@ class GuideController extends Controller
 			foreach($weightpost as $w){
                             $weight=new Weight;
                             $weight->id_guide=$model->id_guide;
-                            $weight->id_provider=$w[0];
-                            $weight->id_weight_type=$w[1];
+                            //$weight->id_provider=$w[0];
+                            //$weight->id_weight_type=$w[1];
                             $weight->amount_weight=$w[2];
                             $weight->id_weight_unit=$w[3];
+                            $weight->weightprovider=  ucwords(strtolower($w[0]));
+                            $weight->weighttype=ucwords(strtolower($w[1]));
                             $weight->save();
                         }
                 }
              } 
-             echo $model->id_guide.'?idu='.$model->id_user;
+             echo $model->id_guide;
     }
     public function actionUpload()
     {
@@ -288,9 +303,63 @@ class GuideController extends Controller
         'label'=>($model->user_names." ".$model->user_lastnames." (".$model->idCompany->company_name.")"), // label for dropdown list
         'value'=>($model->user_names." ".$model->user_lastnames." (".$model->idCompany->company_name.")"), // value for input field
         'id'=>$model->id_user, // return value from autocomplete
+        'comp'=>$model->id_company,    
 
                    );
                }
                echo CJSON::encode($arr);
     }
-}
+    
+    public function actionGetValue(){
+        
+        $guides = explode(',', $_POST['theIds']);
+        if(!empty($_POST['theIds'])){
+        $manifest=new Manifest;
+        $manifest->manifest_date=date("y-m-d H:i:s");
+        if($manifest->save()){
+            foreach($guides as $guide){
+               $g=  Guide::model()->findByPk($guide);
+               if(empty($g->id_manifest)){
+                    $g->id_manifest=$manifest->id_manifest;
+               }
+               else{
+                    Yii::app()->user->setFlash('error',Yii::t('validation','Can not delete this item because it have elements asociated it'));
+                    $manifest->delete();
+                    $this->redirect(array('admin'));
+               }  
+               $g->save();
+            }
+        }
+    }
+        $this->redirect(array('admin'));
+    
+        
+    }
+    
+        public function actionDeleteValue(){
+        
+        $guides = explode(',', $_POST['theIds']);
+        if(!empty($_POST['theIds'])){
+            foreach($guides as $guide){
+               $g=  Guide::model()->findByPk($guide);
+               if(!empty($g->id_manifest)){
+                    $id=$g->id_manifest;
+                    $g->id_manifest=NULL;
+                    $g->save();
+                    $criteria=new CDbCriteria();
+                    $criteria->condition='id_manifest='.$id;
+                    $manifest= Guide::model()->findAll($criteria);
+                    if(empty($manifest))
+                        Manifest::model()->deleteByPk ($id);
+               }
+               else{
+                    Yii::app()->user->setFlash('error',Yii::t('validation','Can not delete this item because it have elements asociated it'));
+                   
+               }   
+            }         
+        }   
+        $this->redirect(array('admin'));
+        }
+    }
+
+

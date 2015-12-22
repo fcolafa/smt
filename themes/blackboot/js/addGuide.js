@@ -8,17 +8,18 @@ function addRowItem()
     var row=tbl.insertRow(lastRow);
     //Componente select
     var cellComponent=row.insertCell(0);
-    var component= document.createElement('select');
+    var component= document.createElement('input');
     component.name='provider'+i;
     component.id='provider'+i;
     component.style.width ='100%';
+    component.type='text';//remover en caso de volver a los select 
    
-    for(key in providerid ) {
-          opt =document.createElement('option');
-          opt.value = key;
-          opt.innerHTML = providerid [key];
-          component.appendChild(opt);
-    }
+//    for(key in providerid ) {
+//          opt =document.createElement('option');
+//          opt.value = key;
+//          opt.innerHTML = providerid [key];
+//          component.appendChild(opt);
+//    }
     var num=0;
     $('#tblWeight tr').each(function(){
       if(num%2==0 )
@@ -30,17 +31,18 @@ function addRowItem()
     cellComponent.appendChild(component);
     
     var cellWtype=row.insertCell(1);
-    var wtype=document.createElement('select');
+    var wtype=document.createElement('input');
     wtype.name='wtype'+i;
     wtype.id='wtype'+i;
     wtype.style.width ='100%';
+     wtype.type='text';//remover en caso de volver a los select 
   
-    for(key in typeweight){
-        opt =document.createElement('option');
-        opt.value = key;
-        opt.innerHTML = typeweight [key];
-        wtype.appendChild(opt);
-    }
+//    for(key in typeweight){
+//        opt =document.createElement('option');
+//        opt.value = key;
+//        opt.innerHTML = typeweight [key];
+//        wtype.appendChild(opt);
+//    }
     cellWtype.appendChild(wtype);
     
     var cellAmount=row.insertCell(2);
@@ -86,7 +88,7 @@ function addRowItem()
     var table = tr.parentNode;
     table.removeChild(tr);
     //aqui se reasignan las claves e ids de cada fila para poder procesar mejor los datos
-    var id=parseInt(btn.id.substring(3,100));
+    var id=parseInt(btn.id.substring(6,100));
     var size=tbl.rows.length;
     while (id<size){
        var nid=id+1;
@@ -125,20 +127,35 @@ if(guide[0] =='')
     validation=validation+'-Numero de Guia no puede ser nulo \n';
 if(size<1)
     validation=validation+'-Debe Existir al menos un tipo de carga asociado a la guia \n';
-if(guide[2]=='')
+if(guide[2]==0)
     validation=validation+'-Usuario no puede ser nulo \n';
+
+  for(gi in guides ) {
+         //alert(gi +"-"+ guides[gi]);
+        
+         if(guide[0]==gi && company==guides[gi]){
+             validation=validation+'- El numero de guia: '+gi+' ya ha sido tomado \n'
+             break;
+         }
+    }
+    
+    for(var i=0;i<size; i++){
+    if($('#amount'+i).val()==''|| $('#provider'+i).val()==''||$('#wtype'+i).val()==''){
+        validation=validation+'-Todos los campos de las cargas asociadas deben ser completados \n';
+    }
+    weight.push([$('#provider'+i).val() ,$('#wtype'+i).val(),$('#amount'+i).val(),$('#unit'+i).val()]);
+}
 if(validation!=''){
     alert(validation);
     return false;
     }
+  
 
-for(var i=0;i<size; i++){
-    if($('#amount'+i).val()==''){
-        alert('La cantidad asociada a una carga no puede ser nula');
-    return false;
-    }
-    weight.push([$('#provider'+i).val() ,$('#wtype'+i).val(),$('#amount'+i).val(),$('#unit'+i).val()]);
-}
+
+var dir = window.location.origin;
+  if(dir.indexOf("local")>-1)
+      dir=dir+'/smt';
+
     $.ajax({
         type:"POST",
         url: urladdress,
@@ -147,7 +164,7 @@ for(var i=0;i<size; i++){
                         newguide: newguide
                         },
                  success:function(data){
-                    document.location.href=window.location.origin+'/smt/guide/view/'+data;
+                    document.location.href=dir+'/guide/view/'+data;
                  },
                  error: function(data) { // if error occured
                          //alert("Error occured ".data);

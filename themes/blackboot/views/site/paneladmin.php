@@ -19,6 +19,10 @@ $this->breadcrumbs=array(
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/guide/admin"><?php echo Yii::t ('database','Guides') ?></a></div>
     </div>
     <div class="dashIcon">
+        <a href="<?php echo Yii::app()->baseurl?>/manifest/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-files.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/manifest/admin"><?php echo Yii::t ('database','Manifest') ?></a></div>
+    </div>
+    <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/embarkation/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-ship.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/embarkation/index"><?php echo Yii::t ('database','Embarkations') ?></a></div>
     </div>
@@ -41,6 +45,8 @@ $this->breadcrumbs=array(
     <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-write.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><?php echo Yii::t ('database','Tickets') ?></a></div>
-    </div>    
+    </div>   
+    
+    
 </div><!-- form -->
 

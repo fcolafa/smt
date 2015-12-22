@@ -22,5 +22,6 @@ return array(
 'Contact'=>'Contacto',
 'Generate'=>'Generar',
 'Arrange'=>'Gestionar',
+    'Notify'=>'Notificar',
     
 );

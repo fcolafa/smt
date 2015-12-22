@@ -1,6 +1,6 @@
 <?php
 
-class ReceptionController extends Controller
+class ScheduleController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -18,6 +18,7 @@ class ReceptionController extends Controller
 			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
+
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
@@ -26,10 +27,17 @@ class ReceptionController extends Controller
 	public function accessRules()
 	{
 		return array(
-			
+			array('allow',  // allow all users to perform 'index' and 'view' actions
+				'actions'=>array('index','view'),
+				'users'=>array('*'),
+			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','ListGuides'),
-				'roles'=>array('Encargado Puerto','Capitan','Jefe Centro'),
+				'actions'=>array('create','update'),
+				'users'=>array('@'),
+			),
+			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+				'actions'=>array('admin','delete'),
+				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -47,45 +55,30 @@ class ReceptionController extends Controller
 			'model'=>$this->loadModel($id),
 		));
 	}
+
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
 	public function actionCreate()
 	{
-		$model=new Reception;
+		$model=new Schedule;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Reception']))
+		if(isset($_POST['Schedule']))
 		{
-			$model->attributes=$_POST['Reception'];
-                        $model->id_user=  Yii::app()->user->id;
-                        $model->reception_date=date("y-m-d H:i:s");
-                        if(isset($_POST['Reception']['_guides']))
-                           $model->_guides=$_POST['Reception']['_guides'];
-			if($model->save()){
-                            if(!empty($model->_guides))
-                                foreach($model->_guides as $idg){
-                                    $has=new GuideHasReception;
-                                    $has->id_guide=$idg;
-                                    $has->id_reception=$model->id_reception;
-                                    $has->save();
-             
-                                }
-                            Yii::app()->user->setFlash('success',Yii::t('validation','Recepción confirmada'));
-                            $model=new Reception;
-                                $this->render('create',array(
-                                                'model'=>$model,
-                                        ));
-                           
-                        }				
+			$model->attributes=$_POST['Schedule'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->id_schedule));
 		}
+
 		$this->render('create',array(
 			'model'=>$model,
 		));
 	}
+
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
@@ -98,12 +91,13 @@ class ReceptionController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Reception']))
+		if(isset($_POST['Schedule']))
 		{
-			$model->attributes=$_POST['Reception'];
+			$model->attributes=$_POST['Schedule'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id_reception));
+				$this->redirect(array('view','id'=>$model->id_schedule));
 		}
+
 		$this->render('update',array(
 			'model'=>$model,
 		));
@@ -117,44 +111,48 @@ class ReceptionController extends Controller
 	public function actionDelete($id)
 	{
 		$this->loadModel($id)->delete();
+
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 	}
+
 	/**
 	 * Lists all models.
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Reception');
+		$dataProvider=new CActiveDataProvider('Schedule');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
+
 	/**
 	 * Manages all models.
 	 */
 	public function actionAdmin()
 	{
-		$model=new Reception('search');
+		$model=new Schedule('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Reception']))
-			$model->attributes=$_GET['Reception'];
+		if(isset($_GET['Schedule']))
+			$model->attributes=$_GET['Schedule'];
 
 		$this->render('admin',array(
 			'model'=>$model,
 		));
 	}
+
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Reception the loaded model
+	 * @return Schedule the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Reception::model()->findByPk($id);
+		$model=Schedule::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -162,36 +160,14 @@ class ReceptionController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Reception $model the model to be validated
+	 * @param Schedule $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='reception-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='schedule-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
 	}
-        public function actionListGuides($term)
-        {
-            $criteria = new CDbCriteria;
-            $criteria->with=array('idUser.idCompany');
-            $criteria->together=true;
-            $criteria->condition = "(LOWER(id_guide) like LOWER(:term) OR LOWER(num_guide) like LOWER(:term) OR LOWER(idCompany.company_name) like LOWER(:term))";
-            $criteria->params = array(':term'=> '%'.$_GET['term'].'%');
-            $criteria->limit = 30;
-            $models = Guide::model()->findAll($criteria);
-
-            $arr = array();
-            foreach($models as $model)
-            {
-                $arr[] = array(
-                'label'=>($model->num_guide." (".$model->idUser->idCompany->company_name.")" ),// label for dropdown list
-                'value'=> "",
-                'link'=>  CHtml::link(CHtml::encode($model->num_guide." (".$model->idUser->idCompany->company_name.")"), array('guide/view','id'=>$model->id_guide,), array('target'=>'_blank')), // value for input field
-                'id'=>$model->id_guide, // return value from autocomplete
-                       );
-             }
-             echo CJSON::encode($arr);
-        }
 }

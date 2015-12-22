@@ -27,6 +27,7 @@ class Guide extends CActiveRecord
     
         public $_send;
         public $_company;
+        public $_manifestdate;
      
 	public function tableName()
 	{
@@ -42,16 +43,15 @@ class Guide extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('num_guide, date_guide_create, sended_guide, id_user', 'required'),
-			array('id_user, sended_guide', 'numerical', 'integerOnly'=>true),
+			array('id_user_creator,id_user, sended_guide, id_manifest', 'numerical', 'integerOnly'=>true),
                         array('sended_guide, id_user', 'numerical', 'integerOnly'=>true),
 			array('num_guide', 'length', 'max'=>45),
 			array('pdf_guide, xml_guide', 'length', 'max'=>60),
-                        array('pdf_guide', 'file','types'=>'pdf, PDF', 'allowEmpty'=>true, 'on'=>'update'),
-                        array('xml_guide', 'file','types'=>'xml, XML', 'allowEmpty'=>true, 'on'=>'update'),
+                    
                         // array('guide', 'length','max'=>1),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_company,_send, id_guide, id_user, num_guide, pdf_guide, xml_guide, date_guide_create, sended_guide, id_user, id_manifest', 'safe', 'on'=>'search'),
+			array('_manifestdate,id_user_creator,id_manifest,_company,_send, id_guide, id_user, num_guide, pdf_guide, xml_guide, date_guide_create, sended_guide, id_user, id_manifest', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,12 +63,12 @@ class Guide extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			
-                        'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
+			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
+                        'idManifest' => array(self::BELONGS_TO, 'Manifest', 'id_manifest'),
                         'sends' => array(self::HAS_MANY, 'Send', 'id_guide'),
 			'weights' => array(self::HAS_MANY, 'Weight', 'id_guide'),
                         'receptions' => array(self::HAS_MANY, 'GuideHasRecepction', 'id_guide'),
-			
+                        'idUserc' => array(self::BELONGS_TO, 'Users', array('id_user_creator'=>'id_user')),			
 		);
 	}
 	/**
@@ -84,7 +84,9 @@ class Guide extends CActiveRecord
                         'date_guide_create' => Yii::t('database','Date Guide Create'),
                         'sended_guide' => Yii::t('database','Sended Guide'),
 			'id_user' => Yii::t('database','Id User'),
-                     
+                        'id_manifest' => Yii::t('database','Id Manifest'),
+                        'id_user_creator' => Yii::t('database','Id User'),
+                        '_manifestdate' => Yii::t('database','Manifest Date'),
 		);
 	}
 
@@ -104,7 +106,7 @@ class Guide extends CActiveRecord
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 		$criteria=new CDbCriteria;
-                $criteria->with=array('idUser.idCompany');
+                $criteria->with=array('idUser.idCompany','idManifest');
                 $criteria->together=true;
 		$criteria->compare('id_guide',$this->id_guide);
 		$criteria->compare('id_user',$this->id_user);
@@ -115,7 +117,31 @@ class Guide extends CActiveRecord
                 $criteria->compare('sended_guide',$this->sended_guide);
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('idCompany.company_name',$this->_company,true);
-                
+                $criteria->compare('id_manifest',$this->id_manifest);
+                $criteria->compare('id_user_creator',$this->id_user_creator);
+                $criteria->compare('idManifest.manifest_date',$this->_manifestdate,true);                
+		return new CActiveDataProvider($this, array(
+                    'criteria'=>$criteria,
+		));
+	}
+        public function searchGuide()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+		$criteria=new CDbCriteria;
+                $criteria->with=array('idUser.idCompany',);
+                $criteria->together=true;
+		$criteria->compare('id_guide',$this->id_guide);
+		$criteria->compare('id_user',$this->id_user);
+		$criteria->compare('num_guide',$this->num_guide,true);
+		$criteria->compare('pdf_guide',$this->pdf_guide,true);
+		$criteria->compare('xml_guide',$this->xml_guide,true);
+		$criteria->compare('date_guide_create',$this->date_guide_create,true);
+                $criteria->compare('sended_guide',$this->sended_guide);
+		$criteria->compare('id_user',$this->id_user);
+		$criteria->compare('idCompany.company_name',$this->_company,true);
+                $criteria->compare('id_manifest',$this->id_manifest);
+                $criteria->compare('id_user_creator',$this->id_user_creator);
+                            
 		return new CActiveDataProvider($this, array(
                     'criteria'=>$criteria,
 		));
@@ -124,7 +150,7 @@ class Guide extends CActiveRecord
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 		$criteria=new CDbCriteria;
-                $criteria->with=array('idUser.idCompany');
+                $criteria->with=array('idUser.idCompany','idManifest');
                 $criteria->together=true;
                 $user= Users::model()->findByPk(Yii::app()->user->Id);
                 $criteria->condition ='idCompany.id_company='.$user->id_company;
@@ -137,6 +163,9 @@ class Guide extends CActiveRecord
                 $criteria->compare('idCompany.company_name',$this->_company,true);
                 $criteria->compare('sended_guide',$this->sended_guide);
 		$criteria->compare('id_user',$this->id_user);
+		$criteria->compare('id_manifest',$this->id_manifest);
+		$criteria->compare('id_user_creator',$this->id_user_creator);
+                $criteria->compare('idManifest.manifest_date',$this->_manifestdate,true);
                 
 		return new CActiveDataProvider($this, array(
                     'criteria'=>$criteria,
@@ -152,5 +181,24 @@ class Guide extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
+           public function uniqueGuide($model,$attribute)
+        {
+               
+            $criteria=new CDbCriteria();
+            $criteria->with=array('idUser');
+            $criteria->together=true;
+            $criteria->condition = 't.num_guide='.$this->num_guide." and idUser.id_company=".$this->idUser->id_company;
+            $guide= Guide::model()->findall($criteria);
+            if( $count($guide)>=1)
+                $this->addError('_guide', 'No pueden existir dos guías de despacho con el mismo numero de guía');
+            
+        }
+         public function comp($model,$attribute)
+        {
+             if(!Yii::app()->checkAccess('Administrador')){
+                 $user=  User::model()->findByPk(Yii::app()->user->Id);
+                 if($user)
+                     $this->_company=$user->id_company;
+             }
+         }
 }

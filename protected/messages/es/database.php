@@ -30,6 +30,7 @@ return array(
  'Home'=>'Inicio',
  'Login'=>'Conexión',
     
+  'Id Headquarter'=>'Lugar', 
   'Headquarter'=>'Lugar',  
   'Headquarters'=>'Lugares',
   'Headquarter Name'=>'Nombre del Lugar',
@@ -44,6 +45,20 @@ return array(
  'Pdf Guide'=>'Guia Pdf',
  'Xml Guide'=>'Guia Xml',
  'Date Guide Create'=>'Fecha Creacion',
+   //reception
+    
+    'Id Reception'=>'Recepción',
+    'Reception'=>'Recepción',
+    'Reception Date'=>'Fecha Recepción',
+  // Manifest  
+  'Id Manifest'=>'Manifiesto',  
+  'Manifest'=>'Manifiesto',  
+  'Manifests'=>'Manifiestos',  
+  'Manifest Date'=>'Fecha Creación Manifiesto',  
+ // Schedule
+ 'Schedule'=>'Registro Operacional (Maquina)',
+ 'Id Schedule'=>'Id Registro Operacional (Maquina)',
+ 'Id Schedule'=>'Id Registro Operacional (Maquina)',
     
  //ticket
  'Id Ticket'=>'Id Solicitud',
@@ -65,6 +80,7 @@ return array(
  'Message Files'=>'Archivos adjuntos ',
  'Ticket Close Date'=>'Fecha Cierre No Conformidad',
     
+    
 //user
 'Id User'=>'Usuario ',
 'User'=>'Usuario ',
@@ -80,7 +96,7 @@ return array(
 'User Lastnames'=>'Apellidos ',
 'User Rut'=>'Rut',
 'New Password'=>'Nueva Contraseña ',
- 'User Phone'=>' Teléfono ',
+'User Phone'=>' Teléfono ',
     
     
 //weight

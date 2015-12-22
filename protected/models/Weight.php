@@ -35,11 +35,11 @@ class Weight extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_provider, id_weight_type, id_weight_unit, amount_weight', 'required'),
+			array('id_weight_unit, amount_weight', 'required'),
 			array('id_provider, id_weight_type, id_weight_unit, amount_weight, id_guide', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_weight, id_provider, id_weight_type, id_weight_unit, amount_weight, id_guide', 'safe', 'on'=>'search'),
+			array(' weightprovider, weighttype,id_weight, id_provider, id_weight_type, id_weight_unit, amount_weight, id_guide', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -70,6 +70,8 @@ class Weight extends CActiveRecord
 			'id_weight_unit' => Yii::t('database','Id Weight Unit'),
 			'amount_weight' => Yii::t('database','Amount Weight'),
 			'id_guide' => Yii::t('database','Id Guide'),
+                        'weighttype' => Yii::t('database','Weight Type'),
+			'weightprovider' => Yii::t('database','Provider'),
 		);
 	}
 
@@ -97,6 +99,9 @@ class Weight extends CActiveRecord
 		$criteria->compare('id_weight_unit',$this->id_weight_unit);
 		$criteria->compare('amount_weight',$this->amount_weight);
 		$criteria->compare('id_guide',$this->id_guide);
+		$criteria->compare('weightprovider',$this->weightprovider);
+		$criteria->compare('weighttype',$this->weighttype);
+                
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

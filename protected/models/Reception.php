@@ -21,11 +21,12 @@ class Reception extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+        public $_guide;
+        public $_guides=array();
 	public function tableName()
 	{
 		return 'reception';
 	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -34,11 +35,13 @@ class Reception extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_reception, id_headquarter, recepction_date, id_user', 'required'),
-			array('id_reception, id_headquarter, id_embarkation, id_user', 'numerical', 'integerOnly'=>true),
+			array('id_headquarter, id_user', 'required'),
+			array('id_headquarter, id_embarkation, id_user', 'numerical', 'integerOnly'=>true),
+			array('reception_date', 'safe'),
+                        array('_guides','validGuides'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_reception, id_headquarter, recepction_date, id_embarkation, id_user', 'safe', 'on'=>'search'),
+			array('_guide, _guides, id_reception, id_headquarter, reception_date, id_embarkation, id_user', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -50,13 +53,12 @@ class Reception extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'guides' => array(self::MANY_MANY, 'Guide', 'guide_has_recepction(id_recection, id_guide)'),
+			'guides' => array(self::HAS_MANY, 'guide_has_reception', 'id_reception'),
 			'idEmbarkation' => array(self::BELONGS_TO, 'Embarkation', 'id_embarkation'),
 			'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
 		);
 	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -65,12 +67,13 @@ class Reception extends CActiveRecord
 		return array(
 			'id_reception' => Yii::t('database','Id Reception'),
 			'id_headquarter' => Yii::t('database','Id Headquarter'),
-			'recepction_date' => Yii::t('database','Recepction Date'),
+			'reception_date' => Yii::t('database','Reception Date'),
 			'id_embarkation' => Yii::t('database','Id Embarkation'),
 			'id_user' => Yii::t('database','Id User'),
+			'_guide' => Yii::t('database','Guide'),
+			'_guides' => Yii::t('database','Guides'),
 		);
 	}
-
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *
@@ -91,7 +94,7 @@ class Reception extends CActiveRecord
 
 		$criteria->compare('id_reception',$this->id_reception);
 		$criteria->compare('id_headquarter',$this->id_headquarter);
-		$criteria->compare('recepction_date',$this->recepction_date,true);
+		$criteria->compare('recepction_date',$this->reception_date,true);
 		$criteria->compare('id_embarkation',$this->id_embarkation);
 		$criteria->compare('id_user',$this->id_user);
 
@@ -110,4 +113,18 @@ class Reception extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+          public function validGuides($model,$attribute)
+        {
+            $newfile=array();
+            if(!empty($this->_guides)){
+                foreach($this->_guides as $key => $value){
+                    $newfile[$value]=$value;
+                }
+            $this->_guides=$newfile;
+            
+             }else
+                 if(empty ($this->_guides)){
+                     $this->addError('_guide', 'Debe existir al menos una guia asociada');
+                 }
+        }
 }

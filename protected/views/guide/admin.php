@@ -40,23 +40,62 @@ if(Yii::app()->user->checkAccess('Cliente'))
   $filter=  $model->searchClient();
 if(Yii::app()->user->checkAccess('Administrador'))
    $filter= $model->search();
+
 $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'guide-grid',
+        
 	'dataProvider'=>$filter,
 	'filter'=>$model,
         'afterAjaxUpdate'=>"function() {
  	jQuery('#Projects_presentationDate').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
+ 	jQuery('#manifestdate').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
  							}",
 	'columns'=>array(
+                array(
+                    'name'=>'id_manifest',
+                    'type'=>'raw',
+                    'value'=>'CHtml::link($data->id_manifest,Yii::app()->createUrl("manifest/view",array("id"=>$data->id_manifest),array("target"=>"_blank")))',  
+                ), 
+            
+             array(
+                
+                       'name' => '_manifestdate',
+                        'value'=>'empty($data->idManifest->manifest_date)?"":Yii::app()->dateFormatter->format("d MMMM y \n HH:mm:ss",strtotime(@$data->idManifest->manifest_date))',
+                        'filter' => $this->widget('zii.widgets.jui.CJuiDatePicker', 
+                                
+                                array(
+                                        'model' => $model,
+                                        'attribute' => '_manifestdate',
+                                        'language' => 'es',
+                                       
+                                        'htmlOptions' => array(
+                                                'id' => 'manifestdate',
+                                                'dateFormat' => 'yy-mm-dd',
+                                        ),
+                                        'options' => array(  // (#3)
+                  'showOn' => 'focus', 
+                  'dateFormat' => 'yy-mm-dd',
+                  'showOtherMonths' => true,
+                  'selectOtherMonths' => true,
+                  'changeMonth' => true,
+                  'changeYear' => true,
+                  'showButtonPanel' => true,
+                )
+                                ),
+                                true),
+                
+              
+            ),
 		'id_guide',
 		'num_guide',
-           array(
+            
+         
+            array(
                     'name'=>'idUser.idCompany.company_name',
                     'value'=>'$data->idUser->idCompany->company_name',
                     'filter'=>  CHtml::activeTextField($model, '_company'),
-                    'visible'=> Yii::app()->user->checkAccess('Administrador'),
-                    
-                    ),
+                    'visible'=> Yii::app()->user->checkAccess('Administrador'),                    
+                ),
             array(
 	       'name'=>'pdf_guide',
                'type'=>'raw',
@@ -85,11 +124,19 @@ $this->widget('zii.widgets.grid.CGridView', array(
                   'changeMonth' => true,
                   'changeYear' => true,
                   'showButtonPanel' => true,
-          )
+                )
                                 ),
                                 true),
                 
               
+            ),
+             array(
+                'name' => 'check',
+                'id' => 'selectedIds',
+                'value' => '$data->id_guide',
+                'class' => 'CCheckBoxColumn',
+                'selectableRows' => '100',
+ 
             ),
                               
 
@@ -104,17 +151,35 @@ $this->widget('zii.widgets.grid.CGridView', array(
                             'url'=>'Yii::app()->controller->createUrl("update",array("id"=>"$data->id_guide"));',
                           
                          ),
-                            'Seleccionar'=>array(
-                                'label'=>'Seleccionar',
-                                'url'=>'"#"',
-                                //'onClick'=>'alert("Que lo remil pario...")'
-                                //'htmlOptions'=>array('onClick'=>'javascript: alert("Que lo remil pario...");'),
-                                //'click'=>'function(){alert("Going down!");}',
-                                'click'=>'function(){parent.document.getElementById("miEntrada").value="'.'$data->id'.'";}',
-                                //'click'=>'Yii::app()->clientScript->registerScript("myscript", "")',
-                            ),
+                       
                       
                         ),
 		),
 	),
 )); ?>
+
+
+ 
+<?php 
+ 
+    //echo '  <span>Crear Manifiesto :<span>'.CHtml::dropDownList('newStatus', 0,CHtml::listData($model,'id_guide','num_guide'),array('prompt'=>'select status' ));
+ 
+    echo CHtml::ajaxLink("Crear Manifiesto", $this->createUrl('guide/getvalue'), array(
+        "type" => "post",
+        "data" => 'js:{theIds : $.fn.yiiGridView.getChecked("guide-grid","selectedIds").toString()}',
+        "success" => 'js:function(data){ $.fn.yiiGridView.update("guide-grid")  }' ),array(
+        'class' => 'btn btn-info'
+        )
+        );
+    echo CHtml::ajaxLink("Quitar de Manifiesto", $this->createUrl('guide/deleteValue'), array(
+        "type" => "post",
+        "data" => 'js:{theIds : $.fn.yiiGridView.getChecked("guide-grid","selectedIds").toString()}',
+        "success" => 'js:function(data){ $.fn.yiiGridView.update("guide-grid")  }' ),array(
+        'class' => 'btn btn-info'
+        )
+        );
+
+ 
+?>
+
+</div>

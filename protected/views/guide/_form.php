@@ -6,13 +6,22 @@ $cs->registerScriptFile($baseUrl.'/js/addGuide.js');
 
 ?>
 <script type='text/javascript'>
+    var company=0;
 <?php
 $providerid = json_encode(CHtml::listData(Provider::model()->findAll(), 'id_provider', 'provider_name'));
 $units = json_encode(CHtml::listData(WeightUnit::model()->findAll(),'id_weight_unit', 'weight_unit_name'));
 $typeweight = json_encode(CHtml::listData(WeightType::model()->findAll(),'id_weight_type', 'weight_type_name'));
+$guides = json_encode(CHtml::listData(Guide::model()->findAll(),'num_guide', 'idUser.id_company'));
+
 echo "var providerid = ". $providerid . ";\n";
 echo "var units = ". $units . ";\n";
 echo "var typeweight = ". $typeweight . ";\n";
+echo "var guides = ". $guides . ";\n";
+if (!Yii::app()->user->checkAccess('Administrador')){
+    $user=  Users::model()->findByPk(Yii::app()->user->Id);
+    echo "company='".$user->id_company."';";
+}
+
 ?>
 var newguide='<?php echo $model->isNewRecord ? 'newguide' : $model->id_guide  ?>';  
 var urladdress='<?php echo Yii::app()->createAbsoluteUrl("Guide/addWeigth"); ?>';
@@ -71,7 +80,10 @@ var urladdress='<?php echo Yii::app()->createAbsoluteUrl("Guide/addWeigth"); ?>'
              'minLength'=>'1',
              'showAnim'=>'fold',
              'select' => 'js:function(event, ui)
-             { jQuery("#Guide_id_user").val(ui.item["id"]); }',
+             { jQuery("#Guide_id_user").val(ui.item["id"]); 
+              company=(ui.item["comp"]); 
+             
+             }',
              'search'=> 'js:function(event, ui)
              { jQuery("#Guide_id_user").val(0); }'
              ),
@@ -91,6 +103,7 @@ var urladdress='<?php echo Yii::app()->createAbsoluteUrl("Guide/addWeigth"); ?>'
 		<?php echo $form->textField($model,'pdf_guide'); ?>
 		<?php echo $form->error($model,'pdf_guide'); ?>
 	</div>
+	
         
         <br>
             <div class="row">

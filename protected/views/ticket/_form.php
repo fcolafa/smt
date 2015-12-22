@@ -22,15 +22,13 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'id_embarkation'); ?>
-		<?php echo $form->dropDownList($model,'id_embarkation',  CHtml::listData(Embarkation::model()->findAll(), 'id_embarkation', 'embarkation_name'),array('prompt'=>'Seleccione nave asociada','prompt'=>'Ninguna nave asociada')); ?>
+		<?php echo $form->dropDownList($model,'id_embarkation',  CHtml::listData(Embarkation::model()->findAll(array('order'=>'embarkation_name')), 'id_embarkation', 'embarkation_name'),array('prompt'=>'Seleccione nave asociada','prompt'=>'Ninguna nave asociada')); ?>
 		<?php echo $form->error($model,'id_embarkation'); ?>
 	</div>
         
-      
-        
         <div class="row"> 
          <?php echo $form->labelEx($model,'id_headquarter'); ?>
-         <?php echo $form->dropDownList($model,'id_headquarter',CHtml::listData(Headquarter::model()->findAll(),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Ubicación asociada'));?>
+         <?php echo $form->dropDownList($model,'id_headquarter',CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Ubicación asociada'));?>
          <?php 
            
 //             if ($model->id_headquarter&& $model->id_headquarter!=0)
@@ -80,8 +78,7 @@
 		<?php echo $form->error($model,'_files'); ?>
 	</div>
         
-        
-      
+
         <div class="row">
             <label></label>
         <?php 
