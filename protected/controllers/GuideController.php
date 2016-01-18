@@ -31,6 +31,10 @@ class GuideController extends Controller
 				'roles'=>array('Cliente','Administrador'),
 			),
                         array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('getValue'),
+				'roles'=>array('Administrador'),
+			),
+                        array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array( 'view'),
 				'roles'=>array('Encargado Puerto'),
 			),
@@ -52,16 +56,17 @@ class GuideController extends Controller
             $createuser= Users::model()->findByPk($user->id_user);
             $weight=new Weight('Search');
             $weight->id_guide=$id;
-            
-            $has=new GuideHasReception('Search');
-            $has->id_guide=$id;
+
+                $has=new GuideHasReception('search');
+		$has->unsetAttributes();  // clear any default values
+		if(isset($_GET['GuideHasReception']))
+			$has->attributes=$_GET['GuideHasReception'];      
             if(!Yii::app()->user->checkAccess('Encargado Puerto')&&
                !Yii::app()->user->checkAccess('Administrador')&&
                $user->id_user!=$userloged->id_user&&
                $userloged->id_company!=$createuser->id_company){
                        throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
             }
-            else
                     $this->render('view',array(
                             'model'=>$this->loadModel($id),
                             'weight'=>$weight,
@@ -237,6 +242,10 @@ class GuideController extends Controller
             
             $model->date_guide_create=  date("y-m-d H:i:s");
             $model->sended_guide=0;
+            if(!empty($guide[2]))
+            $model->id_headquarter=$guide[2];
+            else
+                  $model->id_headquarter=null;
             
             if($model->save()){
                 //files
@@ -259,6 +268,7 @@ class GuideController extends Controller
                             //$weight->id_provider=$w[0];
                             //$weight->id_weight_type=$w[1];
                             $weight->amount_weight=$w[2];
+                            $weight->amount_left=$w[2];
                             $weight->id_weight_unit=$w[3];
                             $weight->weightprovider=  ucwords(strtolower($w[0]));
                             $weight->weighttype=ucwords(strtolower($w[1]));

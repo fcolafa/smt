@@ -4,11 +4,12 @@
  * This is the model class for table "schedule".
  *
  * The followings are the available columns in table 'schedule':
- * @property integer $id_schedule
+ * @property string $id_schedule
  * @property string $schedule_date
  * @property double $initial_stock
  * @property string $ranch_date
  * @property double $ranch_diesel
+ * @property double $delivery_DO
  * @property integer $id_headquarter
  * @property double $final_stock
  * @property double $day_comsuption
@@ -26,13 +27,15 @@
  * @property double $horometer_gen1
  * @property double $horometer_gen2
  * @property double $horometer_gen3
- * @property double $arrrive_stock
+ * @property double $arrive_stock
  * @property double $total_water_charged
  * @property string $earthing
  * @property integer $id_user
  * @property string $notes
+ * @property integer $id_embarkation
  *
  * The followings are the available model relations:
+ * @property Embarkation $idEmbarkation
  * @property Headquarter $idHeadquarter
  * @property Users $idUser
  */
@@ -41,6 +44,8 @@ class Schedule extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+         public $_embarkation_name;
+        public $_headquarter_name;
 	public function tableName()
 	{
 		return 'schedule';
@@ -54,13 +59,14 @@ class Schedule extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_schedule, id_headquarter, id_user', 'required'),
-			array('id_schedule, id_headquarter, id_user', 'numerical', 'integerOnly'=>true),
-			array('initial_stock, ranch_diesel, final_stock, day_comsuption, init_bb_motor, finish_bb_motor, init_eb_motor, finish_eb_motor, total_hours, gen1_hours, gen2_hours, gen3_hours, horometer_bb, horometer_eb, horometer_gen1, horometer_gen2, horometer_gen3, arrrive_stock, total_water_charged', 'numerical'),
+			array('id_schedule, id_headquarter, id_user, id_embarkation', 'required'),
+			array('id_headquarter, id_user, id_embarkation', 'numerical', 'integerOnly'=>true),
+			array('initial_stock, ranch_diesel, delivery_DO, final_stock, day_comsuption, init_bb_motor, finish_bb_motor, init_eb_motor, finish_eb_motor, total_hours, gen1_hours, gen2_hours, gen3_hours, horometer_bb, horometer_eb, horometer_gen1, horometer_gen2, horometer_gen3, arrive_stock, total_water_charged', 'numerical'),
+			array('id_schedule', 'length', 'max'=>100),
 			array('schedule_date, ranch_date, arrive_date, earthing, notes', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_schedule, schedule_date, initial_stock, ranch_date, ranch_diesel, id_headquarter, final_stock, day_comsuption, init_bb_motor, finish_bb_motor, init_eb_motor, finish_eb_motor, total_hours, gen1_hours, gen2_hours, gen3_hours, arrive_date, horometer_bb, horometer_eb, horometer_gen1, horometer_gen2, horometer_gen3, arrrive_stock, total_water_charged, earthing, id_user, notes', 'safe', 'on'=>'search'),
+			array('_headquarter_name, _embarkation_name,id_schedule, schedule_date, initial_stock, ranch_date, ranch_diesel, delivery_DO, id_headquarter, final_stock, day_comsuption, init_bb_motor, finish_bb_motor, init_eb_motor, finish_eb_motor, total_hours, gen1_hours, gen2_hours, gen3_hours, arrive_date, horometer_bb, horometer_eb, horometer_gen1, horometer_gen2, horometer_gen3, arrive_stock, total_water_charged, earthing, id_user, notes, id_embarkation', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,6 +78,7 @@ class Schedule extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'idEmbarkation' => array(self::BELONGS_TO, 'Embarkation', 'id_embarkation'),
 			'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
 		);
@@ -88,6 +95,7 @@ class Schedule extends CActiveRecord
 			'initial_stock' => Yii::t('database','Initial Stock'),
 			'ranch_date' => Yii::t('database','Ranch Date'),
 			'ranch_diesel' => Yii::t('database','Ranch Diesel'),
+			'delivery_DO' => Yii::t('database','Delivery Do'),
 			'id_headquarter' => Yii::t('database','Id Headquarter'),
 			'final_stock' => Yii::t('database','Final Stock'),
 			'day_comsuption' => Yii::t('database','Day Comsuption'),
@@ -105,11 +113,12 @@ class Schedule extends CActiveRecord
 			'horometer_gen1' => Yii::t('database','Horometer Gen1'),
 			'horometer_gen2' => Yii::t('database','Horometer Gen2'),
 			'horometer_gen3' => Yii::t('database','Horometer Gen3'),
-			'arrrive_stock' => Yii::t('database','Arrrive Stock'),
+			'arrive_stock' => Yii::t('database','Arrive Stock'),
 			'total_water_charged' => Yii::t('database','Total Water Charged'),
 			'earthing' => Yii::t('database','Earthing'),
 			'id_user' => Yii::t('database','Id User'),
 			'notes' => Yii::t('database','Notes'),
+			'id_embarkation' => Yii::t('database','Id Embarkation'),
 		);
 	}
 
@@ -130,11 +139,14 @@ class Schedule extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-		$criteria->compare('id_schedule',$this->id_schedule);
+                $criteria->with=array('idUser','idEmbarkation','idHeadquarter');
+                $criteria->together=true;
+		$criteria->compare('id_schedule',$this->id_schedule,true);
 		$criteria->compare('schedule_date',$this->schedule_date,true);
 		$criteria->compare('initial_stock',$this->initial_stock);
 		$criteria->compare('ranch_date',$this->ranch_date,true);
 		$criteria->compare('ranch_diesel',$this->ranch_diesel);
+		$criteria->compare('delivery_DO',$this->delivery_DO);
 		$criteria->compare('id_headquarter',$this->id_headquarter);
 		$criteria->compare('final_stock',$this->final_stock);
 		$criteria->compare('day_comsuption',$this->day_comsuption);
@@ -152,11 +164,14 @@ class Schedule extends CActiveRecord
 		$criteria->compare('horometer_gen1',$this->horometer_gen1);
 		$criteria->compare('horometer_gen2',$this->horometer_gen2);
 		$criteria->compare('horometer_gen3',$this->horometer_gen3);
-		$criteria->compare('arrrive_stock',$this->arrrive_stock);
+		$criteria->compare('arrive_stock',$this->arrive_stock);
 		$criteria->compare('total_water_charged',$this->total_water_charged);
 		$criteria->compare('earthing',$this->earthing,true);
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('notes',$this->notes,true);
+		$criteria->compare('id_embarkation',$this->id_embarkation);
+                 $criteria->compare('idEmbarkation.embarkation_name', $this->_embarkation_name,true);
+		$criteria->compare('idHeadquarter.headquarter_name', $this->_headquarter_name,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

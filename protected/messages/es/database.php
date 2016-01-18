@@ -50,6 +50,7 @@ return array(
     'Id Reception'=>'Recepción',
     'Reception'=>'Recepción',
     'Reception Date'=>'Fecha Recepción',
+    'Comment'=>'Comentarios',
   // Manifest  
   'Id Manifest'=>'Manifiesto',  
   'Manifest'=>'Manifiesto',  
@@ -57,8 +58,44 @@ return array(
   'Manifest Date'=>'Fecha Creación Manifiesto',  
  // Schedule
  'Schedule'=>'Registro Operacional (Maquina)',
+    	'Schedule Date'=>'Fecha de Registro',
  'Id Schedule'=>'Id Registro Operacional (Maquina)',
  'Id Schedule'=>'Id Registro Operacional (Maquina)',
+ 'Initial Stock'=>'Stock Inicial',  
+ 'Ranch Date'=>'Fecha Rancho',  
+ 'Ranch Diesel'=>'Rancho Diesel Lts',  
+ 'Final Stock'=>'Stock Final del dia',
+ 'Day Comsuption'=>'Consumo del dia',
+ 'Delivery Do'=>'Entrega de D.O.',
+'Init Bb Motor'=>'Inicio',
+'Finish Bb Motor'=>'Termino',
+'Init Eb Motor'=>'Inicio',
+'Finish Eb Motor'=>'Termino',
+'Total Hours'=>'Horas totales',
+'Gen1 Hours'=>'Horómetro Gen 1',
+'Gen2 Hours'=>'Horómetro Gen 2',
+'Gen3 Hours'=>'Horómetro Gen 3',
+'Arrive Date'=>'Hora de Recalada',
+'Horometer Bb'=>'Horómetro Motor Bb',
+'Horometer Eb'=>'Horómetro Motor Eb',
+'Horometer Gen1'=>'Horómetro Gen 1',
+'Horometer Gen2'=>'Horómetro Gen 2',
+'Horometer Gen3'=>'Horómetro Gen 3',
+'Arrive Stock'=>'Stock Recalada',
+'Total Water Charged'=>'Total Agua Cargada',
+'Earthing'=>'Conexion Tierra (Tiempo)',
+'Notes'=>'Observaciones',
+    
+    
+'Bridge Date Arrive'=>'Fecha y hora Racalada',
+'Init Charge Time'=>'Inicio Carga/Descarga',
+'Finish Charge Time'=>'Termino Carga/Descarga',
+'Bridge Date Sailing'=>'Fecha y hora Zarpe',
+'Bridge Date'=>'Fecha de Registro',
+'Bridge Notes'=>'Observaciones',
+'Bridge'=>'Registro Operacional (Puente)',    
+'Id Bridge'=>' Id Registro Operacional (Puente)',    
+    
     
  //ticket
  'Id Ticket'=>'Id Solicitud',
@@ -120,5 +157,9 @@ return array(
  'Weight Type'=>'Tipo de carga',
  'Id Weight Type'=>'Id Tipo de carga',
  'Weight Type Name'=>'Nombre Tipo de Carga',
-  'WeightType'=>'Tipo de carga',
+ 'WeightType'=>'Tipo de carga',
+ 'Amount Warehouse'=>'Cantidad recibida',
+ 'Amount Left'=>'Cantidad Restante',
+ 'Amount Headquarter'=>'Cantidad en Bodega',
+    
 );

@@ -22,6 +22,11 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'id_area'); ?>
+		<?php echo $form->textField($model,'id_area'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'headquarter_name'); ?>
 		<?php echo $form->textField($model,'headquarter_name',array('size'=>45,'maxlength'=>45)); ?>
 	</div>
@@ -29,6 +34,16 @@
 	<div class="row">
 		<?php echo $form->label($model,'headquarter_location'); ?>
 		<?php echo $form->textField($model,'headquarter_location',array('size'=>45,'maxlength'=>45)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'headquarter_type'); ?>
+		<?php echo $form->textField($model,'headquarter_type',array('size'=>45,'maxlength'=>45)); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'id_company'); ?>
+		<?php echo $form->textField($model,'id_company'); ?>
 	</div>
 
 	<div class="row buttons">

@@ -61,6 +61,7 @@ if(!empty($model->id_user_creator))
             'type'=>'raw',
             'value'=> CHtml::link(CHtml::encode($model->pdf_guide), Yii::app()->baseUrl . '/images/guides/'.$model->id_guide."/". $model->pdf_guide, array('target'=>'_blank')),
             ),
+            'idHeadquarter.headquarter_name'
 	),
 ));
                     ?>
@@ -79,23 +80,62 @@ if(!empty($model->id_user_creator))
 <?php if(Yii::app()->user->checkAccess('Cliente')||
        Yii::app()->user->checkAccess('Administrador') ){ ?>
 <h4> Seguimiento:</h4>
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php 
+$this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'reception-grid',
-	'dataProvider'=>$has->search(),
-	
+	'dataProvider'=>$has->searchGuide($model->id_guide),
+	'filter'=>$has,
+        'afterAjaxUpdate'=>"function() {
+ 	jQuery('#_receptionDate').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
+ 							}",
 	'columns'=>array(
-             array(
-                'name'=>'idReception.reception_date',
-                //'value'=>'date("d M Y",strtotime($data["work_date"]))'
-                'value'=>'Yii::app()->dateFormatter->format("d MMMM y | HH:mm:ss",strtotime($data->idReception->reception_date))',
-             ),
-            'idReception.idHeadquarter.headquarter_name',
-            'idReception.idEmbarkation.embarkation_name',
+                      array(
+                       'name' => 'idReception.reception_date',
+                        'value'=>'Yii::app()->dateFormatter->format("d MMMM y \n HH:mm:ss",strtotime($data->idReception->reception_date))',
+                        'filter' => $this->widget('zii.widgets.jui.CJuiDatePicker', 
+                                
+                                array(
+                                        'model' => $has,
+                                        'attribute' => '_receptionDate',
+                                        'language' => 'es',
+                                       
+                                        'htmlOptions' => array(
+                                                'id' => '_receptionDate',
+                                                'dateFormat' => 'yy-mm-dd',
+                                        ),
+                                        'options' => array(  // (#3)
+                                                    'showOn' => 'focus', 
+                                                    'dateFormat' => 'yy-mm-dd',
+                                                    'showOtherMonths' => true,
+                                                    'selectOtherMonths' => true,
+                                                    'changeMonth' => true,
+                                                    'changeYear' => true,
+                                                    'showButtonPanel' => true,
+                                                  )
+                                ),
+                                true),
+            ),
+
+//            'idReception.idHeadquarter.headquarter_name',
+//            'idReception.idEmbarkation.embarkation_name',
+////            
             array(
-                'name'=>'Recepcionado por',
+                'name'=>'idReception.idHeadquarter.headquarter_name',
+                 'value'=>'@$data->idReception->idHeadquarter->headquarter_name',
+                 'filter'=>  CHtml::activeTextField($has, '_headquarter_name'),
+            ),
+            array(
+               // 'name'=>'Recepcionado por',
                 'value'=>'$data->idReception->idUser->user_names." ".$data->idReception->idUser->user_lastnames'
                 ),
+           
+            array(
+                'name'=>'idReception.comment',
+                'value'=>'$data->idReception->comment'
+              ),
             ),
-       )); }?>
+
+              )); }
+       ?>
 
 				

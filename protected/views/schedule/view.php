@@ -8,10 +8,10 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>Yii::t('actions','List')." ". Yii::t('database','Schedule'), 'url'=>array('index')),
+	//array('label'=>Yii::t('actions','List')." ". Yii::t('database','Schedule'), 'url'=>array('index')),
 	array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Schedule'), 'url'=>array('create')),
-	array('label'=>Yii::t('actions','Update')." ". Yii::t('database','Schedule'), 'url'=>array('update', 'id'=>$model->id_schedule)),
-	array('label'=>Yii::t('actions','Delete')." ". Yii::t('database','Schedule'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id_schedule),'confirm'=>Yii::t('validation','Are you sure you want to delete this item?'))),
+	array('label'=>Yii::t('actions','Update')." ". Yii::t('database','Schedule'), 'url'=>array('update', 'ids'=>$model->id_schedule)),
+	array('label'=>Yii::t('actions','Delete')." ". Yii::t('database','Schedule'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','ids'=>$model->id_schedule),'confirm'=>Yii::t('validation','Are you sure you want to delete this item?'))),
 	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Schedule'), 'url'=>array('admin')),
 );
 ?>
@@ -24,20 +24,52 @@ $this->menu=array(
 		'id_schedule',
 		'schedule_date',
 		'initial_stock',
-		'ranch_date',
+		         array(
+                  
+                'name'=>'ranch_date',
+                //'value'=>'date("d M Y",strtotime($data["work_date"]))'
+                   'value'=>  isset($model->ranch_date)?Yii::app()->dateFormatter->format("d MMMM y | HH:mm:ss",strtotime($model->ranch_date)):null
+                
+            ),
 		'ranch_diesel',
 		'id_headquarter',
 		'final_stock',
 		'day_comsuption',
-		'init_bb_motor',
-		'finish_bb_motor',
-		'init_eb_motor',
-		'finish_eb_motor',
+             	     array(
+                'name'=>'Horometro Motor Babor:',
+                'value'=>"inicio:".$model->init_bb_motor." termino:".$model->finish_bb_motor,
+      
+            ),
+             	     array(
+                'name'=>'Horometro Motor Estribor:',
+                'value'=>"inicio:".$model->init_eb_motor." termino:".$model->finish_eb_motor,
+      
+            ),
+            
+            
+	
 		'total_hours',
-		'gen1_hours',
-		'gen2_hours',
-		'gen3_hours',
-		'arrive_date',
+                	     array(
+                'name'=>'Horas de servicio en el dia:',
+                'value'=>"Horómetro Gen 1:".$model->gen1_hours." Horómetro Gen 2".$model->gen2_hours." Horómetro Gen 3:".$model->gen3_hours,
+      
+            ),
+	),
+)); ?>
+<h4>Datos Recalada</h4>
+<?php $this->widget('zii.widgets.CDetailView', array(
+	'data'=>$model,
+	'attributes'=>array(
+
+	
+		    array(
+                 'name'=>'arrive_date',
+                //'value'=>'date("d M Y",strtotime($data["work_date"]))'
+                'value'=>  isset($model->arrive_date)?Yii::app()->dateFormatter->format("d MMMM y | HH:mm:ss",strtotime($model->arrive_date)):null
+                
+                    ),
+           
+           
 		'horometer_bb',
 		'horometer_eb',
 		'horometer_gen1',
@@ -45,8 +77,25 @@ $this->menu=array(
 		'horometer_gen3',
 		'arrrive_stock',
 		'total_water_charged',
-		'earthing',
-		'id_user',
+	
+	),
+)); ?>
+<h4>Otros Datos</h4>
+<?php $this->widget('zii.widgets.CDetailView', array(
+	'data'=>$model,
+	'attributes'=>array(
+
+	
+	'earthing',
+		     array(
+                'name'=>'Ingresado Por:',
+                'value'=>CHtml::link(
+                        ' '.$model->idUser->user_names.' '.
+                        ' '.$model->idUser->user_lastnames
+                        ,array('users/viewClient','id'=>$model->id_user)),
+                'type'=>'raw',
+                'visible'=>Yii::app()->user->checkAccess('Administrador')
+            ),
 		'notes',
 	),
 )); ?>

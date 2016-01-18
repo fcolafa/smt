@@ -20,15 +20,15 @@ $this->breadcrumbs=array(
     </div>
     <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/manifest/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-files.png" alt="Customers" /></a>
-        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/manifest/admin"><?php echo Yii::t ('database','Manifest') ?></a></div>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/manifest/admin"><?php echo Yii::t ('database','Manifests') ?></a></div>
     </div>
     <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/embarkation/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-ship.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/embarkation/index"><?php echo Yii::t ('database','Embarkations') ?></a></div>
     </div>
     <div class="dashIcon">
-        <a href="<?php echo Yii::app()->baseurl?>/provider/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-truck2.png" alt="Customers" /></a>
-        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/embarkation/index"><?php echo Yii::t ('database','Providers') ?></a></div>
+        <a href="<?php echo Yii::app()->baseurl?>/headquarter/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-fishfarm.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/headquarter/admin"><?php echo Yii::t ('database','Headquarters') ?></a></div>
     </div>
     <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/weightUnit/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-cash2.png" alt="Customers" /></a>
@@ -38,13 +38,21 @@ $this->breadcrumbs=array(
         <a href="<?php echo Yii::app()->baseurl?>/company/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-building.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/company/index"><?php echo Yii::t ('database','Companies') ?></a></div>
     </div>
-    <div class="dashIcon">
+<!--    <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/weighttype/index"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-weight_type.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/weighttype/index"><?php echo Yii::t ('database','Weight Types') ?></a></div>
-    </div>
+    </div>-->
     <div class="dashIcon">
         <a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-write.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><?php echo Yii::t ('database','Tickets') ?></a></div>
+    </div>   
+    <div class="dashIcon">
+        <a href="<?php echo Yii::app()->baseurl?>/schedule/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-gears.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/schedule/admin"><?php echo Yii::t ('database','Schedule') ?></a></div>
+    </div>   
+    <div class="dashIcon">
+        <a href="<?php echo Yii::app()->baseurl?>/bridge/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-gears.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/bridge/admin"><?php echo Yii::t ('database','Bridge') ?></a></div>
     </div>   
     
     

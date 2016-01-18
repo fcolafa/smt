@@ -103,6 +103,11 @@ var urladdress='<?php echo Yii::app()->createAbsoluteUrl("Guide/addWeigth"); ?>'
 		<?php echo $form->textField($model,'pdf_guide'); ?>
 		<?php echo $form->error($model,'pdf_guide'); ?>
 	</div>
+        <div class="row">
+		<?php echo $form->labelEx($model,'id_headquarter'); ?>
+		<?php echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
+		<?php echo $form->error($model,'id_headquarter'); ?>
+	</div>
 	
         
         <br>

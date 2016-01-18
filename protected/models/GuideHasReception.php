@@ -12,7 +12,9 @@ class GuideHasReception extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
-         public $_date;
+        public $_date;
+        public $_receptionDate;
+        public $_headquarter_name;
 	public function tableName()
 	{
 		return 'guide_has_reception';
@@ -30,7 +32,7 @@ class GuideHasReception extends CActiveRecord
 			array('id_guide, id_reception', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_date ,id_guide, id_reception', 'safe', 'on'=>'search'),
+			array('_headquarter_name,_receptionDate, _date ,id_guide, id_reception', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -83,6 +85,39 @@ class GuideHasReception extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	public function searchGuide($id)
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $criteria->with=array('idReception','idReception.idHeadquarter');
+                $criteria->together=true;
+                $criteria->condition ='id_guide='.$id;
+		$criteria->compare('id_guide',$this->id_guide);
+		$criteria->compare('id_reception',$this->id_reception);
+                $criteria->compare('idReception.reception_date',$this->_receptionDate,true);
+                $criteria->compare('idHeadquarter.headquarter_name',$this->_headquarter_name,true);
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+//        public function searchCurrernGuide($id)
+//	{
+//		// @todo Please modify the following code to remove attributes that should not be searched.
+//
+//		$criteria=new CDbCriteria;
+//                $criteria->select="id_guide,t.id_reception ,reception_date";
+//                $criteria->join=" INNER JOIN ( SELECT * FROM reception  order by reception_date DESC) s ON s.id_reception=t.id_reception";
+//                $criteria->group = 't.id_guide';
+//                $criteria->order='s.reception_date desc';
+//                $criteria->compare('id_guide',$this->id_guide);
+//		$criteria->compare('id_headquarter',$id);
+//               // $criteria->compare('idReception.reception_date',$this->_receptionDate,true);
+//               // $criteria->compare('idHeadquarter.headquarter_name',$this->_headquarter_name,true);
+//		return new CActiveDataProvider($this, array(
+//			'criteria'=>$criteria,
+//		));
+//	}
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

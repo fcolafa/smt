@@ -99,7 +99,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
             array(
 	       'name'=>'pdf_guide',
                'type'=>'raw',
-               'value'=>'CHtml::link($data->pdf_guide,Yii::app()->createUrl("guide/UrlProcessing",array("url"=>Yii::app()->BaseUrl."/images/guides/".$data->pdf_guide)),array("target"=>"_blank"))',  
+               'value'=>'CHtml::link($data->pdf_guide,Yii::app()->createUrl("guide/UrlProcessing",array("url"=>Yii::app()->BaseUrl."/images/guides/".$data->id_guide."/".$data->pdf_guide)),array("target"=>"_blank"))',  
             ),
             array(
                 
@@ -138,8 +138,6 @@ $this->widget('zii.widgets.grid.CGridView', array(
                 'selectableRows' => '100',
  
             ),
-                              
-
                 array(
 			'class'=>'CButtonColumn',
                     'template'=>'{view} {delete}',

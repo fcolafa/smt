@@ -43,7 +43,7 @@ class Guide extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('num_guide, date_guide_create, sended_guide, id_user', 'required'),
-			array('id_user_creator,id_user, sended_guide, id_manifest', 'numerical', 'integerOnly'=>true),
+			array('id_headquarter,id_user_creator,id_user, sended_guide, id_manifest', 'numerical', 'integerOnly'=>true),
                         array('sended_guide, id_user', 'numerical', 'integerOnly'=>true),
 			array('num_guide', 'length', 'max'=>45),
 			array('pdf_guide, xml_guide', 'length', 'max'=>60),
@@ -51,7 +51,7 @@ class Guide extends CActiveRecord
                         // array('guide', 'length','max'=>1),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_manifestdate,id_user_creator,id_manifest,_company,_send, id_guide, id_user, num_guide, pdf_guide, xml_guide, date_guide_create, sended_guide, id_user, id_manifest', 'safe', 'on'=>'search'),
+			array('id_headquarter, _manifestdate,id_user_creator,id_manifest,_company,_send, id_guide, id_user, num_guide, pdf_guide, xml_guide, date_guide_create, sended_guide, id_user, id_manifest', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,6 +63,7 @@ class Guide extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+                        'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
                         'idManifest' => array(self::BELONGS_TO, 'Manifest', 'id_manifest'),
                         'sends' => array(self::HAS_MANY, 'Send', 'id_guide'),
@@ -83,10 +84,11 @@ class Guide extends CActiveRecord
 			'xml_guide' => Yii::t('database','Xml Guide'),
                         'date_guide_create' => Yii::t('database','Date Guide Create'),
                         'sended_guide' => Yii::t('database','Sended Guide'),
-			'id_user' => Yii::t('database','Id User'),
+			'id_user' => Yii::t('database','Cliente'),
                         'id_manifest' => Yii::t('database','Id Manifest'),
                         'id_user_creator' => Yii::t('database','Id User'),
                         '_manifestdate' => Yii::t('database','Manifest Date'),
+                        'id_headquarter' => Yii::t('database','Ubicación de Origen'),
 		);
 	}
 
@@ -120,6 +122,7 @@ class Guide extends CActiveRecord
                 $criteria->compare('id_manifest',$this->id_manifest);
                 $criteria->compare('id_user_creator',$this->id_user_creator);
                 $criteria->compare('idManifest.manifest_date',$this->_manifestdate,true);                
+               	$criteria->compare('id_headquarter',$this->id_headquarter);             
 		return new CActiveDataProvider($this, array(
                     'criteria'=>$criteria,
 		));
@@ -141,6 +144,7 @@ class Guide extends CActiveRecord
 		$criteria->compare('idCompany.company_name',$this->_company,true);
                 $criteria->compare('id_manifest',$this->id_manifest);
                 $criteria->compare('id_user_creator',$this->id_user_creator);
+                       	$criteria->compare('id_headquarter',$this->id_headquarter);
                             
 		return new CActiveDataProvider($this, array(
                     'criteria'=>$criteria,
@@ -166,6 +170,7 @@ class Guide extends CActiveRecord
 		$criteria->compare('id_manifest',$this->id_manifest);
 		$criteria->compare('id_user_creator',$this->id_user_creator);
                 $criteria->compare('idManifest.manifest_date',$this->_manifestdate,true);
+                $criteria->compare('id_headquarter',$this->id_headquarter); 
                 
 		return new CActiveDataProvider($this, array(
                     'criteria'=>$criteria,

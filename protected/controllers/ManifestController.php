@@ -27,9 +27,10 @@ class ManifestController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('view','admin'),
-				'roles'=>array('Cliente','Administrador'),
+			
+                      array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array( 'view','admin','create','delete','update','ListGuides'),
+				'roles'=>array('Administrador'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -65,8 +66,20 @@ class ManifestController extends Controller
 		if(isset($_POST['Manifest']))
 		{
 			$model->attributes=$_POST['Manifest'];
-			if($model->save())
+                        $model->manifest_date=date("y-m-d H:i:s");
+                        if(isset($_POST['Reception']['_guides']))
+                           $model->_guides=$_POST['Reception']['_guides'];
+                        
+			if($model->save()){
+                            
+                            if(!empty($model->_guides))
+                                foreach($model->_guides as $idg){
+                                $guide= Guide::model()->findByPk($idg);
+                                $guide->id_manifest=$model->id_manifest;
+                                $guide->save();
+                                }
 				$this->redirect(array('view','id'=>$model->id_manifest));
+                        }
 		}
 
 		$this->render('create',array(
@@ -85,12 +98,32 @@ class ManifestController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
+                          $newfile=array();
+                          $criteria=new CDbCriteria();
+                          $criteria->condition="id_manifest=".$id;
+                          $guides=Guide::model()->findAll($criteria);
+                           if(!empty($guides)){
+                            foreach($guides as  $value){
+                                $newfile[$value->id_guide]=$value->id_guide;
+                            }
+                        $model->_guides=$newfile;
+                        }
 		if(isset($_POST['Manifest']))
 		{
 			$model->attributes=$_POST['Manifest'];
-			if($model->save())
+                        if(isset($_POST['Reception']['_guides']))
+                           $model->_guides=$_POST['Reception']['_guides'];
+                      
+                      
+			if($model->save()){
+                              if(!empty($model->_guides))
+                                foreach($model->_guides as $idg){
+                                $guide= Guide::model()->findByPk($idg);
+                                $guide->id_manifest=$model->id_manifest;
+                                $guide->save();
+                                }
 				$this->redirect(array('view','id'=>$model->id_manifest));
+                        }
 		}
 
 		$this->render('update',array(
@@ -105,6 +138,15 @@ class ManifestController extends Controller
 	 */
 	public function actionDelete($id)
 	{
+//                $criteria=new CDbCriteria();
+//                $criteria->condition="id_manifest=".$id;
+//                $guides=  Guide::model()->findAll($criteria);
+//                if(!empty($guides))
+//                    foreach($guides as $g){
+//                    $guide=  Guide::model()->findByPk($g->id_guide);
+//                    $guide->id_manifest=null;
+//                    $guide->save();
+//                    }
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
@@ -165,4 +207,26 @@ class ManifestController extends Controller
 			Yii::app()->end();
 		}
 	}
+          public function actionListGuides($term)
+        {
+            $criteria = new CDbCriteria;
+            $criteria->with=array('idUser.idCompany');
+            $criteria->together=true;
+            $criteria->condition = "(LOWER(id_guide) like LOWER(:term) OR LOWER(num_guide) like LOWER(:term) OR LOWER(idCompany.company_name) like LOWER(:term))";
+            $criteria->params = array(':term'=> '%'.$_GET['term'].'%');
+            $criteria->limit = 30;
+            $models = Guide::model()->findAll($criteria);
+
+            $arr = array();
+            foreach($models as $model)
+            {
+                $arr[] = array(
+                'label'=>($model->num_guide." (".$model->idUser->idCompany->company_name.")" ),// label for dropdown list
+                'value'=> "",
+                'link'=>  CHtml::link(CHtml::encode($model->num_guide." (".$model->idUser->idCompany->company_name.")"), array('guide/view','id'=>$model->id_guide,), array('target'=>'_blank')), // value for input field
+                'id'=>$model->id_guide, // return value from autocomplete
+                       );
+             }
+             echo CJSON::encode($arr);
+        }
 }

@@ -15,4 +15,4 @@ $this->menu=array(
 
 <h1><?php echo Yii::t('actions','Notify')?> <?php echo Yii::t('database','Reception')?></h1>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php $this->renderPartial('_form', array('model'=>$model,'weight'=>$weight)); ?>

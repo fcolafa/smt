@@ -47,9 +47,22 @@ $this->breadcrumbs=array(
         <a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-write.png" alt="Customers" /></a>
         <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/ticket/admin"><?php echo Yii::t ('database','Tickets') ?></a></div>
     </div>
+   
+   
    <?php endif ?>
-    
-        
+   
+   <?php if( Yii::app()->user->checkAccess('Motorista')){ ?>
+    <div class="dashIcon">
+        <a href="<?php echo Yii::app()->baseurl?>/schedule/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-gears.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/schedule/admin"><?php echo Yii::t ('database','Schedule') ?></a></div>
+    </div>   
+   <?php } ?>
+   <?php if( Yii::app()->user->checkAccess('Capitan')){ ?>
+    <div class="dashIcon">
+        <a href="<?php echo Yii::app()->baseurl?>/bridge/admin"><img src="<?php echo Yii::app()->theme->baseUrl; ?>/img/big_icons/icon-gears.png" alt="Customers" /></a>
+        <div class="dashIconText"><a href="<?php echo Yii::app()->baseurl?>/bridge/admin"><?php echo Yii::t ('database','Bridge') ?></a></div>
+    </div>   
+   <?php } ?>
     
 </div><!-- form -->
 

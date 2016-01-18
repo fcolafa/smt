@@ -3,13 +3,13 @@
 /* @var $model Headquarter */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Headquarters')=>array('index','idu'=>$idu),
+	Yii::t('database','Headquarters')=>array('index'),
 	Yii::t('actions','Create'),
 );
 
 $this->menu=array(
-	array('label'=>Yii::t('actions','List')." ".Yii::t('database','Headquarter'), 'url'=>array('index','idu'=>$idu)),
-	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Headquarter'), 'url'=>array('admin','idu'=>$idu)),
+	//array('label'=>Yii::t('actions','List')." ".Yii::t('database','Headquarter'), 'url'=>array('index')),
+	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Headquarter'), 'url'=>array('admin')),
 );
 ?>
 

@@ -6,29 +6,47 @@ $cs->registerScriptFile($baseUrl.'/js/addGuideReception.js');
 ?>
 
 <script type='text/javascript'>
-<?php
-$providerid = json_encode(CHtml::listData(Provider::model()->findAll(), 'id_provider', 'provider_name'));
-$units = json_encode(CHtml::listData(WeightUnit::model()->findAll(),'id_weight_unit', 'weight_unit_name'));
-$typeweight = json_encode(CHtml::listData(WeightType::model()->findAll(),'id_weight_type', 'weight_type_name'));
-echo "var providerid = ". $providerid . ";\n";
-echo "var units = ". $units . ";\n";
-echo "var typeweight = ". $typeweight . ";\n";
-?>
+     
+
 
  $(document).ready(function(e) {
         <?php 
+       
         $cont=0;
+       
         if($model->_guides){
-           // echo "indexguide=".  count($model->_guides).";";
             foreach ($model->_guides as $item){
+                 
+                $conw=1;
                 $guide=  Guide::model()->findByPk($item);
-                echo "window.onload=addRowItem();";
-                echo " $('#guide'+".$cont.").append('<h5>'+ '".CHtml::link(CHtml::encode($guide->num_guide." (".$guide->idUser->idCompany->company_name.")"), array('guide/view','id'=>$guide->id_guide,), array('target'=>'_blank'))."'+'</h5>');";
-                echo " indexguide = indexguide+1; ";
-             
-            $cont++;
+                echo "window.onload= addTableGuide();";
+                if($weight)
+                    foreach($weight as $w)
+                        if($item==$w->id_guide){
+                            echo "window.onload=addWeigth(indexguide);";                        
+                            echo "$('#we'+".$cont."+".$conw.").append('<h5>'+'".$w->weightprovider." '+'".$w->weighttype."'+' '+".$w->amount_left."+' ('+'".$w->idWeightUnit->weight_unit_name."'+')'+'</h5>');"; 
+                            echo "$('#we'+".$cont."+".$conw.").attr('class',".$w->id_guide."+'-'+".$w->id_weight.");";
+                            if($model->_newAmount)
+                               foreach($model->_newAmount as $na){
+                                    $valna=explode('-',$na);                                   
+                                    if($w->id_weight==$valna[1]){
+       
+                                        echo "$('#namount'+".$cont."+".$conw.").val(".$valna[2].");";
+                                        echo "$('#check'+".$cont."+".$conw.").prop('checked', true);";
+                                       
+                                    }
+                                }   
+                            
+                            $conw++;
+                    }
+                echo "indexguide = indexguide+1;";
+                echo " $('#gui'+".$cont.").append('<h5>'+ '".CHtml::link(CHtml::encode($guide->num_guide." (".$guide->idUser->idCompany->company_name.")"), array('guide/view','id'=>$guide->id_guide,), array('target'=>'_blank'))."'+'</h5>');";
+                     $cont++;
+                
             }
-        }
+       
+            }
+        
      ?> 
      });
 </script>
@@ -73,6 +91,7 @@ echo "var typeweight = ". $typeweight . ";\n";
              'select' => 'js:function(event, ui)
              {     
              var valid=true;
+             var ist=0;   
                 $("#Reception__guides option").each(function(){
                     if($(this).attr("value")==ui.item["id"]){
                     alert("la guia "+ui.item["label"]+" ya ha sido tomada");
@@ -83,21 +102,33 @@ echo "var typeweight = ". $typeweight . ";\n";
                     if(valid==false){
                         return false;
                         }
-                    addRowItem();
+      
+                    addTableGuide();
+                 
+                     for(var j in arr=ui.item["guides"]){ 
+                        var item=arr[j]["id_guide"]+"-"+arr[j]["id_weight"];
+                       $("#Reception__weights").append(new Option(item,item, true, true));
+                        addWeigth(indexguide);
+                        ist=parseInt(j)+1;
+                          $("#we"+indexguide+ist).append("<h5>"+ arr[j]["weightprovider"]+" "+arr[j]["weighttype"]+" "+arr[j]["amount_left"]+" ("+arr[j]["unit"]+")"+"</h5>");
+                          $("#we"+indexguide+ist).attr("class",item);  
+                    }
                     $("#Reception__guides").append(new Option(ui.item["id"], ui.item["id"], true, true));
-                    $("#guide"+indexguide).append("<h5>"+ ui.item["link"] +"</h5>");
-                    indexguide = indexguide+1;              
+                    
+                    $("#gui"+indexguide).append("<h5>"+ ui.item["link"] +"</h5>");
+                    indexguide = indexguide+1;    
+                   
               }',
-                 'onload'=>' alert("ñe");',
+                 
              ),
              ));
          ?>
             <?php echo $form->error($model,'_guide'); ?>
 	
         </div>
-        
+         <!--
         <div class="row" >
-            <table  class="item-class grid-view">
+            <table  class="table-bordered">
                 <thead id="tblGuideHead">
                     <tr>
                       
@@ -107,21 +138,41 @@ echo "var typeweight = ". $typeweight . ";\n";
                 </tbody>           
             </table>
         </div>
-        
-        <div class="row" style="display: none">
+         -->
+          <div class="row" >
+            <table  class="table-bordered">
+                <thead id="tblGuideHead2">
+                    <tr>
+                      
+                    </tr>
+                </thead>
+                <tbody id="tbl_guide">
+                </tbody>           
+            </table>
+        </div>
+       
+        <<div class="row" style="display: none">
 		<?php echo $form->labelEx($model,'_guides'); ?>
 		<?php echo $form->dropDownList($model,'_guides',$model->_guides ,array('multiple' => 'multiple')); ?>
 		<?php echo $form->error($model,'_guides'); ?>
 	</div>
-   
-      
+            <div class="row" style="display: none">
+		<?php echo $form->labelEx($model,'_weights'); ?>
+		<?php echo $form->dropDownList($model,'_weights',$model->_weights ,array('multiple' => 'multiple')); ?>
+		<?php echo $form->error($model,'_weights'); ?>
+            </div>
+     
+        <div class="row" style="display: none">
+		<?php echo $form->labelEx($model,'_newAmount'); ?>
+		<?php echo $form->dropDownList($model,'_newAmount',$model->_newAmount ,array('multiple' => 'multiple')); ?>
+		<?php echo $form->error($model,'_newAmount'); ?>
+	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'id_headquarter'); ?>
 		<?php echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
 		<?php echo $form->error($model,'id_headquarter'); ?>
 	</div>
-     
-        
+
         <?php if(Yii::app()->user->checkAccess('Capitan')){ ?>
 	<div class="row">
 		<?php //echo $form->labelEx($model,'id_headquarter'); ?>
@@ -145,7 +196,11 @@ echo "var typeweight = ". $typeweight . ";\n";
 		<?php echo $form->error($model,'id_embarkation'); ?>
 	</div>
         <?php } ?>
-
+        <div class="row">
+		<?php echo $form->labelEx($model,'comment'); ?>
+		<?php echo $form->textArea($model,'comment',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->error($model,'comment'); ?>
+	</div>
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('actions','Notify') : Yii::t('actions','Notify'),array('class'=>Yii::app()->params['btnclass'])); ?>
 	</div>

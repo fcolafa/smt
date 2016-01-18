@@ -1,13 +1,12 @@
 <?php
 
-class HeadquarterController extends Controller
+class BridgeController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/column2';
-        
 
 	/**
 	 * @return array action filters
@@ -19,43 +18,37 @@ class HeadquarterController extends Controller
 			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
+
 	/**
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
 	 * @return array access control rules
 	 */
-        public function accessRules()
-                {
-                        return array(
+	public function accessRules()
+	{
+		return array(
                                 array('allow', // allow authenticated user to perform 'create' and 'update' actions
                                         'actions'=>array( 'view', 'create','update','admin','delete'),
-                                        'roles'=>array('Cliente','Administrador'),
+                                        'roles'=>array('Capitan'),
+                                ),
+                                 array('allow', // allow authenticated user to perform 'create' and 'update' actions
+                                        'actions'=>array( 'view', 'admin'),
+                                        'roles'=>array('Administrador'),
                                 ),
                                 array('deny',  // deny all users
                                         'users'=>array('*'),
                                 ),
                         );
-                }
+	}
 
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($ids)
 	{
-                $model=$this->loadModel($id);
-                $ware=new Warehouse('search');
-                $recep=new Weight('search');
-		$ware->unsetAttributes();  // clear any default values
-		if(isset($_GET['Warehouse']))
-			$ware->attributes=$_GET['Warehouse'];             
-		$recep->unsetAttributes();  // clear any default values
-		if(isset($_GET['Weight']))
-			$recep->attributes=$_GET['Weight'];             
 		$this->render('view',array(
-			'model'=>$model,
-                        'ware'=>$ware,
-                        'recep'=>$recep,
+			'model'=>$this->loadModel($ids),
 		));
 	}
 
@@ -65,19 +58,34 @@ class HeadquarterController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Headquarter;
+		$model=new Bridge;
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-		if(isset($_POST['Headquarter']))
+
+		if(isset($_POST['Bridge']))
 		{
-			$model->attributes=$_POST['Headquarter'];
-                        if(Yii::app()->user->checkAccess('Cliente')){
-                            $user=  User::model()->findByPk(Yii::app()->user->Id);
-                             $model->id_company=$user->id_company;
-                        }
+                    	$model->attributes=$_POST['Bridge'];
+                        $model->id_bridge=  uniqid()." ".date("y-m-d H:i:s");
+                  
+                        $model->bridge_date=date("y-m-d H:i:s");
+                        $model->id_user=  Yii::app()->user->id;
+                        if(empty($model->init_charge_time))
+                            $model->init_charge_time=null;
+                        if(empty($model->finish_charge_time))
+                            $model->finish_charge_time=null;
+                         if(!empty( $model->bridge_date_arrive))
+                            $model->bridge_date_arrive=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->bridge_date_arrive);
+                         else
+                             $model->bridge_date_arrive=null;
+                        if(!empty( $model->bridge_date_sailing))
+                            $model->bridge_date_sailing=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->bridge_date_sailing);
+                        else
+                            $model->bridge_date_sailing=null;
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id_headquarter));
+				$this->redirect(array('view','ids'=>$model->id_bridge));
 		}
+
 		$this->render('create',array(
 			'model'=>$model,
 		));
@@ -88,22 +96,24 @@ class HeadquarterController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
+	public function actionUpdate($ids)
 	{
-		$model=$this->loadModel($id);
+		$model=$this->loadModel($ids);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Headquarter']))
+                if($model->id_user!=Yii::app()->user-id)
+                    throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
+            
+		if(isset($_POST['Bridge']))
 		{
-			$model->attributes=$_POST['Headquarter'];
-                        if(Yii::app()->user->checkAccess('Cliente')){
-                            $user=  User::model()->findByPk(Yii::app()->user->Id);
-                             $model->id_company=$user->id_company;
-                        }
+			$model->attributes=$_POST['Bridge'];
+                        if(!empty( $model->bridge_date_arrive))
+                            $model->bridge_date_arrive=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->bridge_date_arrive);
+                        if(!empty( $model->bridge_date_sailing))
+                            $model->bridge_date_sailing=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->bridge_date_sailing);
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id_headquarter));
+				$this->redirect(array('view','ids'=>$model->id_bridge));
 		}
 
 		$this->render('update',array(
@@ -116,9 +126,9 @@ class HeadquarterController extends Controller
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id)
+	public function actionDelete($ids)
 	{
-		$this->loadModel($id)->delete();
+		$this->loadModel($ids)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -130,7 +140,7 @@ class HeadquarterController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Headquarter');
+		$dataProvider=new CActiveDataProvider('Bridge');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -141,10 +151,10 @@ class HeadquarterController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Headquarter('search');
+		$model=new Bridge('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Headquarter']))
-			$model->attributes=$_GET['Headquarter'];
+		if(isset($_GET['Bridge']))
+			$model->attributes=$_GET['Bridge'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -155,12 +165,12 @@ class HeadquarterController extends Controller
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Headquarter the loaded model
+	 * @return Bridge the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Headquarter::model()->findByPk($id);
+		$model=Bridge::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -168,11 +178,11 @@ class HeadquarterController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Headquarter $model the model to be validated
+	 * @param Bridge $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='headquarter-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='bridge-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

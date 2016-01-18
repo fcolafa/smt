@@ -37,7 +37,7 @@ margin-bottom: 10px ;
 box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
 -webkit-box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
 -moz-box-shadow: 0 0 10px rgba(189, 189, 189, 0.4);
-min-height:500px;
+min-height:600px;
 }
 
 
@@ -424,8 +424,6 @@ input[type="checkbox"][readonly] {
   background-color: transparent;
 }
 
-
-
 /* Breadcrums */
 .breadcrumb {
   padding: 7px 14px;
@@ -545,3 +543,4 @@ p.hint { float:left; display:block;}
 }
 
 .col-md-3 { float: left; }
+

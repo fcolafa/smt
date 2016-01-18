@@ -27,32 +27,28 @@ class ScheduleController extends Controller
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
-				'users'=>array('admin'),
-			),
-			array('deny',  // deny all users
-				'users'=>array('*'),
-			),
-		);
+                                array('allow', // allow authenticated user to perform 'create' and 'update' actions
+                                        'actions'=>array( 'view', 'create','update','admin','delete'),
+                                        'roles'=>array('Motorista'),
+                                ),
+                      array('allow', // allow authenticated user to perform 'create' and 'update' actions
+                                        'actions'=>array( 'view', 'admin'),
+                                        'roles'=>array('Motorista'),
+                                ),
+                                array('deny',  // deny all users
+                                        'users'=>array('*'),
+                                ),
+                        );
 	}
 
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($ids)
 	{
 		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+			'model'=>$this->loadModel($ids),
 		));
 	}
 
@@ -66,12 +62,56 @@ class ScheduleController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
 		if(isset($_POST['Schedule']))
 		{
 			$model->attributes=$_POST['Schedule'];
+                        $model->id_schedule=  uniqid()." ".date("y-m-d H:i:s");
+                        $model->schedule_date=date("y-m-d H:i:s");
+                             if(!empty( $model->ranch_date))
+                            $model->ranch_date=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->ranch_date);
+                        else 
+                             $model->ranch_date=null;
+                        
+                        if(!empty( $model->arrive_date))
+                            $model->arrive_date=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->arrive_date);
+                        else
+                             $model->arrive_date=null;
+                       $inits=$model->initial_stock; 
+                       $ranchd=$model->ranch_diesel;
+                       $do=$model->delivery_DO;
+                       $fs=$model->final_stock;
+                       
+                       //calulate day comsuption 
+                       if(empty($inits))
+                            $inits=0;
+                        if(empty($ranchd))
+                            $ranchd=0;
+                        if(empty($do))
+                            $do=0;
+                        if(empty($fs))
+                            $fs=0;
+                        $model->day_comsuption=$inits+$ranchd-$do-$fs;
+                        $model->id_user=  Yii::app()->user->id;
+                        
+                        
+                        $inithbb=$model->init_bb_motor;
+                        $endhbb=$model->finish_bb_motor;
+                        $initheb=$model->init_eb_motor;
+                        $endheb=$model->finish_eb_motor;
+                        //calulate total hour
+                        if(empty($inithbb))
+                            $inithbb=0;
+                        if(empty($endhbb))
+                            $endhbb=0;
+                        if(empty($initheb))
+                            $initheb=0;
+                        if(empty($endheb))
+                            $endheb=0;
+                        $model->total_hours=(($endhbb-$inithbb)+($endheb-$initheb))/2;
+                        if(empty($model->earthing))
+                            $model->earthing=null;
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id_schedule));
+				$this->redirect(array('view','ids'=>$model->id_schedule));
 		}
 
 		$this->render('create',array(
@@ -84,18 +124,60 @@ class ScheduleController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
+	public function actionUpdate($ids)
 	{
-		$model=$this->loadModel($id);
+		$model=$this->loadModel($ids);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
+                if($model->id_user!=Yii::app()->user-id)
+                    throw new CHttpException(404, 'Usted no esta autorizado para realizar esta acción.');
 		if(isset($_POST['Schedule']))
 		{
 			$model->attributes=$_POST['Schedule'];
+                        if(!empty( $model->ranch_date))
+                            $model->ranch_date=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->ranch_date);
+                        else 
+                             $model->ranch_date=null;
+                        
+                        if(!empty( $model->arrive_date))
+                            $model->arrive_date=Yii::app()->dateFormatter->format('yyyy-MM-dd HH:mm', $model->arrive_date);
+                        else
+                             $model->arrive_date=null;
+                       $inits=$model->initial_stock; 
+                       $ranchd=$model->ranch_diesel;
+                       $do=$model->delivery_DO;
+                       $fs=$model->final_stock;
+                       
+                       //calulate day comsuption 
+                       if(empty($inits))
+                            $inits=0;
+                        if(empty($ranchd))
+                            $ranchd=0;
+                        if(empty($do))
+                            $do=0;
+                        if(empty($fs))
+                            $fs=0;
+                        $model->day_comsuption=$inits+$ranchd-$do-$fs;
+                        $model->id_user=  Yii::app()->user->id;
+                        
+                        
+                        $inithbb=$model->init_bb_motor;
+                        $endhbb=$model->finish_bb_motor;
+                        $initheb=$model->init_eb_motor;
+                        $endheb=$model->finish_eb_motor;
+                        //calulate total hour
+                        if(empty($inithbb))
+                            $inithbb=0;
+                        if(empty($endhbb))
+                            $endhbb=0;
+                        if(empty($initheb))
+                            $initheb=0;
+                        if(empty($endheb))
+                            $endheb=0;
+                        $model->total_hours=(($endhbb-$inithbb)+($endheb-$initheb))/2;
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id_schedule));
+				$this->redirect(array('view','ids'=>$model->id_schedule));
 		}
 
 		$this->render('update',array(
@@ -108,9 +190,9 @@ class ScheduleController extends Controller
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id)
+	public function actionDelete($ids)
 	{
-		$this->loadModel($id)->delete();
+		$this->loadModel($ids)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))

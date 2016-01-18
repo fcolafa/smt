@@ -8,7 +8,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>Yii::t('actions','List')." ".Yii::t('database','Schedule'), 'url'=>array('index')),
+	//array('label'=>Yii::t('actions','List')." ".Yii::t('database','Schedule'), 'url'=>array('index')),
 	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Schedule'), 'url'=>array('admin')),
 );
 ?>

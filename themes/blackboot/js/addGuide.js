@@ -51,6 +51,7 @@ function addRowItem()
     amount.id='amount'+i;
     amount.type='number';
     amount.style.width ='100%';
+    amount.step=0.1;
     amount.min=0;
     cellAmount.appendChild(amount);
     
@@ -123,6 +124,7 @@ var validation='';
 guide.push($('#Guide_num_guide').val());
 guide.push($('#Guide_pdf_guide').val());
 guide.push($('#Guide_id_user').val());
+guide.push($('#Guide_id_headquerater').val());
 if(guide[0] =='')
     validation=validation+'-Numero de Guia no puede ser nulo \n';
 if(size<1)

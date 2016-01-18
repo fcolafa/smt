@@ -3,16 +3,16 @@
 /* @var $model Headquarter */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Headquarters')=>array('index','idu'=>$idu),
+	Yii::t('database','Headquarters')=>array('index'),
 	$model->id_headquarter=>array('view','id'=>$model->id_headquarter),
 	Yii::t('actions','Update'),
 );
 
 $this->menu=array(
-	array('label'=>Yii::t('actions','List')." ". Yii::t('database','Headquarter'), 'url'=>array('index','idu'=>$idu)),
+	//array('label'=>Yii::t('actions','List')." ". Yii::t('database','Headquarter'), 'url'=>array('index')),
 	array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Headquarter'), 'url'=>array('create')),
-	array('label'=>Yii::t('actions','View')." ". Yii::t('database','Headquarter'), 'url'=>array('view', 'id'=>$model->id_headquarter,'idu'=>$idu)),
-	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Headquarter'), 'url'=>array('admin','idu'=>$idu)),
+	array('label'=>Yii::t('actions','View')." ". Yii::t('database','Headquarter'), 'url'=>array('view', 'id'=>$model->id_headquarter)),
+	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Headquarter'), 'url'=>array('admin')),
 );
 ?>
 

@@ -9,7 +9,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 //array('label'=>Yii::t('actions','List')." ". Yii::t('database','Manifest'), 'url'=>array('index')),
-//	array('label'=>Yii::t('actions','Create')." ".Yii::t('database','Manifest'), 'url'=>array('create')),
+	array('label'=>Yii::t('actions','Create')." ".Yii::t('database','Manifest'), 'url'=>array('create')),
 );?>
 <h1><?php echo Yii::t('actions','Manage')?> <?php echo Yii::t('database','Manifests')?></h1>
 
@@ -27,7 +27,7 @@ $this->menu=array(
 		'manifest_date',
 		 array(
                     'class'=>'CButtonColumn',
-                    'template'=>'{view} ',
+                   
                    
 		),
 	),

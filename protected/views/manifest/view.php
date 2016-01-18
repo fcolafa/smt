@@ -9,9 +9,9 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	//array('label'=>Yii::t('actions','List')." ". Yii::t('database','Manifest'), 'url'=>array('index')),
-	//array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Manifest'), 'url'=>array('create')),
-	//array('label'=>Yii::t('actions','Update')." ". Yii::t('database','Manifest'), 'url'=>array('update', 'id'=>$model->id_manifest)),
-	//array('label'=>Yii::t('actions','Delete')." ". Yii::t('database','Manifest'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id_manifest),'confirm'=>Yii::t('validation','Are you sure you want to delete this item?'))),
+	array('label'=>Yii::t('actions','Create')." ". Yii::t('database','Manifest'), 'url'=>array('create')),
+	array('label'=>Yii::t('actions','Update')." ". Yii::t('database','Manifest'), 'url'=>array('update', 'id'=>$model->id_manifest)),
+	array('label'=>Yii::t('actions','Delete')." ". Yii::t('database','Manifest'), 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id_manifest),'confirm'=>Yii::t('validation','Are you sure you want to delete this item?'))),
 	array('label'=>Yii::t('actions','Manage')." ". Yii::t('database','Manifest'), 'url'=>array('admin')),
 );
 ?>

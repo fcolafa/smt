@@ -23,6 +23,9 @@ class Reception extends CActiveRecord
 	 */
         public $_guide;
         public $_guides=array();
+        public $_weights=array();
+        public $_weight="";
+        public $_newAmount=array();
 	public function tableName()
 	{
 		return 'reception';
@@ -37,11 +40,18 @@ class Reception extends CActiveRecord
 		return array(
 			array('id_headquarter, id_user', 'required'),
 			array('id_headquarter, id_embarkation, id_user', 'numerical', 'integerOnly'=>true),
-			array('reception_date', 'safe'),
+			array('reception_date, comment', 'safe'),
+                        array('_guides','reloadSelect'),
                         array('_guides','validGuides'),
+                        array('_weights','reloadSelect'),
+                        array('_newAmount','reloadSelect'),
+                        array('_newAmount','rightAmount'),
+                        array('id_headquarter','uniqueGuide'),
+                        //array('_newAmount','orderAmount'),
+                      //  array('_newAmount','validW'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_guide, _guides, id_reception, id_headquarter, reception_date, id_embarkation, id_user', 'safe', 'on'=>'search'),
+			array('_newAmount,_weights,_guide, _guides, id_reception, id_headquarter, reception_date, id_embarkation, id_user', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,10 +63,11 @@ class Reception extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'guides' => array(self::HAS_MANY, 'guide_has_reception', 'id_reception'),
+			'guides' => array(self::HAS_MANY, 'guideHasReception', 'id_reception'),
 			'idEmbarkation' => array(self::BELONGS_TO, 'Embarkation', 'id_embarkation'),
 			'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
+                        'warehouses' => array(self::HAS_MANY, 'Warehouse', 'id_reception'),
 		);
 	}
 	/**
@@ -72,6 +83,8 @@ class Reception extends CActiveRecord
 			'id_user' => Yii::t('database','Id User'),
 			'_guide' => Yii::t('database','Guide'),
 			'_guides' => Yii::t('database','Guides'),
+			'comment' => Yii::t('database','Comment'),
+			'_weights' => Yii::t('database','Weights'),
 		);
 	}
 	/**
@@ -95,6 +108,7 @@ class Reception extends CActiveRecord
 		$criteria->compare('id_reception',$this->id_reception);
 		$criteria->compare('id_headquarter',$this->id_headquarter);
 		$criteria->compare('recepction_date',$this->reception_date,true);
+		$criteria->compare('comment',$this->comment,true);
 		$criteria->compare('id_embarkation',$this->id_embarkation);
 		$criteria->compare('id_user',$this->id_user);
 
@@ -102,6 +116,8 @@ class Reception extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+        
+    
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -126,5 +142,53 @@ class Reception extends CActiveRecord
                  if(empty ($this->_guides)){
                      $this->addError('_guide', 'Debe existir al menos una guia asociada');
                  }
+        }
+         public function reloadSelect($attribute,$params)
+        {
+            $newfile=array();
+            if(!empty($this->$attribute)){
+                foreach($this->$attribute as $key => $value){
+                    $newfile[$value]=$value;
+                }
+                $this->$attribute=$newfile;
+            
+             }
+        }
+        public function orderAmount($attribute,$params){
+             $newfile=array();
+            if(!empty($this->$attribute))
+                $this->$attribute=$newfile;
+        }
+        public function rightAmount($attribute,$params)
+        {
+         
+            if(!empty($this->$attribute)){
+                foreach($this->$attribute as $key => $value){
+                     $data = explode('-', $value);
+                     $weight= Weight::model()->findByPk($data[1]);
+                     if($weight->amount_left<$data[2])
+                         $this->addError('_guide', 'la cantidad ingresada es superior al total de la carga asociada');
+                }
+             }
+        }
+
+        public function uniqueGuide($attribute,$params)
+        {
+            $error="";
+            if(!empty($this->_guides)&& !empty($this->id_headquarter)){
+                foreach($this->_guides as $w){
+                    $criteria=new CDbCriteria();
+                    $criteria->with=array('guides');
+                    $criteria->together=true;
+                    $criteria->condition="guides.id_guide=".$w."  and id_headquarter=".  $this->id_headquarter; 
+                     $weight= Reception::model()->findAll($criteria);
+                     $wei= Guide::model()->findByPk($w);
+                    if(!empty($weight)){
+                           $error="la guia ".$wei->num_guide." ya ha sido recibida al lugar asociado "; 
+                           $this->addError('id_headquarter', $error);
+                   }
+                }
+                  
+            }
         }
 }

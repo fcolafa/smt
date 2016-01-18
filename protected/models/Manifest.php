@@ -15,6 +15,8 @@ class Manifest extends CActiveRecord
 	/**
 	 * @return string the associated database table name
 	 */
+        public $_guide;
+        public $_guides=array();    
 	public function tableName()
 	{
 		return 'manifest';
@@ -28,10 +30,14 @@ class Manifest extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+                        
 			array('manifest_date', 'safe'),
+                        array('_guides','validGuides'),
+                        array('_guides','uniqueGuide'),
+                        
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id_manifest, manifest_date', 'safe', 'on'=>'search'),
+			array('_guide, _guides, id_manifest, manifest_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -55,6 +61,8 @@ class Manifest extends CActiveRecord
 		return array(
 			'id_manifest' => Yii::t('database','Id Manifest'),
 			'manifest_date' => Yii::t('database','Manifest Date'),
+                        '_guide' => Yii::t('database','Guide'),
+                        '_guides' => Yii::t('database','Guides'),
 		);
 	}
 
@@ -94,4 +102,36 @@ class Manifest extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+            public function validGuides($model,$attribute)
+        {
+            $newfile=array();
+            if(!empty($this->_guides)){
+                foreach($this->_guides as $key => $value){
+                    $newfile[$value]=$value;
+                }
+            $this->_guides=$newfile;
+            
+             }else
+                 if(empty ($this->_guides)){
+                     $this->addError('_guide', 'Debe existir al menos una guia asociada');
+                 }
+        }
+       
+        public function uniqueGuide($model,$attribute){
+           
+                foreach($this->_guides as $key => $value){
+                $criteria=new CDbCriteria();
+                if($this->isNewRecord)
+                    $criteria->condition="id_manifest IS NOT NULL  AND id_guide='".$value."'";
+                else
+                    $criteria->condition="id_manifest <>".$this->id_manifest."  AND id_guide='".$value."'";
+                $guides=  Guide::model()->findAll($criteria);
+                $guide=  Guide::model()->findByPk($value);
+                if(!empty($guides)){
+                        $this->addError('_guide', "la guia ".$guide->num_guide.' Ya ha sido ingresado en otro manifiesto');
+                    }
+                }
+                    
+        }
+       
 }
