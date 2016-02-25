@@ -35,10 +35,9 @@ $cs->registerScriptFile($baseUrl.'/js/addGuideReception.js');
                                         echo "$('#check'+".$cont."+".$conw.").prop('checked', true);";
                                        
                                     }
-                                }   
-                            
+                                } 
                             $conw++;
-                    }
+                }
                 echo "indexguide = indexguide+1;";
                 echo " $('#gui'+".$cont.").append('<h5>'+ '".CHtml::link(CHtml::encode($guide->num_guide." (".$guide->idUser->idCompany->company_name.")"), array('guide/view','id'=>$guide->id_guide,), array('target'=>'_blank'))."'+'</h5>');";
                      $cont++;
@@ -167,35 +166,34 @@ $cs->registerScriptFile($baseUrl.'/js/addGuideReception.js');
 		<?php echo $form->dropDownList($model,'_newAmount',$model->_newAmount ,array('multiple' => 'multiple')); ?>
 		<?php echo $form->error($model,'_newAmount'); ?>
 	</div>
+       
+	
+
+        <?php if(Yii::app()->user->checkAccess('Capitan')||Yii::app()->user->checkAccess(  'Encargado Puerto')){ ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'id_headquarter'); ?>
-		<?php echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
+		<?php echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll('headquarter_type="Muelle/Puerto"'),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
 		<?php echo $form->error($model,'id_headquarter'); ?>
-	</div>
-
-        <?php if(Yii::app()->user->checkAccess('Capitan')){ ?>
-	<div class="row">
-		<?php //echo $form->labelEx($model,'id_headquarter'); ?>
-		<?php //echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll(),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
-		<?php //echo $form->error($model,'id_headquarter'); ?>
-	</div>
-        <?php }?>
-          <?php if(Yii::app()->user->checkAccess('Jefe Centro')){ ?>
-	<div class="row">
-		<?php //echo $form->labelEx($model,'id_headquarter'); ?>
-		<?php //echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll('headquarter_type="Centro de Cultivo"'),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
-		<?php //echo $form->error($model,'id_headquarter'); ?>
-	</div>
-        <?php }?>
-        
-        <?php if(!Yii::app()->user->checkAccess(  'Encargado Puerto')){ ?>
-      
+	</div>   
 	<div class="row">
 		<?php echo $form->labelEx($model,'id_embarkation'); ?>
 		<?php echo $form->dropDownList($model,'id_embarkation',  CHtml::listData(Embarkation::model()->findAll(array('order'=>'embarkation_name')), 'id_embarkation', 'embarkation_name'),array('prompt'=>'Seleccione nave asociada','prompt'=>'Ninguna nave asociada')); ?>
 		<?php echo $form->error($model,'id_embarkation'); ?>
 	</div>
-        <?php } ?>
+        <?php }else if(Yii::app()->user->checkAccess('Jefe Centro')){ ?>
+	<div class="row">
+		<?php echo $form->labelEx($model,'id_headquarter'); ?>
+		<?php echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll('headquarter_type="Centro de Cultivo"'),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
+		<?php echo $form->error($model,'id_headquarter'); ?>
+	</div>
+        <?php }else if(Yii::app()->user->checkAccess('Jefe Centro')){?>
+            <div class="row">
+		<?php //echo $form->labelEx($model,'id_headquarter'); ?>
+		<?php //echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
+		<?php //echo $form->error($model,'id_headquarter'); ?>
+	</div>
+        <?php } ?>   
+      
         <div class="row">
 		<?php echo $form->labelEx($model,'comment'); ?>
 		<?php echo $form->textArea($model,'comment',array('rows'=>6, 'cols'=>50)); ?>

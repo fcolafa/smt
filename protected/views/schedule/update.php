@@ -3,7 +3,7 @@
 /* @var $model Schedule */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Schedules')=>array('index'),
+	Yii::t('database','Schedules')=>array('admin'),
 	$model->id_schedule=>array('view','id'=>$model->id_schedule),
 	Yii::t('actions','Update'),
 );

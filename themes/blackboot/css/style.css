@@ -53,6 +53,9 @@ padding: 10px 15px;
 border-bottom: 1px solid transparent;
 border-top-right-radius: 3px;
 border-top-left-radius: 3px;
+ border-bottom-width: 4px;
+  border-bottom-style: solid;
+  border-bottom-color: #1DB9E8;
 }
 
 

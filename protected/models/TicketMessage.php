@@ -10,10 +10,15 @@
  * @property integer $id_user
  * @property integer $ticket_order
  * @property string $ticket_message_date
+ * @property integer $id_user_asigned
+ * @property string $ticket_message_type
+ * @property integer $ticket_message_approve
  *
  * The followings are the available model relations:
  * @property Ticket $idTicket
  * @property Users $idUser
+ * @property Users $idUserAsigned
+ * @property TicketMessageFile[] $ticketMessageFiles
  */
 class TicketMessage extends CActiveRecord
 {
@@ -23,11 +28,11 @@ class TicketMessage extends CActiveRecord
         public $_verifyCode;
         public $_message_files=array();
         
+        
 	public function tableName()
 	{
 		return 'ticket_message';
 	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -37,10 +42,11 @@ class TicketMessage extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id_ticket, id_user, ticket_message', 'required'),
-			array('id_ticket, id_user ,id_user_asigned', 'numerical', 'integerOnly'=>true),
+			array('id_ticket, id_user ,id_user_asigned, ticket_message_approve', 'numerical', 'integerOnly'=>true),
+                        array('ticket_message_type', 'length', 'max'=>45),
 			array('ticket_message_date ', 'safe'),
                         array('_message_files','validMessageFile'),
-			array('_message_files,id_user_asigned, id_ticket_message, id_ticket, ticket_message, id_user,  ticket_message_file, ticket_message_date', 'safe', 'on'=>'search'),
+			array('_message_files, id_user_asigned, id_ticket_message, id_ticket, ticket_message, id_user,  ticket_message_file, ticket_message_date, ticket_message_type, ticket_message_approve', 'safe', 'on'=>'search'),
                         array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
                         array('id_user_asigned','validateid')
 		);
@@ -60,7 +66,6 @@ class TicketMessage extends CActiveRecord
                         'ticketMessageFiles' => array(self::HAS_MANY, 'TicketMessageFile', 'id_ticket_message'),
 		);
 	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -75,6 +80,8 @@ class TicketMessage extends CActiveRecord
 			'_verifyCode'=>Yii::t('database','Verification Code'),
                         'id_user_asigned'=>Yii::t('database','Id User Asigned'),
                         '_message_files'=>Yii::t('database','Message Files'),
+                        'ticket_message_type' => Yii::t('database','Ticket Message Type'),
+			'ticket_message_approve' => Yii::t('database','Ticket Message Approve'),
 		);
 	}
 
@@ -101,6 +108,8 @@ class TicketMessage extends CActiveRecord
 		$criteria->compare('id_user',$this->id_user);
 		$criteria->compare('ticket_message_date',$this->ticket_message_date,true);
 		$criteria->compare('id_user_asigned',$this->ticket_message_date,true);
+                $criteria->compare('ticket_message_type',$this->ticket_message_type,true);
+		$criteria->compare('ticket_message_approve',$this->ticket_message_approve);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -125,7 +134,7 @@ class TicketMessage extends CActiveRecord
           public function validMessageFile($model,$attribute)
         {
             $newfile=array();
-        if(!empty($this->_message_files)){
+            if(!empty($this->_message_files)){
                 foreach($this->_message_files as $key => $value){
                     $newfile[$value]=$value;
                 }

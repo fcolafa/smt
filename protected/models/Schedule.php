@@ -59,7 +59,7 @@ class Schedule extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('id_schedule, id_headquarter, id_user, id_embarkation', 'required'),
+			array('id_schedule , id_user, id_embarkation', 'required'),
 			array('id_headquarter, id_user, id_embarkation', 'numerical', 'integerOnly'=>true),
 			array('initial_stock, ranch_diesel, delivery_DO, final_stock, day_comsuption, init_bb_motor, finish_bb_motor, init_eb_motor, finish_eb_motor, total_hours, gen1_hours, gen2_hours, gen3_hours, horometer_bb, horometer_eb, horometer_gen1, horometer_gen2, horometer_gen3, arrive_stock, total_water_charged', 'numerical'),
 			array('id_schedule', 'length', 'max'=>100),

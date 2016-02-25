@@ -87,6 +87,11 @@
 		<?php echo $form->timeField($model,'finish_charge_time'); ?>
 		<?php echo $form->error($model,'finish_charge_time'); ?>
 	</div>
+	<div class="row">
+		<?php echo $form->labelEx($model,'navigated_miles'); ?>
+		<?php echo $form->numberField($model,'navigated_miles',array('step'=>0.1,'min'=>0)); ?>
+		<?php echo $form->error($model,'navigated_miles'); ?>
+	</div>
 
 	
             <div class="row">

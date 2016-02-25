@@ -7,14 +7,26 @@
  * @property integer $id_embarkation
  * @property integer $id_user
  * @property integer $id_classification
- * @property string $ticket_date
+* @property string $ticket_date
+ * @property string $ticket_subject
  * @property string $ticket_description
  * @property string $ticket_status
+ * @property string $ticket_date_incident
+ * @property integer $id_headquarter
+ * @property string $ticket_solution
+ * @property string $other_classification
+ * @property integer $id_classification
+ * @property string $ticket_close_date
+ * @property string $ticket_solution_date
  *
  * The followings are the available model relations:
  * @property Classification $idClassification
  * @property Embarkation $idEmbarkation
+ * @property Headquarter $idHeadquarter
  * @property Users $idUser
+ * @property TicketFile[] $ticketFiles
+ * @property TicketMessage[] $ticketMessages
+ * @property TicketSolutionFile[] $ticketSolutionFiles
  */
 class Ticket extends CActiveRecord
 {
@@ -28,8 +40,8 @@ class Ticket extends CActiveRecord
         public $_user_names;
         public $_user_lastnames;
         public $_files=array();
-        public $_solution_files=array();
-        
+       
+
         
         public function tableName()
 	{
@@ -44,16 +56,14 @@ class Ticket extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array(' id_user, ticket_subject,id_classification ,ticket_date,ticket_date_incident ,ticket_description', 'required'),
-                        array('ticket_solution','requiredSolution'),
-			array('id_embarkation, id_headquarter, id_user, id_classification', 'numerical', 'integerOnly'=>true),
+                       	array('id_embarkation, id_headquarter, id_user, id_classification', 'numerical', 'integerOnly'=>true),
 			array('ticket_status', 'length', 'max'=>45),
 			array('ticket_subject', 'length', 'max'=>45),
                         array('ticket_date_incident','validatetime'),
                         array('id_headquarter','validateId'),
                         array('_files','validFile'),
-                        array('_solution_files','validSolutionFile'),
                         array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
-                        array('ticket_close_date,_files, _solution_files, id_classification,_days,  _user_lastnames, _user_names, _headquarter_name, _embarkation_name, _user_name, id_ticket, id_embarkation, id_user,  ticket_date, ticket_date_incident, ticket_description, ticket_solution, ticket_status', 'safe', 'on'=>'search'),
+                        array('ticket_close_date,_files, id_classification,  _user_lastnames, _user_names, _headquarter_name, _embarkation_name, _user_name, id_ticket, id_embarkation, id_user,  ticket_date, ticket_date_incident, ticket_description, ticket_solution, ticket_status', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,7 +81,7 @@ class Ticket extends CActiveRecord
 			'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
                         'ticketFiles' => array(self::HAS_MANY, 'TicketFile', 'id_ticket'),
 			'idClassification' => array(self::BELONGS_TO, 'Classification', 'id_classification'),
-                        'ticketSolutionFiles' => array(self::HAS_MANY, 'TicketSolutionFile', 'id_ticket'),
+                        
 		);
 	}
 
@@ -95,8 +105,9 @@ class Ticket extends CActiveRecord
                         'ticket_solution'=>Yii::t('database','Ticket Solution'),
                         'id_classification'=>Yii::t('database','Classification'),
                         '_files'=>Yii::t('database','Ticket Files'),
-                        '_solution_files'=>Yii::t('database','Message Files'),
+                        
                         'ticket_close_date'=>Yii::t('database','Ticket Close Date'),
+                    
 		);
 	}
 
@@ -129,7 +140,6 @@ class Ticket extends CActiveRecord
 		$criteria->compare('ticket_close_date',$this->ticket_close_date,true);
 		$criteria->compare('ticket_description',$this->ticket_description,true);
 		$criteria->compare('ticket_status',$this->ticket_status,true);
-		$criteria->compare('ticket_solution',$this->ticket_solution,true);
 		$criteria->compare('idUser.user_name',$this->_user_name,true);
 		$criteria->compare('idEmbarkation.embarkation_name', $this->_embarkation_name,true);
 		$criteria->compare('idHeadquarter.headquarter_name', $this->_headquarter_name,true);
@@ -155,7 +165,6 @@ class Ticket extends CActiveRecord
 		$criteria->compare('ticket_date_incident',$this->ticket_date_incident,true);
 		$criteria->compare('ticket_description',$this->ticket_description,true);
 		$criteria->compare('ticket_status',$this->ticket_status,true);
-		$criteria->compare('ticket_solution',$this->ticket_solution,true);
 		$criteria->compare('idUser.user_name',$this->_user_name,true);
 		$criteria->compare('idEmbarkation.embarkation_name', $this->_embarkation_name,true);
 		$criteria->compare('idHeadquarter.headquarter_name', $this->_headquarter_name,true);
@@ -179,7 +188,6 @@ class Ticket extends CActiveRecord
 		$criteria->compare('ticket_date_incident',$this->ticket_date_incident,true);
 		$criteria->compare('ticket_description',$this->ticket_description,true);
 		$criteria->compare('ticket_status',$this->ticket_status,true);
-		$criteria->compare('ticket_solution',$this->ticket_solution,true);
 		$criteria->compare('idUser.user_name',$this->_user_name,true);
 		$criteria->compare('idEmbarkation.embarkation_name', $this->_embarkation_name,true);
 		$criteria->compare('idHeadquarter.headquarter_name', $this->_headquarter_name,true);
@@ -201,19 +209,14 @@ class Ticket extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-          public function requiredSolution($attribute, $params){
-             
-             if(Yii::app()->user->checkAccess('Administrador')){
-                if(empty($this->ticket_solution))
-                $this->addError ('ticket_solution' ,  Yii::t('yii','{attribute} cannot be blank.',array('{attribute}'=>$this->getAttributeLabel('ticket_solution'))));
-             }
-         }
+        
          public function getDaysPassed()
-            {
-                    $days= (strtotime($this->ticket_date)-strtotime(date("y-m-d H:i:s")))/86400;
-                    $days = abs($days); $days = floor($days);		
-                    return $days;
-            }
+        {
+                $days= (strtotime($this->ticket_date)-strtotime(date("y-m-d H:i:s")))/86400;
+                $days = abs($days); 
+                $days = floor($days);		
+                return $days;
+        }
         public function validateid($model,$attribute)
         {
             if($this->id_headquarter==0|| empty ($this->id_headquarter))
@@ -240,16 +243,6 @@ class Ticket extends CActiveRecord
             $this->_files=$newfile;
              }
         }
-        public function validSolutionFile($model,$attribute)
-        {
-            $newfile=array();
-        if(!empty($this->_solution_files)){
-                foreach($this->_solution_files as $key => $value){
-                    $newfile[$value]=$value;
-                }
-            $this->_solution_files=$newfile;
-             }
-        }
         public function getTicketFile (){
             $criteria=new CDbCriteria();
             $criteria->condition = 't.id_ticket='.$this->id_ticket;
@@ -263,18 +256,5 @@ class Ticket extends CActiveRecord
             else
                 return null;
         }
-        public function getSolutionFile (){
-            $criteria=new CDbCriteria();
-            $criteria->condition = 't.id_ticket='.$this->id_ticket;
-            $ticketsfile= TicketSolutionFile::model()->findall($criteria);
-            $link="";
-            foreach($ticketsfile as $t){
-            $link.=CHtml::link(CHtml::encode($t->ticket_solution_file_name), Yii::app()->baseUrl . '/images/tickets_solution/'.$t->id_ticket."/" . $t->ticket_solution_file_name,array('target'=>'_blank'))."<br>";
-            }
-            if($ticketsfile)
-            return $link;
-            else
-                return null;
-        }
-         
+     
 }

@@ -3,7 +3,7 @@
 /* @var $model Provider */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Providers')=>array('index'),
+	Yii::t('database','Providers')=>array('admin'),
 	Yii::t('actions','Create'),
 );
 

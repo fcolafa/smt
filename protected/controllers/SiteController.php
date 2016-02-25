@@ -50,12 +50,11 @@ class SiteController extends Controller
                     if($user->first_time==0)
                         $this->redirect (array('Users/update','id'=>Yii::app()->user->id));
                     else
-                      
                            if(isset ($url))
                                $url;
                                 else
                             $this->render('paneladmin');
-                }
+                    }
                 }
 	}
 	/**

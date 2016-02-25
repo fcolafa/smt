@@ -27,6 +27,7 @@ class Embarkation extends CActiveRecord
 		return array(
 			array(' embarkation_name', 'required'),
 			array('id_embarkation, embarkation_name', 'length', 'max'=>45),
+			array('embarkation_name', 'unique'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id_embarkation, embarkation_name', 'safe', 'on'=>'search'),

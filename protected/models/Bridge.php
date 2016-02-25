@@ -45,7 +45,7 @@ class Bridge extends CActiveRecord
 			array('id_bridge', 'length', 'max'=>100),
                         array('navigated_miles', 'numerical'),
                         array('id_bridge','validateDate'),
-			array('bridge_date,sbridge_date_arrive, init_charge_time, finish_charge_time, bridge_date_sailing, bridge_notes, bridge_date', 'safe'),
+			array('navigated_miles,bridge_date,sbridge_date_arrive, init_charge_time, finish_charge_time, bridge_date_sailing, bridge_notes, bridge_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('_headquarter_name, _embarkation_name,id_bridge, id_headquarter, bridge_date_arrive, navigated_miles ,init_charge_time, finish_charge_time, bridge_date_sailing, id_user, bridge_notes, bridge_date, id_embarkation', 'safe', 'on'=>'search'),

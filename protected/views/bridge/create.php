@@ -3,7 +3,7 @@
 /* @var $model Bridge */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Bridges')=>array('index'),
+	Yii::t('database','Bridges')=>array('admin'),
 	Yii::t('actions','Create'),
 );
 

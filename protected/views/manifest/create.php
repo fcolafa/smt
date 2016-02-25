@@ -3,7 +3,7 @@
 /* @var $model Manifest */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Manifests')=>array('index'),
+	Yii::t('database','Manifests')=>array('admin'),
 	Yii::t('actions','Create'),
 );
 

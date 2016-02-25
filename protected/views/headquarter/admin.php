@@ -3,7 +3,7 @@
 /* @var $model Headquarter */
 
 $this->breadcrumbs=array(
-	Yii::t('database',Yii::t('database','Headquarters'))=>array('index'),
+	Yii::t('database',Yii::t('database','Headquarters'))=>array('admin'),
 	Yii::t('actions','Manage'),
 );
 

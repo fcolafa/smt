@@ -124,7 +124,9 @@ var validation='';
 guide.push($('#Guide_num_guide').val());
 guide.push($('#Guide_pdf_guide').val());
 guide.push($('#Guide_id_user').val());
-guide.push($('#Guide_id_headquerater').val());
+guide.push($('#Guide_id_headquarter').val());
+guide.push($('#Guide_id_destination').val());
+guide.push($('#Guide_guide_weight_type').val());
 if(guide[0] =='')
     validation=validation+'-Numero de Guia no puede ser nulo \n';
 if(size<1)

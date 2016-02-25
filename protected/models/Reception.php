@@ -24,8 +24,9 @@ class Reception extends CActiveRecord
         public $_guide;
         public $_guides=array();
         public $_weights=array();
-        public $_weight="";
+       
         public $_newAmount=array();
+        
 	public function tableName()
 	{
 		return 'reception';
@@ -63,7 +64,7 @@ class Reception extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'guides' => array(self::HAS_MANY, 'guideHasReception', 'id_reception'),
+			'guides' => array(self::HAS_MANY, 'GuideHasReception', 'id_reception'),
 			'idEmbarkation' => array(self::BELONGS_TO, 'Embarkation', 'id_embarkation'),
 			'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),

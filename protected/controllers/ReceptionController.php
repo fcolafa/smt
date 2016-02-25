@@ -111,9 +111,14 @@ class ReceptionController extends Controller
                                                 if($ww==$val2[0]."-".$val2[1]){
                                                     $bool=true;
                                                     $w=  Weight::model()->findByPk($val[1]);
+                                                      if(!empty($model->id_embarkation)){
+                                                    $w->id_embarkation=$model->id_embarkation;
+                                                    $w->amount_embarkation=$w->amount_left;
+                                                }else{
                                                     $w->id_headquarter=$model->id_headquarter;
-                                                    $w->amount_left-=$val2[2];
                                                     $w->amount_headquarter=$val2[2];
+                                                }
+                                                 $w->amount_left-=$val2[2];
                                                     $w->save();
                                                     $ware=new Warehouse;
                                                     $ware->id_reception=$model->id_reception;
@@ -124,8 +129,13 @@ class ReceptionController extends Controller
                                             }
                                             if(!$bool){
                                                 $w=Weight::model()->findByPk($val[1]);
+                                                if(!empty($model->id_embarkation)){
+                                                    $w->id_embarkation=$model->id_embarkation;
+                                                    $w->amount_embarkation=$w->amount_left;
+                                                }else{
                                                 $w->id_headquarter=$model->id_headquarter;
                                                 $w->amount_headquarter=$w->amount_left;
+                                                }
                                                 $w->save();
                                                 $ware=new Warehouse;
                                                 $ware->amount_warehouse=$w->amount_left;
@@ -247,7 +257,7 @@ class ReceptionController extends Controller
             $criteria = new CDbCriteria;
             $criteria->with=array('idUser.idCompany');
             $criteria->together=true;
-            $criteria->condition = "(LOWER(id_guide) like LOWER(:term) OR LOWER(num_guide) like LOWER(:term) OR LOWER(idCompany.company_name) like LOWER(:term))";
+            $criteria->condition = "(LOWER(id_guide) like LOWER(:term) OR LOWER(num_guide) like LOWER(:term) OR LOWER(idCompany.company_name) like LOWER(:term)) ";
             $criteria->params = array(':term'=> '%'.$_GET['term'].'%');
             $criteria->limit = 30;
             $models = Guide::model()->findAll($criteria);

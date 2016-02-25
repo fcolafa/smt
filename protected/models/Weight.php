@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This is the model class for table "weight".
  *
@@ -8,11 +7,21 @@
  * @property integer $id_provider
  * @property integer $id_weight_type
  * @property integer $id_weight_unit
- * @property integer $amount_weight
+ * @property integerdouble $amount_weight
  * @property integer $id_guide
+ * @property string $weighttype
+ * @property string $weightprovider
+ * @property double $amount_left
+ * @property integer $id_headquarter
+ * @property double $amount_headquarter
+ * @property integer $id_embarkation
+ * @property double $amount_embarkation
  *
  * The followings are the available model relations:
+ * @property Warehouse[] $warehouses
+ * @property Embarkation $idEmbarkation
  * @property Guide $idGuide
+ * @property Headquarter $idHeadquarter
  * @property Provider $idProvider
  * @property WeightType $idWeightType
  * @property WeightUnit $idWeightUnit
@@ -42,7 +51,7 @@ class Weight extends CActiveRecord
                         array('weighttype, weightprovider', 'length', 'max'=>80),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_numguide ,weightprovider, weighttype, id_weight, id_provider, id_weight_type, id_weight_unit, amount_weight, id_guide', 'safe', 'on'=>'search'),
+			array('_numguide ,weightprovider, weighttype, id_weight, id_provider, id_weight_type, id_weight_unit, amount_weight, id_guide, id_embarkation, amount_embarkation', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,6 +69,7 @@ class Weight extends CActiveRecord
 			'idWeightType' => array(self::BELONGS_TO, 'WeightType', 'id_weight_type'),
 			'idWeightUnit' => array(self::BELONGS_TO, 'WeightUnit', 'id_weight_unit'),
                         'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
+                        'idEmbarkation' => array(self::BELONGS_TO, 'Embarkation', 'id_embarkation'),
 		);
 	}
 
@@ -78,7 +88,9 @@ class Weight extends CActiveRecord
                         'weighttype' => Yii::t('database','Weight Type'),
 			'weightprovider' => Yii::t('database','Provider'),
                         'amount_left' => Yii::t('database','Amount Left'),
-                    'amount_headquarter' => Yii::t('database','Amount Headquarter'),
+                        'amount_headquarter' => Yii::t('database','Amount Headquarter'),
+                    	'id_embarkation' => Yii::t('database','Id Embarkation'),
+			'amount_embarkation' => Yii::t('database','Amount Embarkation'),
 		);
 	}
 
@@ -139,11 +151,69 @@ class Weight extends CActiveRecord
 		$criteria->compare('amount_left',$this->amount_left);
 		$criteria->compare('idGuide.num_guide',$this->_numguide,true);
                 $criteria->compare('amount_headquarter',$this->amount_headquarter);
+		$criteria->compare('id_embarkation',$this->id_embarkation);
+		$criteria->compare('amount_embarkation',$this->amount_embarkation);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
+        
+           	public function searchCurrentEmbarkation($id)
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $criteria->condition="t.id_embarkation=".$id; 
+                $criteria->with=('idGuide');
+                $criteria->together=true;
+		$criteria->compare('id_weight',$this->id_weight);
+		$criteria->compare('id_provider',$this->id_provider);
+		$criteria->compare('id_weight_type',$this->id_weight_type);
+		$criteria->compare('id_weight_unit',$this->id_weight_unit);
+		$criteria->compare('amount_weight',$this->amount_weight);
+		$criteria->compare('id_guide',$this->id_guide);
+		$criteria->compare('weightprovider',$this->weightprovider);
+                $criteria->compare('weighttype',$this->weighttype,true);
+		$criteria->compare('weightprovider',$this->weightprovider,true);
+		$criteria->compare('amount_left',$this->amount_left);
+		$criteria->compare('idGuide.num_guide',$this->_numguide,true);
+                $criteria->compare('amount_headquarter',$this->amount_headquarter);
+		$criteria->compare('id_embarkation',$this->id_embarkation);
+		$criteria->compare('amount_embarkation',$this->amount_embarkation);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+           	public function searchManifestWeight($id)
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+                $criteria->with=('idGuide');
+                $criteria->together=true;
+                $criteria->condition="idGuide.id_manifest=".$id; 
+                $criteria->order="idGuide.manifest_order_guide ASC";
+		$criteria->compare('id_weight',$this->id_weight);
+		$criteria->compare('id_provider',$this->id_provider);
+		$criteria->compare('id_weight_type',$this->id_weight_type);
+		$criteria->compare('id_weight_unit',$this->id_weight_unit);
+		$criteria->compare('amount_weight',$this->amount_weight);
+		$criteria->compare('id_guide',$this->id_guide);
+		$criteria->compare('weightprovider',$this->weightprovider);
+                $criteria->compare('weighttype',$this->weighttype,true);
+		$criteria->compare('weightprovider',$this->weightprovider,true);
+		$criteria->compare('amount_left',$this->amount_left);
+		$criteria->compare('idGuide.num_guide',$this->_numguide,true);
+                $criteria->compare('amount_headquarter',$this->amount_headquarter);
+		$criteria->compare('id_embarkation',$this->id_embarkation);
+		$criteria->compare('amount_embarkation',$this->amount_embarkation);
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+        
 
 	/**
 	 * Returns the static model of the specified AR class.

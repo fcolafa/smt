@@ -3,7 +3,7 @@
 /* @var $model Ticket */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Tickets')=>array('index'),
+	Yii::t('database','Tickets')=>array('admin'),
 	$model->id_ticket=>array('view','id'=>$model->id_ticket),
 	Yii::t('actions','Update'),
 );

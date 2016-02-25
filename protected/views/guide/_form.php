@@ -105,8 +105,19 @@ var urladdress='<?php echo Yii::app()->createAbsoluteUrl("Guide/addWeigth"); ?>'
 	</div>
         <div class="row">
 		<?php echo $form->labelEx($model,'id_headquarter'); ?>
-		<?php echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Lugar asociado')); ?>
+		<?php echo $form->dropDownList($model,'id_headquarter', CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Origen asociado')); ?>
 		<?php echo $form->error($model,'id_headquarter'); ?>
+	</div>
+        
+        <div class="row">
+		<?php echo $form->labelEx($model,'id_destination'); ?>
+		<?php echo $form->dropDownList($model,'id_destination', CHtml::listData(Headquarter::model()->findAll(array('order'=>'headquarter_name')),'id_headquarter','headquarter_name'),array('prompt'=>'Seleccione Destino asociado')); ?>
+		<?php echo $form->error($model,'id_destination'); ?>
+	</div>
+        <div class="row">
+        	<?php echo $form->labelEx($model,'guide_weight_type'); ?>
+		<?php echo $form->dropDownList($model,'guide_weight_type',array('prompt'=>'Seleccione tipo de carga','Carga general'=>'Carga general','Alimento'=>'Alimento')); ?>
+		<?php echo $form->error($model,'guide_weight_type'); ?>
 	</div>
 	
         

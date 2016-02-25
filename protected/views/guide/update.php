@@ -3,7 +3,7 @@
 /* @var $model Guide */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Guides')=>array('index'),
+	Yii::t('database','Guides')=>array('admin'),
 	$model->id_guide=>array('view','id'=>$model->id_guide),
 	Yii::t('actions','Update'),
 );

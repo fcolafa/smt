@@ -3,12 +3,12 @@
 /* @var $model Company */
 
 $this->breadcrumbs=array(
-	Yii::t('database',Yii::t('database','Companies'))=>array('index'),
+	Yii::t('database',Yii::t('database','Companies'))=>array('admin'),
 	Yii::t('actions','Manage'),
 );
 
 $this->menu=array(
-array('label'=>Yii::t('actions','List')." ". Yii::t('database','Company'), 'url'=>array('index')),
+//array('label'=>Yii::t('actions','List')." ". Yii::t('database','Company'), 'url'=>array('index')),
 	array('label'=>Yii::t('actions','Create')." ".Yii::t('database','Company'), 'url'=>array('create')),
 );
 

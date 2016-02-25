@@ -192,11 +192,6 @@ function addWeigth(index){
 //    });
 //    cellbtndlt.appendChild(btndlt);
 }
-function orderSelect(){
-     var weig=document.getElementById('Reception__weights');
-     for( i=0;i<weight.options.length;i++){   
-     }
-}
 
 
 

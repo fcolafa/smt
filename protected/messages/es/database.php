@@ -45,6 +45,7 @@ return array(
  'Pdf Guide'=>'Guia Pdf',
  'Xml Guide'=>'Guia Xml',
  'Date Guide Create'=>'Fecha Creacion',
+ 'Navigated Miles'=>'Millas Navegadas',
    //reception
     
     'Id Reception'=>'Recepción',
@@ -56,6 +57,12 @@ return array(
   'Manifest'=>'Manifiesto',  
   'Manifests'=>'Manifiestos',  
   'Manifest Date'=>'Fecha Creación Manifiesto',  
+    'Manifest Charge Date'=>'Fecha de Carga',
+    'Manifest Sailing'=>'Zarpe',
+    'Manifest Return'=>'Retorno',
+    'Manifest Charge Date'=>'Fecha de Carga',
+    'Manifest Observation'=>'Observaciones',
+    
  // Schedule
  'Schedule'=>'Registro Operacional (Maquina)',
     	'Schedule Date'=>'Fecha de Registro',
@@ -96,7 +103,9 @@ return array(
 'Bridge'=>'Registro Operacional (Puente)',    
 'Id Bridge'=>' Id Registro Operacional (Puente)',    
     
-    
+       //reports
+  '_initdate'=> 'Fecha Inicial',
+  '_endate'=> 'Fecha Final', 
  //ticket
  'Id Ticket'=>'Id Solicitud',
  'Ticket'=>'No Confomidad ',
@@ -110,7 +119,7 @@ return array(
  'Ticket Files'=>'Archivos adjuntos ',
  'Ticket Date Incident'=>'Fecha y hora incidente ',
  'Ticket Message'=>'Mensaje',
- 'Ticket Solution'=>'Solución a no Conformidad',
+ 'Ticket Solution'=>'Medida Correctiva',
  'Ticket Message File'=>'Archivo Adjunto',
  'Id User Asigned'=>'Asignar Usuario',
  'Ticket Solution File'=>'Archivo Adjunto a la Solucion',
@@ -161,5 +170,9 @@ return array(
  'Amount Warehouse'=>'Cantidad recibida',
  'Amount Left'=>'Cantidad Restante',
  'Amount Headquarter'=>'Cantidad en Bodega',
+ 'Amount Embarkation'=>'Cantidad en Barco',
+ 'Reports'=>'Reportes',
+ 'Verification Code'=>'Codigo Verificación',
     
+
 );

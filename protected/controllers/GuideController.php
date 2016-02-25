@@ -238,15 +238,24 @@ class GuideController extends Controller
                 $model->id_user=$guide[2];
             }else
                 $model->id_user=Yii::app()->user->id;
-            $model->id_user_creator=Yii::app()->user->id;
             
+            $model->id_user_creator=Yii::app()->user->id;
+      
             $model->date_guide_create=  date("y-m-d H:i:s");
             $model->sended_guide=0;
-            if(!empty($guide[2]))
-            $model->id_headquarter=$guide[2];
+            if(!empty($guide[3]))
+            $model->id_headquarter=$guide[3];
             else
                   $model->id_headquarter=null;
             
+            if(!empty($guide[4]))
+                $model->id_destination=$guide[4];
+            else
+                $model->id_destination=null;
+            if(!empty($guide[5]))
+                $model->guide_weight_type=$guide[5];
+            else
+                $model->guide_weight_type=null;
             if($model->save()){
                 //files
                 $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 

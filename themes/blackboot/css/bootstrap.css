@@ -294,6 +294,8 @@ a:hover {
 .navbar-fixed-top .container,
 .navbar-fixed-bottom .container {
   width: 940px;
+ 
+  
 }
 
 .span12 {
@@ -395,6 +397,7 @@ a:hover {
 .row-fluid {
   width: 100%;
   *zoom: 1;
+ 
 }
 
 .row-fluid:before,
@@ -639,6 +642,9 @@ a:hover {
   padding-right: 20px;
   padding-left: 20px;
   *zoom: 1;
+   border-bottom-width: 6px;
+  border-bottom-style: solid;
+  border-bottom-color: #1DB9E8;
 }
 
 .container-fluid:before,
@@ -6045,3 +6051,4 @@ a.badge:hover {
 .affix {
   position: fixed;
 }
+

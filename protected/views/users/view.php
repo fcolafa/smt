@@ -3,7 +3,7 @@
 /* @var $model Users */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Users')=>array('index'),
+	Yii::t('database','Users')=>array('admin'),
 	$model->id_user,
 );
 

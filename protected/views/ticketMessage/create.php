@@ -3,7 +3,7 @@
 /* @var $model TicketMessage */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Ticket Messages')=>array('index'),
+	Yii::t('database','Ticket Messages')=>array('admin'),
 	Yii::t('actions','Create'),
 );
 

@@ -15,11 +15,11 @@ class GuideHasReception extends CActiveRecord
         public $_date;
         public $_receptionDate;
         public $_headquarter_name;
+        public $_embarkation_name;
 	public function tableName()
 	{
 		return 'guide_has_reception';
 	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -90,13 +90,14 @@ class GuideHasReception extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-                $criteria->with=array('idReception','idReception.idHeadquarter');
+                $criteria->with=array('idReception','idReception.idHeadquarter','idReception.idEmbarkation');
                 $criteria->together=true;
                 $criteria->condition ='id_guide='.$id;
 		$criteria->compare('id_guide',$this->id_guide);
 		$criteria->compare('id_reception',$this->id_reception);
                 $criteria->compare('idReception.reception_date',$this->_receptionDate,true);
                 $criteria->compare('idHeadquarter.headquarter_name',$this->_headquarter_name,true);
+                $criteria->compare('idEmbarkation.embarkation_name',$this->_embarkation_name,true);
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));

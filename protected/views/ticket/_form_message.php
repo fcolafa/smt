@@ -18,10 +18,7 @@
 
 	<p class="note"> <?php echo Yii::t('validation','Fields with')?> <span class="required">*</span> <?php echo Yii::t('validation','are required')?> </p>
 
-	<?php echo $form->errorSummary($ticketm); ?>
-   
-
-        
+	<?php echo $form->errorSummary($ticketm); ?>   
         <div class="row"> 
          <?php echo $form->labelEx($ticketm,'id_user_asigned'); ?>
          <?php
@@ -51,7 +48,7 @@
          ?>
             <?php echo $form->error($ticketm,'id_user_asigned'); ?>
 	</div>
-        
+     <?php $ticketm->ticket_message_type='message' ?>
 	<div class="row">
 		<?php echo $form->labelEx($ticketm,'ticket_message'); ?>
 		<?php echo $form->textArea($ticketm,'ticket_message',array('rows'=>6, 'cols'=>50)); ?>
@@ -62,8 +59,7 @@
 		<?php echo $form->dropDownList($ticketm,'_message_files',$ticketm->_message_files ,array('multiple' => 'multiple')); ?>
 		<?php echo $form->error($ticketm,'_message_files'); ?>
 	</div>
-        
-      
+          
         <div class="row">
             <label></label>
         <?php 
@@ -74,7 +70,7 @@
                'config'=>array(
                                'autoUpload'=>true,
                                'request'=>array(
-                                  'endpoint'=>'upload',// OR $this->createUrl('files/upload'),
+                                  'endpoint'=>$this->createUrl('ticket/upload'),// OR $this->createUrl('files/upload'),
                                   'params'=>array('YII_CSRF_TOKEN'=>Yii::app()->request->csrfToken),
                                                ),
                                'retry'=>array('enableAuto'=>true,'preventRetryResponseProperty'=>true),

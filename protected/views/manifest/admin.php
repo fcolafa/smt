@@ -3,7 +3,7 @@
 /* @var $model Manifest */
 
 $this->breadcrumbs=array(
-	Yii::t('database',Yii::t('database','Manifests'))=>array('index'),
+	Yii::t('database',Yii::t('database','Manifests'))=>array('admin'),
 	Yii::t('actions','Manage'),
 );
 
@@ -22,9 +22,42 @@ $this->menu=array(
 	'id'=>'manifest-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
+       'afterAjaxUpdate'=>"function() {
+ 	
+ 	jQuery('#manifestdate').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['es'], {'showAnim':'fold','dateFormat':'yy-mm-dd','changeMonth':'true','showButtonPanel':'true','changeYear':'true','constrainInput':'false'}));
+ 							}",
 	'columns'=>array(
 		'id_manifest',
-		'manifest_date',
+		
+                    array(
+                
+                       'name' => 'manifest_date',
+                        'value'=>'empty($data->manifest_date)?"":Yii::app()->dateFormatter->format("d MMMM y \n HH:mm:ss",strtotime(@$data->manifest_date))',
+                        'filter' => $this->widget('zii.widgets.jui.CJuiDatePicker', 
+                                
+                                array(
+                                        'model' => $model,
+                                        'attribute' => 'manifest_date',
+                                        'language' => 'es',
+                                       
+                                        'htmlOptions' => array(
+                                                'id' => 'manifestdate',
+                                                'dateFormat' => 'yy-mm-dd',
+                                        ),
+                                        'options' => array(  // (#3)
+                  'showOn' => 'focus', 
+                  'dateFormat' => 'yy-mm-dd',
+                  'showOtherMonths' => true,
+                  'selectOtherMonths' => true,
+                  'changeMonth' => true,
+                  'changeYear' => true,
+                  'showButtonPanel' => true,
+                )
+                                ),
+                                true),
+                
+              
+            ),
 		 array(
                     'class'=>'CButtonColumn',
                    

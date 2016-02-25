@@ -3,7 +3,7 @@
 /* @var $model WeightUnit */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Weight Units')=>array('index'),
+	Yii::t('database','Weight Units')=>array('admin'),
 	$model->id_weight_unit,
 );
 

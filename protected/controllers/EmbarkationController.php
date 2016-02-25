@@ -43,8 +43,13 @@ class EmbarkationController extends Controller
 	 */
 	public function actionView($id)
 	{
+                $recep=new Weight('search');
+                $recep->unsetAttributes();  // clear any default values
+		if(isset($_GET['Weight']))
+			$recep->attributes=$_GET['Weight']; 
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
+                        'recep'=>$recep,
 		));
 	}
 

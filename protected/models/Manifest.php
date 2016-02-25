@@ -6,6 +6,12 @@
  * The followings are the available columns in table 'manifest':
  * @property integer $id_manifest
  * @property string $manifest_date
+ *  * @property integer $id_embarkation
+ * @property string $manifest_charge_date
+ * @property integer $id_headquarter
+ * @property string $manifest_observation
+ * @property string $manifest_sailing
+ * @property string $manifest_return
  *
  * The followings are the available model relations:
  * @property Guide[] $guides
@@ -17,6 +23,7 @@ class Manifest extends CActiveRecord
 	 */
         public $_guide;
         public $_guides=array();    
+          public $_weights=array();
 	public function tableName()
 	{
 		return 'manifest';
@@ -32,12 +39,17 @@ class Manifest extends CActiveRecord
 		return array(
                         
 			array('manifest_date', 'safe'),
+                    array('id_embarkation, id_headquarter','required'),
                         array('_guides','validGuides'),
                         array('_guides','uniqueGuide'),
+                      array('_weights','reloadSelect'),
+                        array('id_embarkation, id_headquarter', 'numerical', 'integerOnly'=>true),
+			array('manifest_sailing, manifest_return', 'length', 'max'=>45),
+			array('manifest_date, manifest_charge_date, manifest_observation', 'safe'),
                         
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_guide, _guides, id_manifest, manifest_date', 'safe', 'on'=>'search'),
+			array('_guide, _guides, id_manifest, manifest_date, id_embarkation, manifest_charge_date, id_headquarter, manifest_observation, manifest_sailing, manifest_return', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -50,6 +62,8 @@ class Manifest extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'guides' => array(self::HAS_MANY, 'Guide', 'id_manifest'),
+                        'idEmbarkation' => array(self::BELONGS_TO, 'Embarkation', 'id_embarkation'),
+			'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
 		);
 	}
 
@@ -61,8 +75,14 @@ class Manifest extends CActiveRecord
 		return array(
 			'id_manifest' => Yii::t('database','Id Manifest'),
 			'manifest_date' => Yii::t('database','Manifest Date'),
+                        'manifest_charge_date' => Yii::t('database','Manifest Charge Date'),
                         '_guide' => Yii::t('database','Guide'),
                         '_guides' => Yii::t('database','Guides'),
+                        'id_headquarter' => Yii::t('database','Centro'),
+                        'id_embarkation' => Yii::t('database','Nave'),
+			'manifest_observation' => Yii::t('database','Manifest Observation'),
+			'manifest_sailing' => Yii::t('database','Manifest Sailing'),
+			'manifest_return' => Yii::t('database','Manifest Return'),
 		);
 	}
 
@@ -86,11 +106,28 @@ class Manifest extends CActiveRecord
 
 		$criteria->compare('id_manifest',$this->id_manifest);
 		$criteria->compare('manifest_date',$this->manifest_date,true);
+                $criteria->compare('id_embarkation',$this->id_embarkation);
+		$criteria->compare('manifest_charge_date',$this->manifest_charge_date,true);
+		$criteria->compare('id_headquarter',$this->id_headquarter);
+		$criteria->compare('manifest_observation',$this->manifest_observation,true);
+		$criteria->compare('manifest_sailing',$this->manifest_sailing,true);
+		$criteria->compare('manifest_return',$this->manifest_return,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
+         public function reloadSelect($attribute,$params)
+        {
+            $newfile=array();
+            if(!empty($this->$attribute)){
+                foreach($this->$attribute as $key => $value){
+                    $newfile[$value]=$value;
+                }
+                $this->$attribute=$newfile;
+            
+             }
+        }
 
 	/**
 	 * Returns the static model of the specified AR class.

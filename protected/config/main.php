@@ -5,6 +5,9 @@
 
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
+Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/bootstrap');
+Yii::setPathOfAlias('editable', dirname(__FILE__).'/../extensions/x-editable');
+//Yii::setPathOfAlias('editable', dirname(__FILE__).'/../extensions/x-editable');
 return array(
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'SMT',
@@ -13,6 +16,7 @@ return array(
 	'charset'=>'utf-8',
         'timeZone'=>'America/Santiago',
         'theme'=>'blackboot',
+    
 
 	// preloading 'log' component
 	'preload'=>array('log'),
@@ -22,7 +26,9 @@ return array(
 		'application.models.*',
 		'application.components.*',
                 'application.extensions.jtogglecolumn.*',
-                'application.extensions.coco.*',     
+                'application.extensions.coco.*', 
+                'editable.*',
+                     
                 
 	),
 
@@ -48,7 +54,18 @@ return array(
 	'components'=>array(
             
                 //component from new theme
-            
+             'bootstrap'=>array(
+                    'class'=>'bootstrap.components.Bootstrap',
+                    ),
+            //X-editable config
+            'editable' => array(
+                'class'     => 'editable.EditableConfig',
+                'form'      => 'bootstrap',        //form style: 'bootstrap', 'jqueryui', 'plain' 
+                'mode'      => 'popup',            //mode: 'popup' or 'inline'  
+                'defaults'  => array(              //default settings for all editable elements
+                   'emptytext' => 'Click to edit'
+                )
+            ),
             'widgetFactory'=>array(
                     'class'=>'CWidgetFactory',
         

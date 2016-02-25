@@ -3,12 +3,12 @@
 /* @var $model Embarkation */
 
 $this->breadcrumbs=array(
-	Yii::t('database',Yii::t('database','Embarkations'))=>array('index'),
+	Yii::t('database',Yii::t('database','Embarkations'))=>array('admin'),
 	Yii::t('actions','Manage'),
 );
 
 $this->menu=array(
-array('label'=>Yii::t('actions','List')." ". Yii::t('database','Embarkation'), 'url'=>array('index')),
+//array('label'=>Yii::t('actions','List')." ". Yii::t('database','Embarkation'), 'url'=>array('index')),
 	array('label'=>Yii::t('actions','Create')." ".Yii::t('database','Embarkation'), 'url'=>array('create')),
 );
 

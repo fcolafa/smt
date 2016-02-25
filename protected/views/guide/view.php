@@ -35,7 +35,7 @@ if(!empty($model->id_user_creator))
             'id_guide',
             'num_guide',
                 array(
-                'name'=>'Usuario Asignado',
+                'name'=>'Emisor',
                 'value'=>CHtml::link(
                         ' '.$model->idUser->user_names.' '.
                         ' '.$model->idUser->user_lastnames
@@ -44,7 +44,7 @@ if(!empty($model->id_user_creator))
                 'visible'=>Yii::app()->user->checkAccess('Administrador')
             ),
                array(
-                'name'=>'Ingresada por',
+                'name'=>'id_user_creator',
                 'value'=>$creator,
                 'type'=>'raw',
                 'visible'=>!empty($model->id_user_creator),
@@ -61,7 +61,15 @@ if(!empty($model->id_user_creator))
             'type'=>'raw',
             'value'=> CHtml::link(CHtml::encode($model->pdf_guide), Yii::app()->baseUrl . '/images/guides/'.$model->id_guide."/". $model->pdf_guide, array('target'=>'_blank')),
             ),
-            'idHeadquarter.headquarter_name'
+            array(
+            'name'=>'_headquarterName',
+            'value'=>@$model->idHeadquarter->headquarter_name,
+                ),
+            array(
+            'name'=>'_destinationName',
+            'value'=>@$model->idDestination->headquarter_name,
+                ),
+            
 	),
 ));
                     ?>
@@ -124,8 +132,13 @@ $this->widget('zii.widgets.grid.CGridView', array(
                  'value'=>'@$data->idReception->idHeadquarter->headquarter_name',
                  'filter'=>  CHtml::activeTextField($has, '_headquarter_name'),
             ),
+             array(
+                'name'=>'idReception.idEmbarkation.embarkation_name',
+                 'value'=>'@$data->idReception->idEmbarkation->embarkation_name',
+                 'filter'=>  CHtml::activeTextField($has, '_embarkation_name'),
+            ),
             array(
-               // 'name'=>'Recepcionado por',
+                'header'=>'Recepcionado por',
                 'value'=>'$data->idReception->idUser->user_names." ".$data->idReception->idUser->user_lastnames'
                 ),
            

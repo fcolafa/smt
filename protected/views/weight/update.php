@@ -3,7 +3,7 @@
 /* @var $model Weight */
 
 $this->breadcrumbs=array(
-	Yii::t('database','Weights')=>array('index'),
+	Yii::t('database','Weights')=>array('admin'),
 	$model->id_weight=>array('view','id'=>$model->id_weight),
 	Yii::t('actions','Update'),
 );

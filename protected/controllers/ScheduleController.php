@@ -28,18 +28,52 @@ class ScheduleController extends Controller
 	{
 		return array(
                                 array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                                        'actions'=>array( 'view', 'create','update','admin','delete'),
+                                        'actions'=>array( 'view', 'create','update','admin','delete','updateSchedule'),
                                         'roles'=>array('Motorista'),
                                 ),
                       array('allow', // allow authenticated user to perform 'create' and 'update' actions
                                         'actions'=>array( 'view', 'admin'),
-                                        'roles'=>array('Motorista'),
+                                        'roles'=>array('Administrador'),
                                 ),
                                 array('deny',  // deny all users
                                         'users'=>array('*'),
                                 ),
                         );
 	}
+              public function actionTest(){
+            
+//               $es = new EditableSaver('Schedule');
+//                try {
+//                    
+//                    $es->onBeforeUpdate = function($event) {
+//        $event->sender->setAttribute('arrive_date', date("y/m/d H:i:s"));
+//    };
+//                    $es->update();
+//                } catch(CException $e) {
+//                    echo CJSON::encode(array('success' => false, 'msg' => $e->getMessage()));
+//                    return;
+//                }
+//                echo CJSON::encode(array('success' => true));
+
+        }
+        
+        public function actionUpdateSchedule()
+    {
+      
+        
+        $es = new EditableSaver('Schedule');
+//        $es->onBeforeUpdate = function($event) {
+//            $event->sender->setAttribute('arrive_date', date('y-m-d H:i:s'));
+ //       };
+        try {
+        $es->update();
+    } catch(CException $e) {
+        echo CJSON::encode(array('success' => false, 'msg' => $e->getMessage()));
+        return;
+    }
+    echo CJSON::encode(array('success' => true));
+       
+        }
 
 	/**
 	 * Displays a particular model.

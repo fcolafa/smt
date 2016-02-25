@@ -3,12 +3,12 @@
 /* @var $model Guide */
 
 $this->breadcrumbs=array(
-	Yii::t('database',Yii::t('database','Guides'))=>array('index' ),
+	Yii::t('database',Yii::t('database','Guides'))=>array('admin' ),
 	Yii::t('actions','Manage'),
 );
 
 $this->menu=array(
-array('label'=>Yii::t('actions','Create')." ".Yii::t('database','Guide'), 'url'=>array('create')),
+array('label'=>Yii::t('actions','Load')." ".Yii::t('database','Guide'), 'url'=>array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -101,6 +101,18 @@ $this->widget('zii.widgets.grid.CGridView', array(
                'type'=>'raw',
                'value'=>'CHtml::link($data->pdf_guide,Yii::app()->createUrl("guide/UrlProcessing",array("url"=>Yii::app()->BaseUrl."/images/guides/".$data->id_guide."/".$data->pdf_guide)),array("target"=>"_blank"))',  
             ),
+             array(
+                    'name'=>'_headquarterName',
+                    'value'=>'@$data->idHeadquarter->headquarter_name',
+                    'filter'=>  CHtml::activeTextField($model, '_headquarterName'),
+                                  
+                ),
+             array(
+                    'name'=>'_destinationName',
+                    'value'=>'@$data->idDestination->headquarter_name',
+                    'filter'=>  CHtml::activeTextField($model, '_destinationName'),
+                                  
+                ),
             array(
                 
                        'name' => 'date_guide_create',
