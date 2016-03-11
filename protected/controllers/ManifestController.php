@@ -312,19 +312,19 @@ class ManifestController extends Controller
             define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
             /** Include path **/
             date_default_timezone_set('UTC');
-            echo date('H:i:s') . " Create new PHPExcel object\n";
+           // echo date('H:i:s') . " Create new PHPExcel object\n";
             $objPHPExcel = new PHPExcel();
 
             // Set properties
-            echo date('H:i:s') . " Set properties\n";
+         //   echo date('H:i:s') . " Set properties\n";
             $objPHPExcel->getProperties()->setCreator("SMT");
             $objPHPExcel->getProperties()->setLastModifiedBy("SMT");
 
             // Set default font
             $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setName('Arial');
             $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setSize(10);
-            echo date('H:i:s') . " Add some data\n";
-            echo date('H:i:s').' Set document properties'.EOL;
+           // echo date('H:i:s') . " Add some data\n";
+          //  echo date('H:i:s').' Set document properties'.EOL;
             $objPHPExcel->getActiveSheet()->getStyle('A0:O54')->applyFromArray(
                 array(
                     'fill' => array(
@@ -386,17 +386,20 @@ class ManifestController extends Controller
            
            $objPHPExcel->getActiveSheet()->mergeCells($column.$row.':'.$endc.$row);
            $this->drawblackBorder($objPHPExcel, $column.$row.':'.$endc.$row);
-           $objPHPExcel->getActiveSheet()->setCellValue($column.$row++, $model->idEmbarkation->embarkation_name);
+           $objPHPExcel->getActiveSheet()->setCellValue($column.$row++,@$model->idEmbarkation->embarkation_name);
            $objPHPExcel->getActiveSheet()->mergeCells($column.$row.':'.$endc.$row);
-           
+           if(!empty($model->manifest_charge_date)){
+              
            $unixTimestamp =strtotime($model->manifest_charge_date);
-           $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
+            $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
+           }else
+                $excelDate='';
            $objPHPExcel->getActiveSheet()->getStyle($column.$row)->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
            $this->drawblackBorder($objPHPExcel, $column.$row.':'.$endc.$row);
            $objPHPExcel->getActiveSheet()->setCellValue($column.$row++,$excelDate);
            $objPHPExcel->getActiveSheet()->mergeCells($column.$row.':'.$endc.$row);
            $this->drawblackBorder($objPHPExcel, $column.$row.':'.$endc.$row);
-           $objPHPExcel->getActiveSheet()->setCellValue($column.$row++,$model->idHeadquarter->headquarter_name);
+           $objPHPExcel->getActiveSheet()->setCellValue($column.$row++,@$model->idHeadquarter->headquarter_name);
            $objPHPExcel->getActiveSheet()->mergeCells($column.$row.':'.$endc.$row);
            $this->drawblackBorder($objPHPExcel, $column.$row.':'.$endc.$row);
            $objPHPExcel->getActiveSheet()->setCellValue($column.$row, $model->id_manifest); 
@@ -601,19 +604,20 @@ class ManifestController extends Controller
                         $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)
                             ->setAutoSize(true);
                     }
-                    
+        
+     
                
-           
-
-            $xlsName = 'Maniniesto_de_carga_n°.'.$id.'.xls';
-            header('Content-Type: application/vnd.ms-excel');
+                    
+                    
+            $xlsName = 'Manifiesto_de_carga_n'.$id.'.xls';
+           // header('Content-Type: application/vnd.ms-excel');
+            header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename="'.$xlsName.'"');
             header('Cache-Control: max-age=0');
      
             // If you're serving to IE 9, then the following may be needed
-            header('Cache-Control: max-age=1');
-            ob_end_clean();
-            ob_start();
+           // header('Cache-Control: max-age=1');
+            
             $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
             $objWriter->save('php://output');      
             Yii::app()->end();            

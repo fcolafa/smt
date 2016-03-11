@@ -76,7 +76,7 @@ class Manifest extends CActiveRecord
 			'id_manifest' => Yii::t('database','Id Manifest'),
 			'manifest_date' => Yii::t('database','Manifest Date'),
                         'manifest_charge_date' => Yii::t('database','Manifest Charge Date'),
-                        '_guide' => Yii::t('database','Guide'),
+                        '_guide' => Yii::t('database','Ingresar guias (tipee)'),
                         '_guides' => Yii::t('database','Guides'),
                         'id_headquarter' => Yii::t('database','Centro'),
                         'id_embarkation' => Yii::t('database','Nave'),

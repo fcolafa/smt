@@ -129,17 +129,30 @@ $this->widget('zii.widgets.grid.CGridView', array(
 ////            
             array(
                 'name'=>'idReception.idHeadquarter.headquarter_name',
+                   'type'=>'raw',  
                  'value'=>'@$data->idReception->idHeadquarter->headquarter_name',
+                  'value'=>'CHtml::link(@$data->idReception->idHeadquarter->headquarter_name,Yii::app()->createUrl("headquarter/view",array("id"=>@$data->idReception->idHeadquarter->id_headquarter),array("target"=>"_blank")))',  
                  'filter'=>  CHtml::activeTextField($has, '_headquarter_name'),
             ),
-             array(
-                'name'=>'idReception.idEmbarkation.embarkation_name',
-                 'value'=>'@$data->idReception->idEmbarkation->embarkation_name',
-                 'filter'=>  CHtml::activeTextField($has, '_embarkation_name'),
-            ),
+//             array(
+//                'name'=>'idReception.idEmbarkation.embarkation_name',
+//                 'value'=>'@$data->idReception->idEmbarkation->embarkation_name',
+//                 'filter'=>  CHtml::activeTextField($has, '_embarkation_name'),
+//            ),
+                 array(
+                    'name'=>'idReception.idEmbarkation.embarkation_name',
+                    'type'=>'raw',                     
+                    'value'=>'CHtml::link(@$data->idReception->idEmbarkation->embarkation_name,Yii::app()->createUrl("embarkation/view",array("id"=>@$data->idReception->idEmbarkation->id_embarkation),array("target"=>"_blank")))',  
+                     'filter'=>  CHtml::activeTextField($has, '_embarkation_name')
+                ), 
             array(
                 'header'=>'Recepcionado por',
                 'value'=>'$data->idReception->idUser->user_names." ".$data->idReception->idUser->user_lastnames'
+                ),
+            array(
+                'header'=>'Aceptado/rechazado',
+                'value'=>'$data->idReception->reception_status==0?"rechazado":"Aceptado"',
+              'filter'=>  CHtml::listData($has,array( 0=>'Rechazado',1=>'Recibido'),'value','name')  ,
                 ),
            
             array(

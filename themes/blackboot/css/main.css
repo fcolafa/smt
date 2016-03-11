@@ -152,8 +152,14 @@ div.flash-success a
 .datep{
     padding-right: 1%;
     margin-left: auto;
-    color: #f9d835;
+    color: #AEA04B;
     font-size: 12px;
+    
+    
+}
+.datep a{
+   padding-left: 20px;
+    background: transparent url(../img/attach.png) no-repeat scroll left top; 
 }
 .ui-widget-header{
     background: #000 url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x;
@@ -163,11 +169,61 @@ div.flash-success a
     border-bottom: 1px solid transparent;
 
 }
+.ticketMessageClient {
+background: #d3d3d3 url(images/info.gif) center no-repeat;
+background-position: 15px 50%; /* x-pos y-pos */
+text-align: left;
+margin-left: 10%;
+padding: 5px 20px 5px 45px;
+border-top: 2px solid #7a7a7a;
+border-bottom: 2px solid #7a7a7a;
+color:#7a7a7a;
+}
 
 
+.ticketMessage {
+background: #E7F9F8 url(images/info.gif) center no-repeat;
+background-position: 15px 50%; /* x-pos y-pos */
+text-align: left;
+padding: 5px 20px 5px 45px;
+border-top: 2px solid #1DB9E8;
+ 
 
+border-bottom: 2px solid #1DB9E8;
+color:#1DB9E8;
+}
+.ticketNone {
+background: #FFF6BF url(images/info.gif) center no-repeat;
+background-position: 15px 50%; /* x-pos y-pos */
+text-align: left;
+padding: 5px 20px 5px 45px;
+border-top: 2px solid #FBC383;
+border-bottom: 2px solid #FBC383;
+color:#fbb450;
+}
+.ticketRemedy {
+background: #FBE3E4 url(images/info.gif) center no-repeat;
+background-position: 15px 50%; /* x-pos y-pos */
+text-align: left;
+padding: 5px 20px 5px 45px;
+border-top: 2px solid #FBC2C4;
+border-bottom: 2px solid #FBC2C4;
+color:#8a1f11;
+}
 
-
+.ticketApprove {
+    background: #C6D880 url(images/info.gif) center no-repeat;
+    background-position: 15px 50%; /* x-pos y-pos */
+    text-align: left;
+    padding: 5px 20px 5px 45px;
+    border-top: 2px solid #458049;
+    border-bottom: 2px solid #458049;
+    color:#458049;
+}
+approveTicket{
+    text-align: right;
+    
+}
 .ticket {
     color: #FFD324;
     padding-top: 10px;

@@ -58,7 +58,10 @@ class ReceptionController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
+                 if(isset($_POST['Reject']))
+                {
+                    die('die bitch');
+                }
 		if(isset($_POST['Reception']))
 		{
                      $condition="";
@@ -66,6 +69,10 @@ class ReceptionController extends Controller
 			$model->attributes=$_POST['Reception'];
                         $model->id_user=  Yii::app()->user->id;
                         $model->reception_date=date("y-m-d H:i:s");
+                        if(isset($_POST['Reject']))                
+                            $model->reception_status=0;
+                        else
+                            $model->reception_status=1;
                         if(isset($_POST['Reception']['_guides']))
                            $model->_guides=$_POST['Reception']['_guides'];
                         if(isset($_POST['Reception']['_newAmount']))
@@ -93,6 +100,8 @@ class ReceptionController extends Controller
                         
                         }
 			if($model->save()){
+                            
+                            
                             if(!empty($model->_guides))
                                 foreach($model->_guides as $idg){
                                     $has=new GuideHasReception;
@@ -101,7 +110,7 @@ class ReceptionController extends Controller
                                     $has->save();
              
                                 }     
-                                if(!empty($model->_weights))  
+                                if(!empty($model->_weights)&&$model->reception_status==1)
                                     foreach($model->_weights as $ww){
                                         $bool=false;
                                         $val=explode('-', $ww);
@@ -132,9 +141,13 @@ class ReceptionController extends Controller
                                                 if(!empty($model->id_embarkation)){
                                                     $w->id_embarkation=$model->id_embarkation;
                                                     $w->amount_embarkation=$w->amount_left;
+                                                    $w->id_embarkation=null;
+                                                    $w->amount_embarkation=null;
                                                 }else{
-                                                $w->id_headquarter=$model->id_headquarter;
-                                                $w->amount_headquarter=$w->amount_left;
+                                                    $w->id_headquarter=$model->id_headquarter;
+                                                    $w->amount_headquarter=$w->amount_left;
+                                                    $w->id_embarkation=null;
+                                                    $w->amount_embarkation=null;
                                                 }
                                                 $w->save();
                                                 $ware=new Warehouse;
@@ -144,23 +157,15 @@ class ReceptionController extends Controller
                                                 $ware->amount_warehouse=$w->amount_left;
                                                 $ware->save();
                                             }
-                                    }
-                                
-                                     
-                                      
-                                    
+                                    }     
                             Yii::app()->user->setFlash('success',Yii::t('validation','Recepción confirmada'));
                             $model=new Reception;
                                 $this->render('create',array(
                                                 'model'=>$model,
-                                                'weight'=>$weight,
-                                                
-                                        ));
-                           
+                                                'weight'=>$weight,     
+                                        ));          
                         }				
 		}
-       
-                
 		$this->render('create',array(
 			'model'=>$model,
                         'weight'=>$weight,

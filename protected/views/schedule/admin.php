@@ -155,202 +155,202 @@ $this->menu=array(
 )); 
 ?>
 <?php
-$this->widget('bootstrap.widgets.TbGridView', array(
-    'id' => 'schegrid',
-   'itemsCssClass' => 'table-bordered items',
-   'dataProvider' => $model->search(),
-   'columns'=>array(
-       
-       
-       array( 
-              'class' => 'editable.EditableColumn',
-              'name'  => 'schedule_date',
-              'headerHtmlOptions' => array('style' => 'width: 110px'),
-              'editable' => array(
-                  'type'          => 'datetime',
-               //   'viewformat'    => 'dd-mm-yyyy',
-                  'url'           => $this->createUrl('schedule/updateSchedule'),
-                  'placement'     => 'right',
-                  
-              )
-         ), 
-             array(
-           'class' => 'editable.EditableColumn',
-           'name' => 'idEmbarkation.embarkation_name',
-          'value'=>'$data->idEmbarkation->embarkation_name',
-           'headerHtmlOptions' => array('style' => 'width: 110px'),
-           'editable' => array(    //editable section
-                  //'apply'      => '$data->initial_stock', //can't edit deleted users
-               
-                  'type'      => 'select',
-                  'attribute' => 'id_embarkation',
-                  'url'        => $this->createUrl('schedule/updateSchedule'),
-                  'source'    => Editable::source(Embarkation::model()->findAll(), 'id_embarkation', 'embarkation_name'),
-                  'placement'  => 'right',
-                  'title'=>'Seleccione Nave Asociada',
-//                    'options'  => array(    //custom display 
-//                     'display' => 'js: function(value, sourceData) {
-//                          var selected = $.grep(sourceData, function(o){ return value == o.value; }),
-//                              colors = {1: "green", 2: "blue", 3: "red", 4: "gray"};
-//                          $(this).text(selected[0].text).css("color", colors[value]);    
-//                      }'
-//                  ),
-                 //onsave event handler 
-                 'onSave' => 'js: function(e, params) {
-                      console && console.log("saved value: "+params.newValue);
-                 }',
-                 //source url can depend on some parameters, then use js function:
-                 /*
-                 'source' => 'js: function() {
-                      var dob = $(this).closest("td").next().find(".editable").text();
-                      var username = $(this).data("username");
-                      return "?r=site/getStatuses&user="+username+"&dob="+dob;
-                 }',
-                 'htmlOptions' => array(
-                     'data-username' => '$data->user_name'
-                 )
-                 */
-              )
-         ),
-        array(
-           'class' => 'editable.EditableColumn',
-           'name' => 'idHeadquarter.headquarter_name',
-          'value'=>'$data->idHeadquarter->headquarter_name',
-           'headerHtmlOptions' => array('style' => 'width: 110px'),
-           'editable' => array(    //editable section
-                  //'apply'      => '$data->initial_stock', //can't edit deleted users
-               
-                  'type'      => 'select',
-                  'attribute' => 'id_headquarter',
-                  'url'        => $this->createUrl('schedule/updateSchedule'),
-                  'source'    => Editable::source(Headquarter::model()->findAll(), 'id_headquarter', 'headquarter_name'),
-                  'placement'  => 'right',
-                  'title'=>'Seleccione Nave Asociada',
-//                    'options'  => array(    //custom display 
-//                     'display' => 'js: function(value, sourceData) {
-//                          var selected = $.grep(sourceData, function(o){ return value == o.value; }),
-//                              colors = {1: "green", 2: "blue", 3: "red", 4: "gray"};
-//                          $(this).text(selected[0].text).css("color", colors[value]);    
-//                      }'
-//                  ),
-                 //onsave event handler 
-                 'onSave' => 'js: function(e, params) {
-                      console && console.log("saved value: "+params.newValue);
-                 }',
-                 //source url can depend on some parameters, then use js function:
-                 /*
-                 'source' => 'js: function() {
-                      var dob = $(this).closest("td").next().find(".editable").text();
-                      var username = $(this).data("username");
-                      return "?r=site/getStatuses&user="+username+"&dob="+dob;
-                 }',
-                 'htmlOptions' => array(
-                     'data-username' => '$data->user_name'
-                 )
-                 */
-              )
-         ),
-          array(
-           'class' => 'editable.EditableColumn',
-           'name' => 'initial_stock',
-           'headerHtmlOptions' => array('style' => 'width: 110px'),
-           'editable' => array(    //editable section
-                  //'apply'      => '$data->initial_stock', //can't edit deleted users
-                  'url'        => $this->createUrl('schedule/updateSchedule'),
-                  'placement'  => 'right',
-              )               
-        ),
-         array( 
-              'class' => 'editable.EditableColumn',
-              'name'  => 'ranch_date',
-              'headerHtmlOptions' => array('style' => 'width: 110px'),
-              'editable' => array(
-                  'type'          => 'datetime',
-               //   'viewformat'    => 'dd-mm-yyyy',
-                  'url'           => $this->createUrl('schedule/updateSchedule'),
-                  'placement'     => 'right',
-                  
-              )
-         ), 
-       array(
-           'class' => 'editable.EditableColumn',
-           'name' => 'ranch_diesel',
-           'headerHtmlOptions' => array('style' => 'width: 110px'),
-           'editable' => array(    //editable section
-                  //'apply'      => '$data->initial_stock', //can't edit deleted users
-                  'url'        => $this->createUrl('schedule/updateSchedule'),
-                  'placement'  => 'right',
-              )               
-        ),
-       array(
-           'class' => 'editable.EditableColumn',
-           'name' => 'delivery_DO',
-           'headerHtmlOptions' => array('style' => 'width: 110px'),
-           'editable' => array(    //editable section
-                  //'apply'      => '$data->initial_stock', //can't edit deleted users
-                  'url'        => $this->createUrl('schedule/updateSchedule'),
-                  'placement'  => 'right',
-              )               
-        ),
-       array(
-           'class' => 'editable.EditableColumn',
-           'name' => 'final_stock',
-           'headerHtmlOptions' => array('style' => 'width: 110px'),
-           'editable' => array(    //editable section
-                  //'apply'      => '$data->initial_stock', //can't edit deleted users
-                  'url'        => $this->createUrl('schedule/updateSchedule'),
-                  'placement'  => 'right',
-              )               
-        ),
- 
-         
-        
-          
-     
-        
-   
-         array( 
-              'class' => 'editable.EditableColumn',
-              'name'  => 'init_bb_motor',
-              'headerHtmlOptions' => array('style' => 'width: 110px'),
-              'editable' => array(
-                  //'type'=> array('number',
-                 // 'step' =>'any'), 
-                  
-               //   'viewformat'    => 'dd-mm-yyyy',
-                  'url'           => $this->createUrl('schedule/updateSchedule'),
-                  'placement'     => 'right',
-                  
-              )
-         ), 
-         array( 
-              'class' => 'editable.EditableColumn',
-              'name'  => 'finish_bb_motor',
-              'headerHtmlOptions' => array('style' => 'width: 110px'),
-              'editable' => array(
-                  //'type'=> array('number',
-                 // 'step' =>'any'), 
-                  
-               //   'viewformat'    => 'dd-mm-yyyy',
-                  'url'           => $this->createUrl('schedule/updateSchedule'),
-                  'placement'     => 'right',
-                  
-              )
-         ), 
-         array( 
-              'class' => 'editable.EditableColumn',
-              'name'  => 'init_eb_motor',
-              'headerHtmlOptions' => array('style' => 'width: 110px'),
-              'editable' => array(
-                  //'type'=> array('number',
-                 // 'step' =>'any'), 
-                  
-               //   'viewformat'    => 'dd-mm-yyyy',
-                  'url'           => $this->createUrl('schedule/updateSchedule'),
-                  'placement'     => 'right',
-                  
-              )
-         ), 
+//$this->widget('bootstrap.widgets.TbGridView', array(
+//    'id' => 'schegrid',
+//   'itemsCssClass' => 'table-bordered items',
+//   'dataProvider' => $model->search(),
+//   'columns'=>array(
+//       
+//       
+//       array( 
+//              'class' => 'editable.EditableColumn',
+//              'name'  => 'schedule_date',
+//              'headerHtmlOptions' => array('style' => 'width: 110px'),
+//              'editable' => array(
+//                  'type'          => 'datetime',
+//               //   'viewformat'    => 'dd-mm-yyyy',
+//                  'url'           => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'     => 'right',
+//                  
+//              )
+//         ), 
+//             array(
+//           'class' => 'editable.EditableColumn',
+//           'name' => 'idEmbarkation.embarkation_name',
+//          'value'=>'$data->idEmbarkation->embarkation_name',
+//           'headerHtmlOptions' => array('style' => 'width: 110px'),
+//           'editable' => array(    //editable section
+//                  //'apply'      => '$data->initial_stock', //can't edit deleted users
+//               
+//                  'type'      => 'select',
+//                  'attribute' => 'id_embarkation',
+//                  'url'        => $this->createUrl('schedule/updateSchedule'),
+//                  'source'    => Editable::source(Embarkation::model()->findAll(), 'id_embarkation', 'embarkation_name'),
+//                  'placement'  => 'right',
+//                  'title'=>'Seleccione Nave Asociada',
+////                    'options'  => array(    //custom display 
+////                     'display' => 'js: function(value, sourceData) {
+////                          var selected = $.grep(sourceData, function(o){ return value == o.value; }),
+////                              colors = {1: "green", 2: "blue", 3: "red", 4: "gray"};
+////                          $(this).text(selected[0].text).css("color", colors[value]);    
+////                      }'
+////                  ),
+//                 //onsave event handler 
+//                 'onSave' => 'js: function(e, params) {
+//                      console && console.log("saved value: "+params.newValue);
+//                 }',
+//                 //source url can depend on some parameters, then use js function:
+//                 /*
+//                 'source' => 'js: function() {
+//                      var dob = $(this).closest("td").next().find(".editable").text();
+//                      var username = $(this).data("username");
+//                      return "?r=site/getStatuses&user="+username+"&dob="+dob;
+//                 }',
+//                 'htmlOptions' => array(
+//                     'data-username' => '$data->user_name'
+//                 )
+//                 */
+//              )
+//         ),
+//        array(
+//           'class' => 'editable.EditableColumn',
+//           'name' => 'idHeadquarter.headquarter_name',
+//          'value'=>'$data->idHeadquarter->headquarter_name',
+//           'headerHtmlOptions' => array('style' => 'width: 110px'),
+//           'editable' => array(    //editable section
+//                  //'apply'      => '$data->initial_stock', //can't edit deleted users
+//               
+//                  'type'      => 'select',
+//                  'attribute' => 'id_headquarter',
+//                  'url'        => $this->createUrl('schedule/updateSchedule'),
+//                  'source'    => Editable::source(Headquarter::model()->findAll(), 'id_headquarter', 'headquarter_name'),
+//                  'placement'  => 'right',
+//                  'title'=>'Seleccione Nave Asociada',
+////                    'options'  => array(    //custom display 
+////                     'display' => 'js: function(value, sourceData) {
+////                          var selected = $.grep(sourceData, function(o){ return value == o.value; }),
+////                              colors = {1: "green", 2: "blue", 3: "red", 4: "gray"};
+////                          $(this).text(selected[0].text).css("color", colors[value]);    
+////                      }'
+////                  ),
+//                 //onsave event handler 
+//                 'onSave' => 'js: function(e, params) {
+//                      console && console.log("saved value: "+params.newValue);
+//                 }',
+//                 //source url can depend on some parameters, then use js function:
+//                 /*
+//                 'source' => 'js: function() {
+//                      var dob = $(this).closest("td").next().find(".editable").text();
+//                      var username = $(this).data("username");
+//                      return "?r=site/getStatuses&user="+username+"&dob="+dob;
+//                 }',
+//                 'htmlOptions' => array(
+//                     'data-username' => '$data->user_name'
+//                 )
+//                 */
+//              )
+//         ),
+//          array(
+//           'class' => 'editable.EditableColumn',
+//           'name' => 'initial_stock',
+//           'headerHtmlOptions' => array('style' => 'width: 110px'),
+//           'editable' => array(    //editable section
+//                  //'apply'      => '$data->initial_stock', //can't edit deleted users
+//                  'url'        => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'  => 'right',
+//              )               
+//        ),
+//         array( 
+//              'class' => 'editable.EditableColumn',
+//              'name'  => 'ranch_date',
+//              'headerHtmlOptions' => array('style' => 'width: 110px'),
+//              'editable' => array(
+//                  'type'          => 'datetime',
+//               //   'viewformat'    => 'dd-mm-yyyy',
+//                  'url'           => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'     => 'right',
+//                  
+//              )
+//         ), 
+//       array(
+//           'class' => 'editable.EditableColumn',
+//           'name' => 'ranch_diesel',
+//           'headerHtmlOptions' => array('style' => 'width: 110px'),
+//           'editable' => array(    //editable section
+//                  //'apply'      => '$data->initial_stock', //can't edit deleted users
+//                  'url'        => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'  => 'right',
+//              )               
+//        ),
+//       array(
+//           'class' => 'editable.EditableColumn',
+//           'name' => 'delivery_DO',
+//           'headerHtmlOptions' => array('style' => 'width: 110px'),
+//           'editable' => array(    //editable section
+//                  //'apply'      => '$data->initial_stock', //can't edit deleted users
+//                  'url'        => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'  => 'right',
+//              )               
+//        ),
+//       array(
+//           'class' => 'editable.EditableColumn',
+//           'name' => 'final_stock',
+//           'headerHtmlOptions' => array('style' => 'width: 110px'),
+//           'editable' => array(    //editable section
+//                  //'apply'      => '$data->initial_stock', //can't edit deleted users
+//                  'url'        => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'  => 'right',
+//              )               
+//        ),
+// 
+//         
+//        
+//          
+//     
+//        
+//   
+//         array( 
+//              'class' => 'editable.EditableColumn',
+//              'name'  => 'init_bb_motor',
+//              'headerHtmlOptions' => array('style' => 'width: 110px'),
+//              'editable' => array(
+//                  //'type'=> array('number',
+//                 // 'step' =>'any'), 
+//                  
+//               //   'viewformat'    => 'dd-mm-yyyy',
+//                  'url'           => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'     => 'right',
+//                  
+//              )
+//         ), 
+//         array( 
+//              'class' => 'editable.EditableColumn',
+//              'name'  => 'finish_bb_motor',
+//              'headerHtmlOptions' => array('style' => 'width: 110px'),
+//              'editable' => array(
+//                  //'type'=> array('number',
+//                 // 'step' =>'any'), 
+//                  
+//               //   'viewformat'    => 'dd-mm-yyyy',
+//                  'url'           => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'     => 'right',
+//                  
+//              )
+//         ), 
+//         array( 
+//              'class' => 'editable.EditableColumn',
+//              'name'  => 'init_eb_motor',
+//              'headerHtmlOptions' => array('style' => 'width: 110px'),
+//              'editable' => array(
+//                  //'type'=> array('number',
+//                 // 'step' =>'any'), 
+//                  
+//               //   'viewformat'    => 'dd-mm-yyyy',
+//                  'url'           => $this->createUrl('schedule/updateSchedule'),
+//                  'placement'     => 'right',
+//                  
+//              )
+//         ), 
 //        array(
 //           'class' => 'editable.EditableColumn',
 //           'name' => 'email',
@@ -372,8 +372,8 @@ $this->widget('bootstrap.widgets.TbGridView', array(
 //                  'placement'     => 'right',
 //              )
 //         ), 
-   ),
-)); 
+//   ),
+//)); 
 ?>
 
 

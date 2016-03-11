@@ -133,7 +133,8 @@ if(size<1)
     validation=validation+'-Debe Existir al menos un tipo de carga asociado a la guia \n';
 if(guide[2]==0)
     validation=validation+'-Usuario no puede ser nulo \n';
-
+if(guide[3]==guide[4])
+    validation=validation+'-El Origen y el destino deben ser diferentes \n';
   for(gi in guides ) {
          //alert(gi +"-"+ guides[gi]);
         

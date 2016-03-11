@@ -90,17 +90,20 @@ class TicketController extends Controller
 	
         }
         public function actionDeleteOldFile($tempFolder=null,$token){
+            $cont=0;
             if($token=="PDS4WaMD"){
-            if($tempFolder==null)
-                 $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
+                if($tempFolder==null)
+                    $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
+            
            $dir = opendir($tempFolder);
-            while($f = readdir($dir))
-            {
-            if((time()-filemtime($tempFolder.$f) > 3600*4*2) and !(is_dir($tempFolder.$f)))
-            unlink($tempFolder.$f);
-            }
+                while($f = readdir($dir)){
+                if((time()-filemtime($tempFolder.$f) >= 3600*4*2) and !(is_dir($tempFolder.$f)))
+                    unlink($tempFolder.$f);
+                }
             closedir($dir);
+            
             }
+           
         }
   
         public function actionCloseTicket($id){
@@ -156,6 +159,8 @@ class TicketController extends Controller
              
              $ticketm=new TicketMessage;
              $ticketm->id_ticket=$id;
+             $ticket=  $this->loadModel($id);
+             
              if(isset($_POST['TicketMessage']))
                 {
                 $ticketm->attributes=$_POST['TicketMessage'];
@@ -168,6 +173,8 @@ class TicketController extends Controller
                   $ticketm->id_user_asigned=NULL;
         
                 if($ticketm->save()){
+                    $ticket->ticket_solution_date=$ticketm->ticket_message_date;
+                    $ticket->save(false);
                     if(!empty($ticketm->_message_files)){
                         $tempFolder=Yii::getPathOfAlias('webroot').'/images/temp/'; 
                         $newFolder=Yii::getPathOfAlias('webroot').'/images/tickets_message/'; 
@@ -537,10 +544,13 @@ class TicketController extends Controller
                     $asigneduser=Users::model()->findByPK($m->id_user_asigned);
                     $asigned="De ".$user->user_names." ".$user->user_lastnames ." para ". $asigneduser->user_names." ".$asigneduser->user_lastnames;
                 }
+                  $space="";
+                        if(!empty($approve)&&!empty($repprove))
+                            $space="|";
                 echo  '<div class="'.$class.'">'.$m->ticket_message.'</p>'.
                       '<p class="datep">'.$asigned ."<br>".
                        Yii::app()->dateFormatter->format("d MMMM y  HH:mm:ss",strtotime($m->ticket_message_date))."<br>".
-                        $link."<div class='approveTicket'>".$approve."|".$repprove."</div></div>";
+                        $link."<div class='approveTicket'>".$approve.$space.$repprove."</div></div>";
 
                 echo "<br>";
 
@@ -578,7 +588,7 @@ class TicketController extends Controller
                           $days = floor($days);		
                           
                         $criteria2=new CDbCriteria();
-                        $criteria2->condition='id_ticket='.$ticket->id_ticket." and ticket_status<>'message'";
+                        $criteria2->condition='id_ticket='.$ticket->id_ticket." and ticket_message_type<>'message'";
                         $messages=  TicketMessage::model()->findAll($criteria2);
                         if($days>=15&&empty($messages))
                             $this->sendMail($ticket, 'Han transcurrido mas de '.$days.' dias desde que se emitio la No Conformidad N° '.$ticket->id_ticket, 'body_ticket_message','daypassed','');
@@ -589,10 +599,11 @@ class TicketController extends Controller
                             $mremedy->limit=1;
                             $date1=  TicketMessage::model()->findAll($mremedy);
                             if(!empty($date1)){
-                                $dayr= (strtotime($date1->ticket_message_date)-strtotime(date("y-m-d H:i:s")))/86400;
+                               // die($date1[0]->ticket_message_date);
+                                $dayr= (strtotime($date1[0]->ticket_message_date)-strtotime(date("y-m-d H:i:s")))/86400;
                                 $dayr = abs($dayr); 
                                 $dayr = floor($dayr);
-                                $datetime1 = new DateTime($date1->ticket_message_date);
+                                $datetime1 = new DateTime($date1[0]->ticket_message_date);
                             }
                             $mclient=new CDbCriteria();
                             $mclient->condition="id_ticket=".$ticket->id_ticket." and ticket_message_type='Client'";
@@ -600,15 +611,15 @@ class TicketController extends Controller
                             $mclient->limit=1;
                             $date2=  TicketMessage::model()->findAll($mclient);
                             if(!empty($date2)){
-                                $dayc= (strtotime($date2->ticket_message_date)-strtotime(date("y-m-d H:i:s")))/86400;
+                                $dayc= (strtotime($date2[0]->ticket_message_date)-strtotime(date("y-m-d H:i:s")))/86400;
                                 $dayc = abs($dayc); 
                                 $dayc = floor($dayc);
-                                $datetime2 = new DateTime($date2->ticket_message_date);
+                                $datetime2 = new DateTime($date2[0]->ticket_message_date);
                             }
                             if((!empty($date1)&&empty($date2))||(!empty($date1)&&!empty($date2)&&$datetime2>$datetime1)&&$dayr>1){
                                 $this->sendMail($ticket, 'Han transcurrido mas de '.$dayr.' dias desde que se emitio una medida correctiva a la No Conformidad N° '.$ticket->id_ticket, 'body_ticket_message','remedy','De no haber respuesta o cierre de la no Conformidad, se asumira que usted esta de acuerdo con las medidas correctivas aplicadas');
-                                if($dayr==5)
-                                    $this->redirect(array('closeTicket','id'=>$ticket->id_tickets));
+                                if($dayr>=2)
+                                    $this->redirect(array('closeTicket','id'=>$ticket->id_ticket));
                             }
                             
                         }

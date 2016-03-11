@@ -9,6 +9,11 @@ Yii::setPathOfAlias('bootstrap', dirname(__FILE__).'/../extensions/bootstrap');
 Yii::setPathOfAlias('editable', dirname(__FILE__).'/../extensions/x-editable');
 //Yii::setPathOfAlias('editable', dirname(__FILE__).'/../extensions/x-editable');
 return array(
+//     'catchAllRequest'=>array(
+//          'offline/index',
+//          'otherParams'=>'value',
+//      ),
+ 
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 	'name'=>'SMT',
 	'language'=>'es',

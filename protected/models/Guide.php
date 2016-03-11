@@ -67,7 +67,7 @@ class Guide extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
                         'idHeadquarter' => array(self::BELONGS_TO, 'Headquarter', 'id_headquarter'),
-                        'idDestination' => array(self::BELONGS_TO, 'Headquarter', array('id_destination'=>'id_user')),
+                        'idDestination' => array(self::BELONGS_TO, 'Headquarter', array('id_destination'=>'id_headquarter')),
 			'idUser' => array(self::BELONGS_TO, 'Users', 'id_user'),
                         'idManifest' => array(self::BELONGS_TO, 'Manifest', 'id_manifest'),
                         'sends' => array(self::HAS_MANY, 'Send', 'id_guide'),

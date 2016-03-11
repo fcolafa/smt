@@ -97,7 +97,7 @@ if($model->ticket_status!='Cerrado'){
 <?php 
 
 if(Yii::app()->user->checkAccess('Administrador')&& $model->ticket_status!="Cerrado"){
-  echo CHtml::link('<div class="messageButton white">
+  echo CHtml::link('<div class="messageButtonb blue">
 	    	<img src='.'"'. Yii::app()->theme->baseUrl.'/img/big_icons/icon-mail.png" alt="añadir medida correctiva"  width="15%" />
 	    	<div class=""><h4>Responder y/o Asignar </h4></div>
 		</div>', 
@@ -110,7 +110,7 @@ if(Yii::app()->user->checkAccess('Administrador')&& $model->ticket_status!="Cerr
 <?php 
 
 if(Yii::app()->user->checkAccess('Administrador')&& $model->ticket_status!="Cerrado"){
-  echo CHtml::link('<div  class="messageButton white">
+  echo CHtml::link('<div  class="messageButtonb blue">
 	    	<img src='.'"'. Yii::app()->theme->baseUrl.'/img/big_icons/icon-bandaid.png" alt="añadir medida correctiva"  width="15%" />
 	    	<div class=""><h4>Medida Correctiva</h4></div>
 		</div>', 
@@ -122,7 +122,7 @@ if(Yii::app()->user->checkAccess('Administrador')&& $model->ticket_status!="Cerr
 <?php 
 
 if(Yii::app()->user->checkAccess('Cliente')&& $model->ticket_status!="Cerrado"){
-  echo CHtml::link('<div  class="messageButton white">
+  echo CHtml::link('<div  class="messageButtonb blue">
 	    	<img src='.'"'. Yii::app()->theme->baseUrl.'/img/big_icons/icon-closeticket.png" alt="Cerrar Solicitud de no conformidad"  width="15%" />
 	    	<div class="" ><h4> Aprobar y/o Cerrar No Conformidad</h4></div>
 		</div>', 
@@ -134,7 +134,7 @@ if(Yii::app()->user->checkAccess('Cliente')&& $model->ticket_status!="Cerrado"){
 <?php 
 
 if(Yii::app()->user->checkAccess('Cliente')&& $model->ticket_status!="Cerrado"){
-  echo CHtml::link('<div  class="messageButton white">
+  echo CHtml::link('<div  class="messageButtonb blue">
 	    	<img src='.'"'. Yii::app()->theme->baseUrl.'/img/big_icons/icon-chat4.png" alt="Mensaje medida Correctiva"  width="15%" />
 	    	<div class=""><h4>Comentario a la medida correctiva</h4></div>
 		</div>', 

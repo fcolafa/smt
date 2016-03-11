@@ -16,6 +16,7 @@ class GuideHasReception extends CActiveRecord
         public $_receptionDate;
         public $_headquarter_name;
         public $_embarkation_name;
+        public $_reception_status;
 	public function tableName()
 	{
 		return 'guide_has_reception';
@@ -32,7 +33,7 @@ class GuideHasReception extends CActiveRecord
 			array('id_guide, id_reception', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_headquarter_name,_receptionDate, _date ,id_guide, id_reception', 'safe', 'on'=>'search'),
+			array('_reception_status,_headquarter_name,_receptionDate, _date ,id_guide, id_reception', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -98,6 +99,7 @@ class GuideHasReception extends CActiveRecord
                 $criteria->compare('idReception.reception_date',$this->_receptionDate,true);
                 $criteria->compare('idHeadquarter.headquarter_name',$this->_headquarter_name,true);
                 $criteria->compare('idEmbarkation.embarkation_name',$this->_embarkation_name,true);
+                $criteria->compare('idReception.reception_status',$this->_reception_status,true);
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));

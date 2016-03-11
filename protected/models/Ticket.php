@@ -63,7 +63,7 @@ class Ticket extends CActiveRecord
                         array('id_headquarter','validateId'),
                         array('_files','validFile'),
                         array('_verifyCode', 'CaptchaExtendedValidator', 'allowEmpty'=>!CCaptcha::checkRequirements()),
-                        array('ticket_close_date,_files, id_classification,  _user_lastnames, _user_names, _headquarter_name, _embarkation_name, _user_name, id_ticket, id_embarkation, id_user,  ticket_date, ticket_date_incident, ticket_description, ticket_solution, ticket_status', 'safe', 'on'=>'search'),
+                        array('ticket_solution_date,ticket_close_date,_files, id_classification,  _user_lastnames, _user_names, _headquarter_name, _embarkation_name, _user_name, id_ticket, id_embarkation, id_user,  ticket_date, ticket_date_incident, ticket_description, ticket_solution, ticket_status', 'safe', 'on'=>'search'),
 		);
 	}
 

@@ -40,7 +40,7 @@ class Reception extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id_headquarter, id_user', 'required'),
-			array('id_headquarter, id_embarkation, id_user', 'numerical', 'integerOnly'=>true),
+			array('id_headquarter, id_embarkation, id_user, reception_status', 'numerical', 'integerOnly'=>true),
 			array('reception_date, comment', 'safe'),
                         array('_guides','reloadSelect'),
                         array('_guides','validGuides'),
@@ -52,7 +52,7 @@ class Reception extends CActiveRecord
                       //  array('_newAmount','validW'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('_newAmount,_weights,_guide, _guides, id_reception, id_headquarter, reception_date, id_embarkation, id_user', 'safe', 'on'=>'search'),
+			array('reception_status, _newAmount,_weights,_guide, _guides, id_reception, id_headquarter, reception_date, id_embarkation, id_user', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -86,6 +86,7 @@ class Reception extends CActiveRecord
 			'_guides' => Yii::t('database','Guides'),
 			'comment' => Yii::t('database','Comment'),
 			'_weights' => Yii::t('database','Weights'),
+                        'reception_status' =>Yii::t('database','Estado de recepción'),
 		);
 	}
 	/**
@@ -112,6 +113,8 @@ class Reception extends CActiveRecord
 		$criteria->compare('comment',$this->comment,true);
 		$criteria->compare('id_embarkation',$this->id_embarkation);
 		$criteria->compare('id_user',$this->id_user);
+                $criteria->compare('reception_status',$this->reception_status);
+
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -162,13 +165,12 @@ class Reception extends CActiveRecord
         }
         public function rightAmount($attribute,$params)
         {
-         
             if(!empty($this->$attribute)){
                 foreach($this->$attribute as $key => $value){
                      $data = explode('-', $value);
                      $weight= Weight::model()->findByPk($data[1]);
-                     if($weight->amount_left<$data[2])
-                         $this->addError('_guide', 'la cantidad ingresada es superior al total de la carga asociada');
+                     if($weight->amount_left<=$data[2])
+                         $this->addError('_guide', 'la cantidad ingresada a parcializar no puede ser igual o superior al total de la carga asociada');
                 }
              }
         }

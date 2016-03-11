@@ -10,6 +10,8 @@ function addTableGuide(){
     var guide=document.createElement('table');
     guide.id='tbl'+size;
     guide.name='tbl'+size;
+    guide.className='CSS_Table_Example responsive';
+    guide.style="";
     guides.appendChild(guide);
     
     //subtabla
@@ -26,12 +28,79 @@ function addTableGuide(){
     
  
     //boton eliminar subcomponente
-    var cellbtndlt=subrow.insertCell(1);
+    
+    var cellpartial=subrow.insertCell(1);
+    var btnpartial=document.createElement('input');
+    btnpartial.id='btnpartial'+size;
+    btnpartial.name='btnpartial'+size;
+    btnpartial.value='Parcializar Carga';
+    btnpartial.type='button';
+     btnpartial.style="width:80%;text-align:left;margin-left:0px ;margin: auto;white-space: pre-line; word-wrap: break-word;text-align: center;";
+    var comtopart=1;
+    btnpartial.addEventListener('click',function(){
+    
+        
+        
+            $('#Reception__guides option').eq(size).val();
+           var x = document.getElementById('Reception__guides');
+           if(comtopart==0){
+               
+                   var sui=0;
+         $("#tbl"+size+" tbody tr").each(function (index) 
+        {
+            
+            $(this).children("td").each(function (index2) 
+            {switch (index2) 
+                {
+                    case 0: sui++;
+                     $('#namount'+size+sui).prop('disabled', true);
+                     $('#namount'+size+sui).val('');
+                     $('#check'+size+sui).prop('disabled', true);
+                     $('#check'+size+sui).prop('checked', false);
+                        break;        
+                }
+            });
+           
+        });
+           btnpartial.value='Parcializar Carga';
+           comtopart=1;
+           
+       }else
+           if(comtopart==1){
+                 btnpartial.value='Carga Completa';
+                          var sui=0;
+         $("#tbl"+size+" tbody tr").each(function (index) 
+        {
+            
+            $(this).children("td").each(function (index2) 
+            {switch (index2) 
+                {
+                    case 0: sui++;
+                     $('#namount'+size+sui).prop('disabled', false);
+                     $('#namount'+size+sui).val('');
+                     $('#check'+size+sui).prop('disabled', false);
+                     $('#check'+size+sui).prop('checked', false);
+                        break;
+                         
+                }
+               
+                
+              
+            });
+           
+        });
+         
+           comtopart=0;
+           }
+    });
+    cellpartial.appendChild(btnpartial);
+    var cellbtndlt=subrow.insertCell(2);
     var btndlt=document.createElement('input');
     btndlt.id='btndelt'+size;
     btndlt.name='btnedlt'+size;
     btndlt.value='Eliminar Guia';
     btndlt.type='button';
+    btndlt.style="width:80%;text-align:left;margin-left:0px ;margin: auto;white-space: pre-line; word-wrap: break-word;text-align: center;";
         btndlt.addEventListener('click',function(){
         var celda = this.parentNode;
         var fila=celda.parentNode;
@@ -41,7 +110,6 @@ function addTableGuide(){
         var final=acc.parentNode;
         var tr=final.parentNode;
         tr.removeChild(final);
-        
         var id=parseInt(btndlt.id.substring(7,100));
         var x = document.getElementById('Reception__guides');
           $("#Reception__newAmount option").each(function(){
@@ -84,6 +152,7 @@ function addWeigth(index){
         var amount=document.getElementById('Reception__newAmount'); 
         var subtbl=document.getElementById('tbl'+index);
         var lastrow=subtbl.rows.length;
+        subtbl.class='research';
         var subrow=subtbl.insertRow(lastrow); 
         
         var cellcomp=subrow.insertCell(0);
@@ -94,7 +163,9 @@ function addWeigth(index){
         var cellvalue=subrow.insertCell(1);
         var val=document.createElement('input');
         val.id='namount'+index+lastrow;
+        val.disabled=true;
         val.type='number';
+        val.style=" vertical-align: middle; width:80%;";
         val.step=0.1;
         val.min=0;
         val.addEventListener('click', function(){
@@ -117,9 +188,11 @@ function addWeigth(index){
         cellvalue.appendChild(val);
         var cellcheck=subrow.insertCell(2);
         var check=document.createElement('input');
-      
+        check.disabled=true;
         check.id='check'+index+lastrow;
+      
         check.type='checkbox';
+        check.style=" position: relative; vertical-align: middle;";
         check.addEventListener('click',function(){
            var ch=document.getElementById('check'+index+lastrow);
            var ww=document.getElementById('we'+index+lastrow);

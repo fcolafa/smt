@@ -174,20 +174,20 @@ $this->widget('zii.widgets.grid.CGridView', array(
  
     //echo '  <span>Crear Manifiesto :<span>'.CHtml::dropDownList('newStatus', 0,CHtml::listData($model,'id_guide','num_guide'),array('prompt'=>'select status' ));
  
-    echo CHtml::ajaxLink("Crear Manifiesto", $this->createUrl('guide/getvalue'), array(
-        "type" => "post",
-        "data" => 'js:{theIds : $.fn.yiiGridView.getChecked("guide-grid","selectedIds").toString()}',
-        "success" => 'js:function(data){ $.fn.yiiGridView.update("guide-grid")  }' ),array(
-        'class' => 'btn btn-info'
-        )
-        );
-    echo CHtml::ajaxLink("Quitar de Manifiesto", $this->createUrl('guide/deleteValue'), array(
-        "type" => "post",
-        "data" => 'js:{theIds : $.fn.yiiGridView.getChecked("guide-grid","selectedIds").toString()}',
-        "success" => 'js:function(data){ $.fn.yiiGridView.update("guide-grid")  }' ),array(
-        'class' => 'btn btn-info'
-        )
-        );
+//    echo CHtml::ajaxLink("Crear Manifiesto", $this->createUrl('guide/getvalue'), array(
+//        "type" => "post",
+//        "data" => 'js:{theIds : $.fn.yiiGridView.getChecked("guide-grid","selectedIds").toString()}',
+//        "success" => 'js:function(data){ $.fn.yiiGridView.update("guide-grid")  }' ),array(
+//        'class' => 'btn btn-info'
+//        )
+//        );
+//    echo CHtml::ajaxLink("Quitar de Manifiesto", $this->createUrl('guide/deleteValue'), array(
+//        "type" => "post",
+//        "data" => 'js:{theIds : $.fn.yiiGridView.getChecked("guide-grid","selectedIds").toString()}',
+//        "success" => 'js:function(data){ $.fn.yiiGridView.update("guide-grid")  }' ),array(
+//        'class' => 'btn btn-info'
+//        )
+//        );
 
  
 ?>

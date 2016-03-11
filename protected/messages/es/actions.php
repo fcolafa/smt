@@ -22,7 +22,8 @@ return array(
 'Contact'=>'Contacto',
 'Generate'=>'Generar',
 'Arrange'=>'Gestionar',
-'Notify'=>'Notificar',
+'Notify'=>'Notificar Recepcion de Guias',
 'Load'=>'Cargar',
+'Reject'=>'Rechazar Guias',
     
 );

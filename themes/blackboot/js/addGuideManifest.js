@@ -70,6 +70,7 @@ function addTableGuide(){
     var guide=document.createElement('table');
     guide.id='tbl'+size;
     guide.name='tbl'+size;
+        guide.className='CSS_Table_Example responsive';
     guides.appendChild(guide);
     
     //subtabla
@@ -81,6 +82,8 @@ function addTableGuide(){
     var acc=document.createElement('div');
     acc.id='guide'+size;
     acc.name='guide'+size;
+   // acc.class='smtTable';
+
     acc.style.width ='100%';
     cellacc.appendChild(acc);
     
@@ -138,5 +141,9 @@ function addWeigth(index){
         var comp=document.createElement('div');
         comp.id="we"+index+lastrow;
         cellcomp.appendChild(comp);
+        var cellvoid=subrow.insertCell(1);
+        var cvoid=document.createElement('div');
+        cvoid.id="blank"+index+lastrow;
+        cellvoid.appendChild(cvoid);
  
 }

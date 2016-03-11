@@ -18,7 +18,7 @@ var name = "Manifest__guides";
                    $conw=1;
                 $guide=  Guide::model()->findByPk($item);
                 echo "window.onload=addTableGuide();";
-                echo " $('#guide'+".$cont.").append('<h5>'+ '".CHtml::link(CHtml::encode($guide->num_guide." (".$guide->idUser->idCompany->company_name.")"), array('guide/view','id'=>$guide->id_guide,), array('target'=>'_blank'))."'+'</h5>');";
+                echo " $('#guide'+".$cont.").append('<h5>Guia:'+ '".CHtml::link(CHtml::encode($guide->num_guide." (".$guide->idUser->idCompany->company_name.")"), array('guide/view','id'=>$guide->id_guide,), array('target'=>'_blank'))."'+'</h5>');";
               
                 $criteria=new CDbCriteria();
                 $criteria->condition="id_guide=".$guide->id_guide;
@@ -26,7 +26,7 @@ var name = "Manifest__guides";
                 
                     foreach($weights as $weight){
                     echo "window.onload=addWeigth(indexguide);";
-                    echo "$('#we'+".$cont."+".$conw.").append('<h5>'+'".$weight->weightprovider." '+'".$weight->weighttype."'+' '+".$weight->amount_left."+' ('+'".$weight->idWeightUnit->weight_unit_name."'+')'+'</h5>');"; 
+                    echo "$('#we'+".$cont."+".$conw.").append('<h6>-'+'".$weight->weightprovider." '+'".$weight->weighttype."'+' '+".$weight->amount_left."+' ('+'".$weight->idWeightUnit->weight_unit_name."'+')'+'</h6>');"; 
                     echo "$('#we'+".$cont."+".$conw.").attr('class',".$weight->id_guide."+'-'+".$weight->id_weight.");";
                       $conw++;
                     }
@@ -110,14 +110,14 @@ var name = "Manifest__guides";
                  <?php echo $form->error($model,'manifest_return'); ?>
         </div>
         
-          <!-- <div class="row" style="display: none">-->
-        <div class="row"> <!--style="display: none"-->
+          <div class="row" style="display: none">
+      
 		<?php echo $form->labelEx($model,'_guides'); ?>
 		<?php echo $form->dropDownList($model,'_guides',$model->_guides ,array('multiple' => 'multiple')); ?>
 		<?php echo $form->error($model,'_guides'); ?>
 	</div>
-         <!-- <div class="row" style="display: none">-->
-          <div class="row" >
+         <div class="row" style="display: none">
+          
 		<?php echo $form->labelEx($model,'_weights'); ?>
 		<?php echo $form->dropDownList($model,'_weights',$model->_weights ,array('multiple' => 'multiple')); ?>
 		<?php echo $form->error($model,'_weights'); ?>
@@ -125,6 +125,7 @@ var name = "Manifest__guides";
 
        <div class="row" >
          <?php echo $form->labelEx($model,'_guide'); ?>
+          
          <?php 
            
              if ($model->_guide&& $model->_guide!=0)
@@ -166,7 +167,7 @@ var name = "Manifest__guides";
                        $("#Reception__weights").append(new Option(item,item, true, true));
                         addWeigth(indexguide);
                         ist=parseInt(j)+1;
-                          $("#we"+indexguide+ist).append("<h5>"+ arr[j]["weightprovider"]+" "+arr[j]["weighttype"]+" "+arr[j]["amount_left"]+" ("+arr[j]["unit"]+")"+"</h5>");
+                          $("#we"+indexguide+ist).append("<h6>-"+ arr[j]["weightprovider"]+" "+arr[j]["weighttype"]+" "+arr[j]["amount_left"]+" ("+arr[j]["unit"]+")"+"</h6>");
                           $("#we"+indexguide+ist).attr("class",item);  
                     }
             
@@ -179,17 +180,18 @@ var name = "Manifest__guides";
              ));
          ?>
             <?php echo $form->error($model,'_guide'); ?>
-	
+	 <note>(escriba un indicio del número de la guia para la busqueda automatica)</note>
         </div>
         
         <div class="row" >
-            <table  class="table-bordered">
+            <table  class="">
                 <thead id="tblGuideHead">
                     <tr>
                       
                     </tr>
                 </thead>
                 <tbody id="tblguide">
+
                 </tbody>           
             </table>
         </div>

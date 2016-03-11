@@ -104,6 +104,21 @@ class ReportsController extends Controller
             ),
         );
     }
+    public function actionOperational(){
+        $model=new Operational;
+         if(isset($_POST['Operational'])){
+             $model->attributes=$_POST['Operational'];
+         }
+        if($model->validate()){
+            
+        }
+            
+          $this->render('operational',
+                       array('model'=>$model,
+                         
+                           ));
+        
+    }
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()
@@ -136,7 +151,7 @@ class ReportsController extends Controller
 	{
             return array(
                     array('allow', // allow admin user to perform 'admin' and 'delete' actions
-                            'actions'=>array('index','tickets','captcha'),
+                            'actions'=>array('index','tickets','captcha','operational'),
                             'roles'=>array('Administrador'),
                     ),
                     array('deny',  // deny all users
@@ -160,19 +175,19 @@ class ReportsController extends Controller
             define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
             /** Include path **/
             date_default_timezone_set('UTC');
-            echo date('H:i:s') . " Create new PHPExcel object\n";
+            //echo date('H:i:s') . " Create new PHPExcel object\n";
             $objPHPExcel = new PHPExcel();
 
             // Set properties
-            echo date('H:i:s') . " Set properties\n";
+            //echo date('H:i:s') . " Set properties\n";
             $objPHPExcel->getProperties()->setCreator("SMT");
             $objPHPExcel->getProperties()->setLastModifiedBy("SMT");
 
             // Set default font
             $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setName('Arial');
             $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setSize(10);
-            echo date('H:i:s') . " Add some data\n";
-            echo date('H:i:s').' Set document properties'.EOL;
+            //echo date('H:i:s') . " Add some data\n";
+          //  echo date('H:i:s').' Set document properties'.EOL;
             //----------------------------------------------------------
             $objPHPExcel->removeSheetByIndex(0);
             $index=0;
@@ -223,7 +238,7 @@ class ReportsController extends Controller
                          $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
                          $objPHPExcel->getActiveSheet()
                             ->getStyle(($lastColumn).$head)
-                            ->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                            ->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                          $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
                          //----------------------------------------------------------------------------------------------------------
                          $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head, $ticket->idHeadquarter->headquarter_name);
@@ -237,7 +252,7 @@ class ReportsController extends Controller
                                 $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
                                 $objPHPExcel->getActiveSheet()
                                    ->getStyle($lastColumn.$head)
-                                   ->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                                   ->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                                 }
                          $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
 
@@ -253,7 +268,7 @@ class ReportsController extends Controller
                          $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
                          $objPHPExcel->getActiveSheet()
                             ->getStyle(($lastColumn).$head)
-                            ->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                            ->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                          }
                          $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
 
@@ -263,7 +278,7 @@ class ReportsController extends Controller
                          if(!empty($ticket->ticket_close_date)){
                             $unixTimestamp = strtotime($ticket->ticket_close_date);
                             $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
-                            $objPHPExcel->getActiveSheet()->getStyle(($lastColumn).$head)->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                            $objPHPExcel->getActiveSheet()->getStyle(($lastColumn).$head)->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                          }
                          $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
                          $head++;
@@ -286,8 +301,7 @@ class ReportsController extends Controller
      
             // If you're serving to IE 9, then the following may be needed
             header('Cache-Control: max-age=1');
-            ob_end_clean();
-            ob_start();
+         
             $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
             $objWriter->save('php://output');      
             Yii::app()->end(); 
@@ -301,19 +315,19 @@ class ReportsController extends Controller
             define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
             /** Include path **/
             date_default_timezone_set('UTC');
-            echo date('H:i:s') . " Create new PHPExcel object\n";
+          //  echo date('H:i:s') . " Create new PHPExcel object\n";
             $objPHPExcel = new PHPExcel();
 
             // Set properties
-            echo date('H:i:s') . " Set properties\n";
+            //echo date('H:i:s') . " Set properties\n";
             $objPHPExcel->getProperties()->setCreator("SMT");
             $objPHPExcel->getProperties()->setLastModifiedBy("SMT");
 
             // Set default font
             $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setName('Arial');
             $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setSize(10);
-            echo date('H:i:s') . " Add some data\n";
-            echo date('H:i:s').' Set document properties'.EOL;
+           // echo date('H:i:s') . " Add some data\n";
+            //echo date('H:i:s').' Set document properties'.EOL;
             //----------------------------------------------------------
             
         
@@ -371,7 +385,7 @@ class ReportsController extends Controller
                  $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
                  $objPHPExcel->getActiveSheet()
                     ->getStyle(($lastColumn).$head)
-                    ->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                    ->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                  $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
                  //------------------------------------------------------------------
                  $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head, $ticket->idHeadquarter->headquarter_name);
@@ -387,7 +401,7 @@ class ReportsController extends Controller
                  $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
                  $objPHPExcel->getActiveSheet()
                     ->getStyle($lastColumn.$head)
-                    ->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                    ->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                  }
                  $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
                  
@@ -403,7 +417,7 @@ class ReportsController extends Controller
                  $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
                  $objPHPExcel->getActiveSheet()
                     ->getStyle(($lastColumn).$head)
-                    ->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                    ->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                  }
                  $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
                  
@@ -415,7 +429,7 @@ class ReportsController extends Controller
                  $excelDate = PHPExcel_Shared_Date::PHPToExcel($unixTimestamp);
                  $objPHPExcel->getActiveSheet()
                     ->getStyle(($lastColumn).$head)
-                    ->getNumberFormat()->setFormatCode('yyyy-mm-dd hh:mm');
+                    ->getNumberFormat()->setFormatCode('dd-mmmm-yyyy hh:mm');
                  }
                  $objPHPExcel->getActiveSheet()->setCellValue($lastColumn++.$head,$excelDate );
                  $head++;
@@ -440,8 +454,46 @@ class ReportsController extends Controller
      
             // If you're serving to IE 9, then the following may be needed
             header('Cache-Control: max-age=1');
-            ob_end_clean();
-            ob_start();
+            
+            $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+            $objWriter->save('php://output');      
+            Yii::app()->end();            
+        }
+        public function totalTodayOperational($dateInit=null,$dateEnd=null,$range=null){
+            $objPHPExcel = new PHPExcel();
+            ini_set('display_errors', TRUE);
+            ini_set('display_startup_errors', TRUE);
+            error_reporting(E_ALL);
+            define('EOL',(PHP_SAPI == 'cli') ? PHP_EOL : '<br />');
+            /** Include path **/
+            date_default_timezone_set('UTC');
+          //  echo date('H:i:s') . " Create new PHPExcel object\n";
+            $objPHPExcel = new PHPExcel();
+
+            // Set properties
+            //echo date('H:i:s') . " Set properties\n";
+            $objPHPExcel->getProperties()->setCreator("SMT");
+            $objPHPExcel->getProperties()->setLastModifiedBy("SMT");
+
+            // Set default font
+            $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setName('Arial');
+            $objPHPExcel->getActiveSheet()->getDefaultStyle()->getFont()->setSize(10);
+           // echo date('H:i:s') . " Add some data\n";
+            //echo date('H:i:s').' Set document properties'.EOL;
+            //----------------------------------------------------------
+            
+        
+     
+    
+            //---------------------------------------------------------
+            $xlsName = 'Reporte_Anual.xls';
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="'.$xlsName.'"');
+            header('Cache-Control: max-age=0');
+     
+            // If you're serving to IE 9, then the following may be needed
+            header('Cache-Control: max-age=1');
+            
             $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
             $objWriter->save('php://output');      
             Yii::app()->end();            

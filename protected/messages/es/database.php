@@ -31,8 +31,8 @@ return array(
  'Login'=>'Conexión',
     
   'Id Headquarter'=>'Lugar', 
-  'Headquarter'=>'Lugar',  
-  'Headquarters'=>'Lugares',
+  'Headquarter'=>'Ubicación',  
+  'Headquarters'=>'Ubicaciones',
   'Headquarter Name'=>'Nombre del Lugar',
   'Headquarter Location'=>'Cordenadas',
   'Headquarter Type'=>'Tipo de lugar',
@@ -173,6 +173,6 @@ return array(
  'Amount Embarkation'=>'Cantidad en Barco',
  'Reports'=>'Reportes',
  'Verification Code'=>'Codigo Verificación',
-    
+ 'Operational'=>'Operacional',   
 
 );
